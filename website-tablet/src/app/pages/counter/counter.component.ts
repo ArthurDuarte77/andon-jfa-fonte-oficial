@@ -342,7 +342,7 @@ export class CounterComponent implements OnInit, OnDestroy {
         this.minutos17 = 60;
         this.minutos17 = new Date().getMinutes();
       }
-    }, 5000);
+    }, 3000);
   }
 
 
@@ -450,7 +450,7 @@ export class CounterComponent implements OnInit, OnDestroy {
           }, 1000);
           this.intervalRefNew = setInterval(() => {
             this.operationService.atualizar(this.operation.name, this.contador);
-          }, 5000)
+          }, 1000)
         }
         
   stopTimer(state: string) {
