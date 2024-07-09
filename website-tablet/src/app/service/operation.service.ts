@@ -40,8 +40,8 @@ export class OperationService {
     return this.http.get<Main[]>(environment.url + "main")
   }
 
-  atualizar(name: string, tempo: number) {
-    this.http.get(environment.url + "nodemcu/atualizarTempo/" + name + "/" + tempo).subscribe()
+  atualizar(id: number, tempo: boolean) :Observable<any>{
+    return this.http.get<any>(environment.url + "contadores/" + id + "/" + tempo)
   }
 
   atualizarState(name: string, state: string) {
@@ -96,19 +96,18 @@ export class OperationService {
         });
         if (modeloAtual == undefined) {
           modeloAtual = {
-            modelo: "string",
+            modelo: "fonte 40A",
             realizado: 0,
             tempo: 0,
             is_current: true
           };
-          this.changeIsCurrent('bob 120A', true);
           resolve(modeloAtual);
         }
       });
     });
   }
-  
-  
+
+
   changeIsCurrent(modelo: string, isCurrent: boolean): void {
     this.http.get(environment.url + "fonte/" + modelo + "/" + isCurrent).subscribe()
   }

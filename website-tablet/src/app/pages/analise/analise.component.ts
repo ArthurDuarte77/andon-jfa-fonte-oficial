@@ -13,10 +13,10 @@ export class AnaliseComponent implements OnInit, OnDestroy{
   constructor(private service: OperationService) { }
 
 
-  
+
   nodemcu: Operation[] = []
   intervalo: any;
-  
+
   ngOnDestroy(): void {
     clearInterval(this.intervalo)
   }
@@ -28,7 +28,7 @@ export class AnaliseComponent implements OnInit, OnDestroy{
       this.service.getAll().subscribe(res => {
         this.nodemcu = res
       })
-    }, 1000)
+    }, 5000)
   }
 
 

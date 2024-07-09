@@ -1,23 +1,32 @@
-import { NameID } from "./nameid";
-
 export interface Nodemcu {
-    id:          number;
-    nameId:      NameID;
-    count:       number;
-    time:        number;
-    state:       string;
-    data:        number;
-    currentTC:   number;
-    maintenance: number;
-    shortestTC: number;
-    firtlastTC: number;
-    secondtlastTC: number;
-    thirdlastTC: number;
+    id:             number;
+    nameId:         NameID;
+    contador:       Contador;
+    count:          number;
+    firtlastTC:     number;
+    state:          string;
+    currentTC:      number;
+    analise:        number;
+    time_excess:    number;
+    maintenance:    number;
+    secondtlastTC:  number;
+    ajuda:          number;
+    thirdlastTC:    number;
+    shortestTC:     number;
     qtdeTCexcedido: number;
-    tcmedio: number;
-    localTC: number;
-    analise: number;
-    time_excess: number;
-    ajuda: number;
-    isCounting: boolean;
+    tcmedio:        number;
+}
+
+export interface Contador {
+    id:            number;
+    contadorAtual: number;
+    _couting:      boolean;
+}
+
+export interface NameID {
+    id:      number;
+    name:    string;
+    ocupado: boolean;
+    pausa:   boolean;
+    analise: boolean;
 }

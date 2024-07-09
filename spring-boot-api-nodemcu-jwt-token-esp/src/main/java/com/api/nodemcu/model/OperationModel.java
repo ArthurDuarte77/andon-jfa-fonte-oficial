@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name="operaion")
+@Table(name="operation")
 public class OperationModel {
 
     @Id

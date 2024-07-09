@@ -105,18 +105,18 @@
       <th>TC Atual</th>
       <td *ngFor="let item of nodemcu" [ngStyle]="{
           'background-color':
-            TCimpostado >= item.localTC
+            TCimpostado >= item.contador.contadorAtual
               ? '#00FF00'
               : (item.nameId.name === '110' ||
                 item.nameId.name === '100' ||
                 item.nameId.name === '080' ||
                 item.nameId.name === '090'
                   ? 180
-                  : TCimpostado) <= item.localTC
+                  : TCimpostado) <= item.contador.contadorAtual
               ? 'red'
               : '#00FF00'
         }">
-        {{ item.localTC }}
+        {{ item.contador.contadorAtual }}
       </td>
     </tr>
     <tr>

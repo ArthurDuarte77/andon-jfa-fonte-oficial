@@ -24,3 +24,17 @@ Stacktrace:   em System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInter
 2024-07-03 07:03:32 - Started 15556
 2024-07-03 07:25:42 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\node-windows\lib\wrapper.js --file C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js --scriptoptions= --log "andonfonte wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
 2024-07-03 07:25:42 - Started 9148
+2024-07-05 12:03:10 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\node-windows\lib\wrapper.js --file C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js --scriptoptions= --log "andonfonte wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2024-07-05 12:03:10 - Started 158384
+2024-07-05 12:03:13 - Stopping andonfonte.exe
+2024-07-05 12:03:13 - ProcessKill 158384
+2024-07-05 12:03:13 - Found child process: 155140 Name: conhost.exe
+2024-07-05 12:03:13 - Stopping process 155140
+2024-07-05 12:03:13 - Send SIGINT 155140
+2024-07-05 12:03:13 - SIGINT to 155140 failed - Killing as fallback
+2024-07-05 12:03:13 - Stopping process 158384
+2024-07-05 12:03:13 - Send SIGINT 158384
+2024-07-05 12:03:13 - SIGINT to 158384 failed - Killing as fallback
+2024-07-05 12:03:13 - Finished andonfonte.exe
+2024-07-05 13:18:54 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\node-windows\lib\wrapper.js --file C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js --scriptoptions= --log "andonfonte wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2024-07-05 13:18:54 - Started 148272

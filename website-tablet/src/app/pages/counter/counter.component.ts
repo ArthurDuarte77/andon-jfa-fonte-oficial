@@ -10,7 +10,6 @@ import { OperationService } from 'src/app/service/operation.service';
 import { DialogHelpComponent } from 'src/app/shared/dialog-help/dialog-help.component';
 import { DialogAvisoComponent } from 'src/app/shared/dialog-aviso/dialog-aviso.component';
 
-
 @Component({
   selector: 'app-counter',
   templateUrl: './counter.component.html',
@@ -22,8 +21,8 @@ export class CounterComponent implements OnInit, OnDestroy {
     private operationService: OperationService,
     private route: ActivatedRoute,
     private _snackBar: MatSnackBar,
-    public dialog: MatDialog,
-  ) { }
+    public dialog: MatDialog
+  ) {}
   // Declarando as váriaveis
   imposto: number = 0;
   shiftTime: number = 8.66;
@@ -63,8 +62,8 @@ export class CounterComponent implements OnInit, OnDestroy {
   newConter: number = 0;
   nomeOperacao: number = 0;
   newMaintenance: number = 0;
-  nomeOperador: string = ''
-  qrcodeValue: string = ''
+  nomeOperador: string = '';
+  qrcodeValue: string = '';
   analiseButton: boolean = false;
   onAnalise: boolean = false;
   onFonteGrande: boolean = false;
@@ -75,62 +74,58 @@ export class CounterComponent implements OnInit, OnDestroy {
     limitedTime: 0,
     ocupado: false,
     pausa: false,
-    analise: false
+    analise: false,
   };
   // Declaro a variavel storage que vai armazenar o local Storage
   storage: Storage = localStorage;
 
   // Quando o site iniciar ele vai executar tudo que esta aqui dentro
   ngOnInit() {
-    this.nomeOperador = this.storage.getItem("nome")!;
+    this.nomeOperador = this.storage.getItem('nome')!;
     // Pega os parametros das rotas para saber qual operação
-    this.route.params.subscribe(
-      (params) => {
-        this.nomeOperacao = params['name'];
-        // Faz a requisição para pegar todos os dados da operação
-        this.operationService.get(params['name']).subscribe(
+    this.route.params.subscribe((params) => {
+      this.nomeOperacao = params['name'];
+      // Faz a requisição para pegar todos os dados da operação
+      this.operationService.get(params['name']).subscribe((res) => {
+        this.operation = res;
+        this.desligarOperacaoNaFonteGrande();
+
+        this.operationService.getByName(this.operation.name).subscribe(
           (res) => {
-            this.operation = res;
-            this.desligarOperacaoNaFonteGrande();
-            
-            this.operationService.getByName(this.operation.name).subscribe(
-              (res) => {
-                this.count = res.count;
-                this.maintenance = res.maintenance;
-                var newOperation = this.storage.getItem('operation')!;
-                this.newConter = parseInt(this.storage.getItem('counter')!);
-                this.newMaintenance = parseInt(
-                  this.storage.getItem('maintenance')!
-                );
-                if (isNaN(this.newConter)) {
-                  this.storage.setItem('operation', this.operation.name);
-                  this.storage.setItem('counter', '0');
-                  this.storage.setItem('maintenance', '0');
-                } else {
-                  if (newOperation != this.operation.name) {
-                    this.storage.setItem('operation', this.operation.name);
-                    this.storage.setItem('counter', '0');
-                    this.storage.setItem('maintenance', '0');
-                  }
-                }
-                this.newConter = parseInt(this.storage.getItem('counter')!);
-                this.newMaintenance = parseInt(
-                  this.storage.getItem('maintenance')!
-                );
-              },
-              (errr) => {
-                this.openSnackBar('Erro no Service', 'Ok');
-              }
+            this.count = res.count;
+            this.maintenance = res.maintenance;
+            var newOperation = this.storage.getItem('operation')!;
+            this.newConter = parseInt(this.storage.getItem('counter')!);
+            this.newMaintenance = parseInt(
+              this.storage.getItem('maintenance')!
             );
+            if (isNaN(this.newConter)) {
+              this.storage.setItem('operation', this.operation.name);
+              this.storage.setItem('counter', '0');
+              this.storage.setItem('maintenance', '0');
+            } else {
+              if (newOperation != this.operation.name) {
+                this.storage.setItem('operation', this.operation.name);
+                this.storage.setItem('counter', '0');
+                this.storage.setItem('maintenance', '0');
+              }
+            }
+            this.newConter = parseInt(this.storage.getItem('counter')!);
+            this.newMaintenance = parseInt(
+              this.storage.getItem('maintenance')!
+            );
+          },
+          (errr) => {
+            this.openSnackBar('Erro no Service', 'Ok');
           }
         );
-        this.operationService
-          .getRealizadoHoraria(`${this.nomeOperacao}`)
-          .subscribe((res: any) => {
-            this.realizadoHora = res;
-          });
-      }
-    );
+      });
+      this.operationService
+        .getRealizadoHoraria(`${this.nomeOperacao}`)
+        .subscribe((res: any) => {
+          this.realizadoHora = res;
+        });
+    });
     this.operationService.getTCimposto().subscribe(
       (res: Main[]) => {
         res.forEach((res) => {
@@ -173,14 +168,14 @@ export class CounterComponent implements OnInit, OnDestroy {
 
     setInterval(() => {
       this.desligarOperacaoNaFonteGrande();
-      this.operationService.get(this.operation.name).subscribe(res => {
-        if(res.analise == true){
-          this.onAnalise = true
-          clearInterval(this.intervalRef)
-          clearInterval(this.intervalRefNew)
-          clearInterval(this.intervalo)
-          this.vermelhoStateCalled = false
-          this.tempoOcioso =  0
+      this.operationService.get(this.operation.name).subscribe((res) => {
+        if (res.analise == true) {
+          this.onAnalise = true;
+          clearInterval(this.intervalRef);
+          clearInterval(this.intervalRefNew);
+          clearInterval(this.intervalo);
+          this.vermelhoStateCalled = false;
+          this.tempoOcioso = 0;
           this.stateButton = true;
           this.contador = 0;
           this.tempoOcioso = 0;
@@ -188,14 +183,12 @@ export class CounterComponent implements OnInit, OnDestroy {
           this.contadorRodando = false;
           this.contador = 0;
           this.azulStateCalled = true;
-
-        }
-        else{
+        } else {
           this.onAnalise = false;
-          this.azulStateCalled = false
-          this.currentState = 'verde'
-          clearInterval(this.intervalo)
-          this.intervaloCounter()
+          this.azulStateCalled = false;
+          this.currentState = 'verde';
+          clearInterval(this.intervalo);
+          this.intervaloCounter();
         }
 
         if (res.pausa == true) {
@@ -211,14 +204,19 @@ export class CounterComponent implements OnInit, OnDestroy {
           this.stateButton = true;
           this.contadorRodando = false;
           this.contador = 0;
+          this.operationService.atualizar(this.operation.id, false).subscribe(res => {
+            this.openSnackBar('Enviado com sucesso', 'Ok');
+          }, error => {
+            this.openSnackBar('Erro no Service', 'Ok');
+          })
           this.operationService.atualizarState(this.operation.name, 'verde');
         } else {
           this.onPausa = false;
-          clearInterval(this.intervalo)
-          this.intervaloCounter()
+          clearInterval(this.intervalo);
+          this.intervaloCounter();
         }
-      })
-    }, 20000)
+      });
+    }, 20000);
     this.operationService.getTCimposto().subscribe((res: Main[]) => {
       this.imposto = res[0].imposto;
       this.shiftTime = res[0].shiftTime;
@@ -342,10 +340,8 @@ export class CounterComponent implements OnInit, OnDestroy {
         this.minutos17 = 60;
         this.minutos17 = new Date().getMinutes();
       }
-    }, 3000);
+    }, 2000);
   }
-
-
 
   enterFullscreen() {
     const element = document.documentElement;
@@ -357,35 +353,45 @@ export class CounterComponent implements OnInit, OnDestroy {
 
   intervaloCounter() {
     this.intervalo = setInterval(() => {
-      console.log(this.tempoOcioso)
-      if (!this.contadorRodando && this.analiseButton != true && this.onAnalise != true && this.onFonteGrande != true) {
+      console.log(this.tempoOcioso);
+      if (
+        !this.contadorRodando &&
+        this.analiseButton != true &&
+        this.onAnalise != true &&
+        this.onFonteGrande != true
+      ) {
         if (this.tempoOcioso > this.limitedTimeOcioso) {
           if (!this.vermelhoStateCalled) {
-            this.operationService.atualizarState(this.operation.name, 'vermelho');
+            this.operationService.atualizarState(
+              this.operation.name,
+              'vermelho'
+            );
             this.vermelhoStateCalled = true;
           }
         }
 
-        if (this.tempoOcioso === parseInt((this.limitedTimeOcioso + 60).toFixed(0))) {
+        if (
+          this.tempoOcioso ===
+          parseInt((this.limitedTimeOcioso + 60).toFixed(0))
+        ) {
           this.operationService.changeTimeExcess(this.operation.name);
         }
 
         this.tempoOcioso++;
-
       }
     }, 1000);
   }
 
   ngOnDestroy() {
-    clearInterval(this.realizadoInterval)
-    clearInterval(this.intervalo)
+    clearInterval(this.realizadoInterval);
+    clearInterval(this.intervalo);
     this.stopTimer('');
   }
 
   openDialogAviso(): void {
     this.dialog.open(DialogAvisoComponent, {
       width: '900px',
-      height: '400px'
+      height: '400px',
     });
   }
 
@@ -402,7 +408,7 @@ export class CounterComponent implements OnInit, OnDestroy {
         this.contador = 0;
       } else {
         this.openDialogAviso();
-        this.operationService.postIndisponivel(this.operation.name).subscribe()
+        this.operationService.postIndisponivel(this.operation.name).subscribe();
       }
     } else {
       if (state != 'refuse') {
@@ -411,53 +417,56 @@ export class CounterComponent implements OnInit, OnDestroy {
       }
     }
   }
-  
+
   iniciarContagem(state: string) {
-    this.vermelhoStateCalled = false
-    this.tempoOcioso = 0
-    this.currentState = 'verde';
+    this.vermelhoStateCalled = false;
+    this.tempoOcioso = 0;
     this.contadorRodando = true;
+    this.operationService.atualizar(this.operation.id, true).subscribe(res => {
+      this.openSnackBar('Enviado com sucesso', 'Ok');
+    }, error => {
+      this.openSnackBar('Erro no Service', 'Ok');
+    })
     this.intervalRef = setInterval(() => {
+      console.log(this.contador)
+      console.log(this.limitedTimeOcioso)
+      this.lmitedTime = parseInt(this.lmitedTime.toFixed(0))  
+      this.limitedTimeOcioso = parseInt(this.limitedTimeOcioso.toFixed(0))
       this.contador++;
-      if (this.contador === parseInt((this.limitedTimeOcioso + 60).toFixed(0))) {
+      if (
+        this.contador === parseInt((this.limitedTimeOcioso + 60).toFixed(0))
+      ) {
         this.operationService.changeTimeExcess(this.operation.name);
-        console.log("enviou1")
       }
       if (this.contador > 9999) {
         this.stopTimer(state);
-      } else if (
-        this.contador > this.lmitedTime &&
-        this.currentState == 'azul'
-        ) {
-          this.currentState = 'vermelho';
-          this.operationService.atualizarState(this.operation.name, 'vermelho');
-          this.vermelhoStateCalled = false;
-        } else if (
-          this.contador > this.lmitedTime * 2 &&
-          this.currentState == 'vermelho'
-          ) {
-            this.currentState = 'verde';
-            this.operationService.atualizarState(this.operation.name, 'vermelho');
-            this.vermelhoStateCalled = true;
-          } else if (
-            this.contador < this.lmitedTime &&
-            this.currentState == 'verde'
-            ) {
-              this.currentState = 'azul';
-              this.operationService.atualizarState(this.operation.name, 'verde');
-              
-            }
-          }, 1000);
-          this.intervalRefNew = setInterval(() => {
-            this.operationService.atualizar(this.operation.name, this.contador);
-          }, 1000)
-        }
-        
+      } else if (this.contador == this.lmitedTime) {
+        this.operationService.atualizarState(this.operation.name, 'vermelho');
+        this.vermelhoStateCalled = false;
+      } else if (this.contador == this.lmitedTime * 2) {
+        this.operationService.atualizarState(this.operation.name, 'vermelho');
+        this.vermelhoStateCalled = true;
+      } else if (this.contador == 1) {
+        this.operationService.atualizarState(this.operation.name, 'verde');
+      }
+    }, 1000);
+  }
+
   stopTimer(state: string) {
+    this.operationService.atualizarState(this.operation.name, 'verde');
     this.operationService.getTCimposto().subscribe((res: Main[]) => {
       this.imposto = res[0].imposto;
       this.shiftTime = res[0].shiftTime;
-      this.operationService.atualizar(this.operation.name, 0);
+      this.operationService.atualizar(this.operation.id, false).subscribe(res => {
+        this.openSnackBar('Enviado com sucesso', 'Ok');
+      }, error => {
+        this.openSnackBar('Erro no Service', 'Ok');
+      })
+      this.operationService.atualizar(this.operation.id, false).subscribe(res => {
+        this.openSnackBar('Enviado com sucesso', 'Ok');
+      }, error => {
+        this.openSnackBar('Erro no Service', 'Ok');
+      })
       res.forEach((res) => {
         this.lmitedTime = res.tcimposto;
       });
@@ -479,42 +488,33 @@ export class CounterComponent implements OnInit, OnDestroy {
     ) {
       var body: Nodemcu = {
         count: this.count,
-        time: 0,
         state: 'verde',
         currentTC: this.contador,
         nameId: this.operation,
         maintenance: this.maintenance,
         shortestTC: this.contador,
-        modelo: this.labelPosition,
-        isCounting: false
       };
-      this.operationService.post(body).subscribe((res) => { });
+      this.operationService.post(body).subscribe((res) => {});
     } else if (this.contador >= this.lmitedTime * 2) {
       var body: Nodemcu = {
         count: this.count,
-        time: 0,
         state: 'verde',
         currentTC: this.contador,
         nameId: this.operation,
         maintenance: this.maintenance,
         shortestTC: this.contador,
-        modelo: this.labelPosition,
-        isCounting: false
       };
-      this.operationService.post(body).subscribe((res) => { });
+      this.operationService.post(body).subscribe((res) => {});
     } else {
       var body: Nodemcu = {
         count: this.count,
-        time: 0,
         state: 'verde',
         currentTC: this.contador,
         nameId: this.operation,
         maintenance: this.maintenance,
         shortestTC: this.contador,
-        modelo: this.labelPosition,
-        isCounting: false
       };
-      this.operationService.post(body).subscribe((res) => { });
+      this.operationService.post(body).subscribe((res) => {});
     }
     this.contador = 0;
   }
@@ -620,20 +620,26 @@ export class CounterComponent implements OnInit, OnDestroy {
   }
 
   ajustarTempoEnvelhecimento() {
-    if (this.operation.name == "100" || this.operation.name == "110" || this.operation.name == "080" || this.operation.name == "090") {
-      this.lmitedTime = 180
-      console.log("chamou1")
+    if (
+      this.operation.name == '100' ||
+      this.operation.name == '110' ||
+      this.operation.name == '080' ||
+      this.operation.name == '090'
+    ) {
+      this.lmitedTime = 180;
+      console.log('chamou1');
     }
   }
 
-  
-  
-  
-
   desligarOperacaoNaFonteGrande() {
-    this.operationService.getFonteAtual().then(modelo => {
-      if (modelo.modelo != "storm 200A" && modelo.modelo != "bob 200A" && modelo.modelo != "lite 200A" && modelo.modelo != "storm 120A") {
-        if (this.operation.name == "020") {
+    this.operationService.getFonteAtual().then((modelo) => {
+      if (
+        modelo.modelo != 'storm 200A' &&
+        modelo.modelo != 'bob 200A' &&
+        modelo.modelo != 'lite 200A' &&
+        modelo.modelo != 'storm 120A'
+      ) {
+        if (this.operation.name == '020') {
           this.onFonteGrande = true;
           this.operationService.atualizarState(this.operation.name, 'verde');
           clearInterval(this.intervalo);
@@ -651,12 +657,15 @@ export class CounterComponent implements OnInit, OnDestroy {
       } else {
         this.onFonteGrande = false;
       }
-    })
+    });
   }
 
   analise() {
-    this.operationService.changeAnalise(this.operation.name, !this.analiseButton)
-    this.analiseButton = !this.analiseButton
+    this.operationService.changeAnalise(
+      this.operation.name,
+      !this.analiseButton
+    );
+    this.analiseButton = !this.analiseButton;
     if (this.analiseButton) {
       clearInterval(this.intervalRef);
       clearInterval(this.intervalRefNew);
@@ -673,7 +682,7 @@ export class CounterComponent implements OnInit, OnDestroy {
 
       setTimeout(() => {
         this.azulStateCalled = true;
-      }, 100)
+      }, 100);
     } else {
       this.azulStateCalled = false;
       this.onAnalise = false;
@@ -681,9 +690,9 @@ export class CounterComponent implements OnInit, OnDestroy {
   }
 
   ajuda() {
-    this.onAjuda = !this.onAjuda
+    this.onAjuda = !this.onAjuda;
     if (this.onAjuda) {
-      this.operationService.changeAjuda(this.operation.name)
+      this.operationService.changeAjuda(this.operation.name);
       clearInterval(this.intervalo);
       this.tempoOcioso = 0;
       this.intervaloCounter();

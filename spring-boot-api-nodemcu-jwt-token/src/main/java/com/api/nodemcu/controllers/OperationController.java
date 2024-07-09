@@ -1,5 +1,6 @@
 package com.api.nodemcu.controllers;
 
+import com.api.nodemcu.model.Contador;
 import com.api.nodemcu.model.NodemcuModel;
 import com.api.nodemcu.model.OperationModel;
 import com.api.nodemcu.repository.NodemcuRepository;
@@ -24,6 +25,9 @@ public class OperationController {
 
     @Autowired
     NodemcuRepository nodemcuRepository;
+
+    @Autowired
+    ContadorController contadorController;
 
     @PostMapping()
     public OperationModel post(@RequestBody OperationModel operation) {
@@ -64,6 +68,11 @@ public class OperationController {
             List<NodemcuModel> nodemcu = nodemcuRepository.findAll();
             for (NodemcuModel item : nodemcu) {
                 item.setState("verde");
+                contadorController.atualizarTempo(item.getContador().getId(), false);
+                Contador novoContador = item.getContador();
+                novoContador.setContadorAtual(0);
+                novoContador.set_couting(false);
+                item.setContador(novoContador);
                 nodemcuRepository.save(item);
             }
             List<OperationModel> operation = repository.findAll();

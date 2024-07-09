@@ -16,10 +16,10 @@ public interface OperationRepository extends JpaRepository<OperationModel, Integ
     <OperationMod extends OperationModel> OperationMod save(OperationMod nodemcu);
 
     @Modifying
-    @Query(value = "update operaion set ocupado = :ocupado where id = :id", nativeQuery = true)
+    @Query(value = "update operation set ocupado = :ocupado where id = :id", nativeQuery = true)
     void updateOcupadoByName(@Param("ocupado") Boolean ocupado, @Param("id") Integer id);
 
     @Modifying
-    @Query(value = "update operaion set analise = :analise where id = :id", nativeQuery = true)
+    @Query(value = "update operation set analise = :analise where id = :id", nativeQuery = true)
     void updateAnaliseById(@Param("analise") Boolean analise, @Param("id") Integer id);
 }
