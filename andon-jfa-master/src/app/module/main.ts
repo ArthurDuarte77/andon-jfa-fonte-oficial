@@ -3,4 +3,5 @@ export interface Main {
     imposto: number;
     shiftTime: number;
     tcimposto: number;
+    op : string;
 }

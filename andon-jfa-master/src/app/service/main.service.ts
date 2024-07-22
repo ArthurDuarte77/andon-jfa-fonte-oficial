@@ -13,10 +13,10 @@ export class MainService {
   constructor(private http: HttpClient) { }
 
 
-  put(imposto: number, tcimposto: number, shiftTime: number) {
+  put(imposto: number, tcimposto: number, shiftTime: number, op: string) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.put<any>(
-       environment.url + 'main/1',{imposto, tcimposto, shiftTime}, {headers});
+       environment.url + 'main/1',{imposto, tcimposto, shiftTime, op}, {headers});
   }
 
   getAllMain(): Observable<Main[]> {

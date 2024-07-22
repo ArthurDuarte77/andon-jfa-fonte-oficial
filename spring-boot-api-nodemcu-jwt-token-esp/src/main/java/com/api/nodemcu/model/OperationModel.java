@@ -15,7 +15,6 @@ public class OperationModel {
 
     private String name;
 
-    private Integer limitedTime;
 
 
 }

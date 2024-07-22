@@ -1,6 +1,7 @@
 com\api\nodemcu\repository\FontesRepository.class
 com\api\nodemcu\controllers\NodemcuController.class
 com\api\nodemcu\model\ImpostoDTO.class
+com\api\nodemcu\model\NodemcuStateDTO.class
 com\api\nodemcu\model\FontesModel.class
 com\api\nodemcu\model\OperationModel.class
 com\api\nodemcu\repository\NodemcuRepository.class
@@ -8,5 +9,4 @@ com\api\nodemcu\controllers\OperationController.class
 com\api\nodemcu\model\NodemcuModel.class
 com\api\nodemcu\NodemcuApplication.class
 com\api\nodemcu\configs\WebMvcConfig.class
-com\api\nodemcu\Services\TimerService.class
 com\api\nodemcu\repository\OperationRepository.class

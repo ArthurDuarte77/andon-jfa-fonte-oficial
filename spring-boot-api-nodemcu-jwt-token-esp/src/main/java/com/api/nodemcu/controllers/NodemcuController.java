@@ -1,6 +1,7 @@
 package com.api.nodemcu.controllers;
 
 import com.api.nodemcu.model.NodemcuModel;
+import com.api.nodemcu.model.NodemcuStateDTO;
 import com.api.nodemcu.model.OperationModel;
 import com.api.nodemcu.repository.NodemcuRepository;
 import com.api.nodemcu.repository.OperationRepository;
@@ -25,10 +26,10 @@ public class NodemcuController {
 
 
     @GetMapping("/{name}")
-    public NodemcuModel findByName(@PathVariable String name) {
+    public NodemcuStateDTO findStateByName(@PathVariable String name) {
         OperationModel operation = operationRepository.findByName(name);
         NodemcuModel nodemcu = repository.findByNameId(operation);
-        return nodemcu;
+        return new NodemcuStateDTO(nodemcu.getState());
     }
 
 

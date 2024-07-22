@@ -48,6 +48,10 @@ export class OperationService {
     this.http.get(environment.url + "nodemcu/atualizarState/" + name + "/" + state).subscribe();
   }
 
+  getTempo(id: number){
+    return this.http.get<any>(environment.url + "contadores/" + id)
+  }
+
   getRealizadoHoraria(name: string): Observable<Realizado> {
     return this.http.get<Realizado>(environment.url + "realizadoHorariaTablet/" + name)
   }
@@ -115,9 +119,6 @@ export class OperationService {
   changeAnalise(nome: string, analise: boolean){
     this.http.get(environment.url + "operation/analise/" + nome + "/" + analise).subscribe()
   }
-  //changeTreinamento(nome: string, treinamento: boolean){
-    //this.http.get(environment.url + "opeartion/treinamento/" +  nome + "/" + treinamento).subscribe()
-  //}
 
   changeTimeExcess(name: string){
     this.http.get(environment.url + "nodemcu/timeExcess/" + name).subscribe()

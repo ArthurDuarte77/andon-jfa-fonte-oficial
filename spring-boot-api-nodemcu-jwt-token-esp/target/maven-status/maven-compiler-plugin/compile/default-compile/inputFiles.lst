@@ -3,8 +3,8 @@ C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-t
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token-esp\src\main\java\com\api\nodemcu\repository\FontesRepository.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token-esp\src\main\java\com\api\nodemcu\configs\WebMvcConfig.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token-esp\src\main\java\com\api\nodemcu\NodemcuApplication.java
-C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token-esp\src\main\java\com\api\nodemcu\Services\TimerService.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token-esp\src\main\java\com\api\nodemcu\model\FontesModel.java
+C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token-esp\src\main\java\com\api\nodemcu\model\NodemcuStateDTO.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token-esp\src\main\java\com\api\nodemcu\controllers\OperationController.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token-esp\src\main\java\com\api\nodemcu\controllers\NodemcuController.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token-esp\src\main\java\com\api\nodemcu\repository\NodemcuRepository.java

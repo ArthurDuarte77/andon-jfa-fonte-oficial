@@ -41,6 +41,7 @@ export class HomeComponent implements OnInit {
   MediaHorarioRealizada: number = 0;
   nodemcu: Nodemcu[] = [];
   date: any;
+  op: string = "";
   counting: number[] = []
   TCimpostado: number = 0;
   previsto: number = 0;
@@ -104,7 +105,7 @@ export class HomeComponent implements OnInit {
         }
       })
       if (this.modeloAtual == undefined) {
-        this.modeloService.changeIsCurrent('bob120', true)
+        this.modeloService.changeIsCurrent('storm 120A', true)
       }
     })
     window.onload = () => {
@@ -121,7 +122,8 @@ export class HomeComponent implements OnInit {
       })
       this.mainService.getAllMain().subscribe((res: Main[]) => {
         this.imposto = res[0].imposto;
-        this.shiftTime = res[0].shiftTime
+        this.shiftTime = res[0].shiftTime;
+        this.op = res[0].op;
       });
     });
     this.nodemcuService.getAllRealizado().subscribe((res) => {
@@ -129,17 +131,16 @@ export class HomeComponent implements OnInit {
     });
     this.intervaloImposto = setInterval(() => {
       this.impostoIntervalo()
+      this.retirarPausa();
     }, 1000);
     this.intervaloRealizado = setInterval(() => {
       this.realizadoIntevalo()
     }, 5000);
     setInterval(() => {
       if (this.horasAtuais == 17 && new Date().getMinutes() == 0) {
-        console.log("teste")
         clearInterval(this.intervaloImposto)
         clearInterval(this.intervaloRealizado)
-      } else if(this.horasAtuais == 7 && new Date().getMinutes() == 0 && new Date().getSeconds() == 0){
-        console.log("teste 2")
+      } else if (this.horasAtuais == 7 && new Date().getMinutes() == 0 && new Date().getSeconds() == 0) {
         this.intervaloImposto = setInterval(() => {
           this.impostoIntervalo()
         }, 1000)
@@ -158,6 +159,7 @@ export class HomeComponent implements OnInit {
     this.mainService.getAllMain().subscribe((res) => {
       this.imposto = res[0].imposto;
       this.shiftTime = res[0].shiftTime;
+      this.op = res[0].op;
     });
     this.modeloService.getAll().subscribe(res => {
       res.forEach(item => {
@@ -481,7 +483,7 @@ export class HomeComponent implements OnInit {
       this.previsto =
         this.date / (this.TCimpostado / 60) - this.ProportionalDiscount;
     }
-    if(this.horasAtuais >= 17 && this.horasAtuais < 7){
+    if (this.horasAtuais >= 17 && this.horasAtuais < 7) {
       this.previsto = this.imposto
     }
 
@@ -498,8 +500,43 @@ export class HomeComponent implements OnInit {
     return parseInt(value, 0);
   }
 
+  retirarPausa() {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    if(new Date().getDay() != 5){
+      if (hours === 9 && minutes === 30) {
+        this.nodemcuService.pausa(true).subscribe()
+      } else if (hours === 9 && minutes === 40) {
+        this.nodemcuService.pausa(false).subscribe()
+      } else if (hours === 12 && minutes === 0) {
+        this.nodemcuService.pausa(true).subscribe()
+      } else if (hours === 13 && minutes === 0) {
+        this.nodemcuService.pausa(false).subscribe()
+      } else if (hours === 15 && minutes === 5) {
+        this.nodemcuService.pausa(true).subscribe()
+      } else if (hours === 15 && minutes === 15) {
+        this.nodemcuService.pausa(false).subscribe()
+      }
+    }else{
+      if (hours === 9 && minutes === 30) {
+        this.nodemcuService.pausa(true).subscribe()
+      } else if (hours === 9 && minutes === 40) {
+        this.nodemcuService.pausa(false).subscribe()
+      } else if (hours === 12 && minutes === 0) {
+        this.nodemcuService.pausa(true).subscribe()
+      } else if (hours === 13 && minutes === 0) {
+        this.nodemcuService.pausa(false).subscribe()
+      } else if (hours === 14 && minutes === 25) {
+        this.nodemcuService.pausa(true).subscribe()
+      } else if (hours === 14 && minutes === 35) {
+        this.nodemcuService.pausa(false).subscribe()
+      }
+    }
+  }
+
   openDialog() {
-    const dialogRef = this.dialog.open(DialogMetaComponent);
+    const dialogRef = this.dialog.open(DialogMetaComponent, { width: '30%', height: '70%' });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
@@ -507,7 +544,7 @@ export class HomeComponent implements OnInit {
         if (newImposto != 0) {
           this.imposto = result.split(',')[0];
           this.mainService
-            .put(this.imposto, this.TCimpostado, this.shiftTime)
+            .put(this.imposto, this.TCimpostado, this.shiftTime, this.op)
             .subscribe();
         }
         this.shiftTime = result.split(',')[1];
@@ -518,7 +555,14 @@ export class HomeComponent implements OnInit {
             this.shiftTime = 8.66;
           }
           this.mainService
-            .put(this.imposto, this.TCimpostado, this.shiftTime)
+            .put(this.imposto, this.TCimpostado, this.shiftTime, this.op)
+            .subscribe();
+          this.getValues();
+        }
+        var op = result.split(',')[2]
+        if (op != "") {
+          this.mainService
+            .put(this.imposto, this.TCimpostado, this.shiftTime, op)
             .subscribe();
           this.getValues();
         }

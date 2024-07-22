@@ -38,3 +38,67 @@ Stacktrace:   em System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInter
 2024-07-05 12:03:13 - Finished andonfonte.exe
 2024-07-05 13:18:54 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\node-windows\lib\wrapper.js --file C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js --scriptoptions= --log "andonfonte wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
 2024-07-05 13:18:54 - Started 148272
+2024-07-11 15:12:06 - Stopping andonfonte.exe
+2024-07-11 15:12:06 - ProcessKill 148272
+2024-07-11 15:12:07 - Shutdown exception
+Message:O sistema está sendo desligado.
+
+Stacktrace:   em System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   em System.Management.ManagementScope.InitializeGuts(Object o)
+   em System.Management.ManagementScope.Initialize()
+   em System.Management.ManagementObjectSearcher.Initialize()
+   em System.Management.ManagementObjectSearcher.Get()
+   em winsw.WrapperService.GetChildPids(Int32 pid)
+   em winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   em winsw.WrapperService.StopIt()
+   em winsw.WrapperService.OnShutdown()
+2024-07-11 15:12:32 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\node-windows\lib\wrapper.js --file C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js --scriptoptions= --log "andonfonte wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2024-07-11 15:12:32 - Started 7020
+2024-07-11 15:37:48 - Stopping andonfonte.exe
+2024-07-11 15:37:48 - ProcessKill 7020
+2024-07-11 15:37:48 - Shutdown exception
+Message:O sistema está sendo desligado.
+
+Stacktrace:   em System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   em System.Management.ManagementScope.InitializeGuts(Object o)
+   em System.Management.ManagementScope.Initialize()
+   em System.Management.ManagementObjectSearcher.Initialize()
+   em System.Management.ManagementObjectSearcher.Get()
+   em winsw.WrapperService.GetChildPids(Int32 pid)
+   em winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   em winsw.WrapperService.StopIt()
+   em winsw.WrapperService.OnShutdown()
+2024-07-11 15:38:30 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\node-windows\lib\wrapper.js --file C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js --scriptoptions= --log "andonfonte wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2024-07-11 15:38:30 - Started 9516
+2024-07-16 11:26:04 - Stopping andonfonte.exe
+2024-07-16 11:26:04 - ProcessKill 9516
+2024-07-16 11:26:04 - Found child process: 9528 Name: conhost.exe
+2024-07-16 11:26:04 - Found child process: 9844 Name: node.exe
+2024-07-16 11:26:04 - Stopping process 9528
+2024-07-16 11:26:04 - Send SIGINT 9528
+2024-07-16 11:26:04 - SIGINT to 9528 failed - Killing as fallback
+2024-07-16 11:26:04 - Stopping process 9844
+2024-07-16 11:26:04 - Send SIGINT 9844
+2024-07-16 11:26:04 - SIGINT to 9844 failed - Killing as fallback
+2024-07-16 11:26:04 - Stopping process 9516
+2024-07-16 11:26:04 - Send SIGINT 9516
+2024-07-16 11:26:04 - SIGINT to 9516 failed - Killing as fallback
+2024-07-16 11:26:04 - Finished andonfonte.exe
+2024-07-16 11:26:28 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\node-windows\lib\wrapper.js --file C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js --scriptoptions= --log "andonfonte wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2024-07-16 11:26:28 - Started 20460
+2024-07-16 14:04:56 - Stopping andonfonte.exe
+2024-07-16 14:04:56 - ProcessKill 20460
+2024-07-16 14:04:56 - Found child process: 14536 Name: conhost.exe
+2024-07-16 14:04:56 - Found child process: 14100 Name: node.exe
+2024-07-16 14:04:56 - Stopping process 14536
+2024-07-16 14:04:56 - Send SIGINT 14536
+2024-07-16 14:04:57 - SIGINT to 14536 failed - Killing as fallback
+2024-07-16 14:04:57 - Stopping process 14100
+2024-07-16 14:04:57 - Send SIGINT 14100
+2024-07-16 14:04:57 - SIGINT to 14100 failed - Killing as fallback
+2024-07-16 14:04:57 - Stopping process 20460
+2024-07-16 14:04:57 - Send SIGINT 20460
+2024-07-16 14:04:57 - SIGINT to 20460 failed - Killing as fallback
+2024-07-16 14:04:57 - Finished andonfonte.exe
+2024-07-16 14:06:01 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\node-windows\lib\wrapper.js --file C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js --scriptoptions= --log "andonfonte wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2024-07-16 14:06:01 - Started 17680

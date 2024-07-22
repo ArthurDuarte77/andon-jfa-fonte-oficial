@@ -1,12 +1,13 @@
 package com.api.nodemcu.controllers;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.api.nodemcu.model.Contador;
-import com.api.nodemcu.model.NodemcuModel;
 import com.api.nodemcu.repository.ContadorRepository;
-import com.api.nodemcu.repository.NodemcuRepository;
+
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,42 +23,52 @@ public class ContadorController {
     @Autowired
     private ContadorRepository contadorRepository;
 
-    @Autowired
-    private NodemcuRepository nodemcuRepository;
-
-
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
     private ConcurrentHashMap<Long, ScheduledFuture<?>> contadorTasks = new ConcurrentHashMap<>();
 
-
+    @Transactional
     @GetMapping("/{id}/{isCounting}")
     public void atualizarTempo(@PathVariable("id") Long id, @PathVariable("isCounting") boolean isCounting) {
         Contador contador = contadorRepository.findById(id).orElse(null);
         if (contador == null) {
             return;
         }
+
+        ScheduledFuture<?> task = contadorTasks.get(id);
+
         if (isCounting) {
-            if (!contadorTasks.containsKey(id) || contadorTasks.get(id).isCancelled()) {
+            if (task == null || task.isCancelled()) {
                 contador.set_couting(true);
-                ScheduledFuture<?> futureTask = executorService.scheduleAtFixedRate(() -> {
+                task = executorService.scheduleAtFixedRate(() -> {
                     contador.setContadorAtual(contador.getContadorAtual() + 1);
                     contadorRepository.save(contador);
                 }, 0, 1, TimeUnit.SECONDS);
-                contadorTasks.put(id, futureTask);
+                contadorTasks.put(id, task);
             }
         } else {
-            if (contadorTasks.containsKey(id) && !contadorTasks.get(id).isCancelled()) {
+            if (task != null && !task.isCancelled()) {
+                task.cancel(true);
+                contadorTasks.remove(id);
                 contador.set_couting(false);
                 contador.setContadorAtual(0);
-                contadorTasks.get(id).cancel(true);
-                contadorTasks.remove(id);
                 contadorRepository.save(contador);
             }
         }
     }
+
     @GetMapping("/todos")
     public ResponseEntity<List<Contador>> todosContadores() {
         List<Contador> contadores = contadorRepository.findAll();
         return ResponseEntity.ok(contadores);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Contador> findById(@PathVariable("id") Long id) {
+        Contador contador = contadorRepository.findById(id).orElse(null);
+        if (contador == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(contador);
+    }
+    
 }

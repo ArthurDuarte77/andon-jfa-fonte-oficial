@@ -24,6 +24,7 @@ export class CounterComponent implements OnInit, OnDestroy {
     public dialog: MatDialog
   ) {}
   // Declarando as váriaveis
+  isOnline: boolean = false;
   imposto: number = 0;
   shiftTime: number = 8.66;
   minutos8: number = 0;
@@ -81,6 +82,12 @@ export class CounterComponent implements OnInit, OnDestroy {
 
   // Quando o site iniciar ele vai executar tudo que esta aqui dentro
   ngOnInit() {
+    // Adiciona listeners para os eventos de online e offline
+    window.addEventListener('online', () => this.updateOnlineStatus());
+    window.addEventListener('offline', () => this.updateOnlineStatus());
+
+    // Atualiza o status inicial
+    this.updateOnlineStatus();
     this.nomeOperador = this.storage.getItem('nome')!;
     // Pega os parametros das rotas para saber qual operação
     this.route.params.subscribe((params) => {
@@ -88,7 +95,6 @@ export class CounterComponent implements OnInit, OnDestroy {
       // Faz a requisição para pegar todos os dados da operação
       this.operationService.get(params['name']).subscribe((res) => {
         this.operation = res;
-        this.desligarOperacaoNaFonteGrande();
 
         this.operationService.getByName(this.operation.name).subscribe(
           (res) => {
@@ -167,7 +173,6 @@ export class CounterComponent implements OnInit, OnDestroy {
     }, 1000);
 
     setInterval(() => {
-      this.desligarOperacaoNaFonteGrande();
       this.operationService.get(this.operation.name).subscribe((res) => {
         if (res.analise == true) {
           this.onAnalise = true;
@@ -340,7 +345,7 @@ export class CounterComponent implements OnInit, OnDestroy {
         this.minutos17 = 60;
         this.minutos17 = new Date().getMinutes();
       }
-    }, 2000);
+    }, 4000);
   }
 
   enterFullscreen() {
@@ -427,9 +432,27 @@ export class CounterComponent implements OnInit, OnDestroy {
     }, error => {
       this.openSnackBar('Erro no Service', 'Ok');
     })
+    this.operationService.getTempo(this.operation.id).subscribe(res => {
+      if(res._couting == false){
+        this.operationService.atualizar(this.operation.id, true).subscribe(res => {
+          this.openSnackBar('Enviado com sucesso', 'Ok');
+        }, error => {
+          this.openSnackBar('Erro no Service', 'Ok');
+        })
+      }else{
+        this.operationService.atualizar(this.operation.id, false).subscribe(res => {
+          this.openSnackBar('Enviado com sucesso', 'Ok');
+          this.operationService.atualizar(this.operation.id, true).subscribe(res => {
+            this.openSnackBar('Enviado com sucesso', 'Ok');
+          }, error => {
+            this.openSnackBar('Erro no Service', 'Ok');
+          })
+        }, error => {
+          this.openSnackBar('Erro no Service', 'Ok');
+        })
+      }
+    })
     this.intervalRef = setInterval(() => {
-      console.log(this.contador)
-      console.log(this.limitedTimeOcioso)
       this.lmitedTime = parseInt(this.lmitedTime.toFixed(0))  
       this.limitedTimeOcioso = parseInt(this.limitedTimeOcioso.toFixed(0))
       this.contador++;
@@ -462,10 +485,14 @@ export class CounterComponent implements OnInit, OnDestroy {
       }, error => {
         this.openSnackBar('Erro no Service', 'Ok');
       })
-      this.operationService.atualizar(this.operation.id, false).subscribe(res => {
-        this.openSnackBar('Enviado com sucesso', 'Ok');
-      }, error => {
-        this.openSnackBar('Erro no Service', 'Ok');
+      this.operationService.getTempo(this.operation.id).subscribe(res => {
+        if(res._couting == true){
+          this.operationService.atualizar(this.operation.id, false).subscribe(res => {
+            this.openSnackBar('Enviado com sucesso', 'Ok');
+          }, error => {
+            this.openSnackBar('Erro no Service', 'Ok');
+          })
+        }
       })
       res.forEach((res) => {
         this.lmitedTime = res.tcimposto;
@@ -631,35 +658,6 @@ export class CounterComponent implements OnInit, OnDestroy {
     }
   }
 
-  desligarOperacaoNaFonteGrande() {
-    this.operationService.getFonteAtual().then((modelo) => {
-      if (
-        modelo.modelo != 'storm 200A' &&
-        modelo.modelo != 'bob 200A' &&
-        modelo.modelo != 'lite 200A' &&
-        modelo.modelo != 'storm 120A'
-      ) {
-        if (this.operation.name == '020') {
-          this.onFonteGrande = true;
-          this.operationService.atualizarState(this.operation.name, 'verde');
-          clearInterval(this.intervalo);
-          this.vermelhoStateCalled = false;
-          this.tempoOcioso = 0;
-          this.intervaloCounter();
-          this.stateButton = true;
-          this.contador = 0;
-          this.contadorRodando = false;
-          clearInterval(this.intervalRef);
-          clearInterval(this.intervalRefNew);
-        } else {
-          this.onFonteGrande = false;
-        }
-      } else {
-        this.onFonteGrande = false;
-      }
-    });
-  }
-
   analise() {
     this.operationService.changeAnalise(
       this.operation.name,
@@ -679,7 +677,11 @@ export class CounterComponent implements OnInit, OnDestroy {
 
       clearInterval(this.intervalRefNew);
       clearInterval(this.intervalRef);
-
+      this.operationService.atualizar(this.operation.id, false).subscribe(res => {
+        this.openSnackBar('Enviado com sucesso', 'Ok');
+      }, error => {
+        this.openSnackBar('Erro no Service', 'Ok');
+      })
       setTimeout(() => {
         this.azulStateCalled = true;
       }, 100);
@@ -703,8 +705,23 @@ export class CounterComponent implements OnInit, OnDestroy {
       clearInterval(this.intervalRefNew);
       this.vermelhoStateCalled = false;
       this.azulStateCalled = false;
+      this.operationService.atualizar(this.operation.id, false).subscribe(res => {
+        this.openSnackBar('Enviado com sucesso', 'Ok');
+      }, error => {
+        this.openSnackBar('Erro no Service', 'Ok');
+      })
     } else {
       this.operationService.atualizarState(this.operation.name, 'verde');
+    }
+  }
+
+  
+  private updateOnlineStatus() {
+    this.isOnline = navigator.onLine;
+    if (this.isOnline) {
+      console.log('Internet voltou!');
+    } else {
+      console.log('Internet caiu!');
     }
   }
 }

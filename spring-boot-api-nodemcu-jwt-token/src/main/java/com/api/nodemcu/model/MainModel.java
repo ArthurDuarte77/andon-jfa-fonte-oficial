@@ -19,4 +19,6 @@ public class MainModel {
 
     private Float shiftTime;
 
+    private String op;
+
 }

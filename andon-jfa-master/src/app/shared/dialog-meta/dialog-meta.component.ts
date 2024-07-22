@@ -15,6 +15,7 @@ export class DialogMetaComponent implements OnInit {
   modelos: Modelo[] = []
   modelControl = new FormControl('');
   input = new FormControl(0);
+  op = new FormControl(0);
 
   ngOnInit(): void {
     this.modeloService.getAll().subscribe(res => {

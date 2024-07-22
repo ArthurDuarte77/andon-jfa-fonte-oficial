@@ -21,13 +21,15 @@ public class MainController {
     }
 
     @PutMapping("/{id}")
-    public void put(@PathVariable Integer id, @RequestBody ImpostoDTO dto) {
+    public void put(@PathVariable Integer id, @RequestBody MainModel dto) {
         MainModel main = repostory.findById(id).get();
         main.setImposto(dto.getImposto());
         main.setTCimposto(dto.getTCimposto());
         main.setShiftTime(dto.getShiftTime());
+        main.setOp(dto.getOp());
         repostory.save(main);
     }
+
 
 
 

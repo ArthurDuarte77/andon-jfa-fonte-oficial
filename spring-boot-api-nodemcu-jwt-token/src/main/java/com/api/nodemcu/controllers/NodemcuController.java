@@ -60,16 +60,20 @@ public class NodemcuController {
     private boolean tarefaAgendada = false;
     private boolean zerouDados = false;
 
+
     private ScheduledExecutorService scheduler;
 
     public NodemcuController() {
+        System.out.println("passou 1");
         this.scheduler = Executors.newScheduledThreadPool(1);
         agendarTarefa();
     }
 
     private void agendarTarefa() {
+        System.out.println("passou 2");
+        zerarDados();
         Runnable task = () -> {
-            
+            System.out.println("IsCalling");
             Calendar calendar = Calendar.getInstance();
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
@@ -94,14 +98,13 @@ public class NodemcuController {
         NodemcuModel nodemcu = repository.findByNameId(operation);
         return nodemcu;
     }
-
     @GetMapping("/timeExcess/{name}")
     public void AddTimeExcess(@PathVariable String name){
         OperationModel operation = operationRepository.findByName(name);
         NodemcuModel nodemcu = repository.findByNameId(operation);
         nodemcu.setState("piscar");
         nodemcu.setTime_excess(nodemcu.getTime_excess() + 1);
-        repository.save(nodemcu);
+        repository.save((nodemcu));
     }
 
     @GetMapping("/ajuda/{name}")
@@ -113,15 +116,11 @@ public class NodemcuController {
         repository.save((nodemcu));
     }
 
-
-
-
     @PostMapping()
     public NodemcuModel post(@RequestBody NodemcuModel device) {
         repository.save(device);
         return device;
     }
-
     @Transactional
     @PatchMapping("/{name}")
     public NodemcuModel patch(@PathVariable String name, @RequestBody NodemcuModel nodemcuUpdates)
