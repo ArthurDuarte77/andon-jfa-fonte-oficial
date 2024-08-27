@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import com.api.nodemcu.model.GeralNodemcuModel;
 import com.api.nodemcu.model.GeralRealizadoHorariaModel;
 
 public interface GeralRealizadoHorariaRepository extends JpaRepository<GeralRealizadoHorariaModel, Integer>{
@@ -12,5 +15,8 @@ public interface GeralRealizadoHorariaRepository extends JpaRepository<GeralReal
     List<GeralRealizadoHorariaModel> findAll();
 
     <GeralRealizado extends GeralRealizadoHorariaModel> GeralRealizado save(GeralRealizado nodemcu);
+    
+    @Query(value="SELECT n FROM geral_thdados n WHERE n.data BETWEEN :startDate AND :endDate", nativeQuery=true)
+    List<GeralRealizadoHorariaModel> findByDataBetween(@Param("startDate") String startDate, @Param("endDate") String endDate);
     
 }

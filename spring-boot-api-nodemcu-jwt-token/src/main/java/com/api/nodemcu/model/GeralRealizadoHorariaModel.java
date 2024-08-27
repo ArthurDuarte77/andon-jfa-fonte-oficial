@@ -14,10 +14,10 @@ public class GeralRealizadoHorariaModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    private Integer id;
 
     private Date data;
 
-    private Integer id;
     private Integer horas7;
     private Integer horas8;
     private Integer horas9;
