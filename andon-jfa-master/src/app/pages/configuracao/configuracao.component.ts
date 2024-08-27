@@ -16,6 +16,12 @@ import { ModeloService } from 'src/app/service/modelo.service';
 import { NodemcuService } from 'src/app/service/nodemcu.service';
 import { DialogAddComponent } from 'src/app/shared/dialog-add/dialog-add.component';
 
+export interface Pogramacao{
+  date: Date,
+  previsto: number,
+  realizado: number
+}
+
 @Component({
   selector: 'app-configuracao',
   templateUrl: './configuracao.component.html',
@@ -41,6 +47,56 @@ export class ConfiguracaoComponent implements OnInit {
   dataSourceMain: Main[] = []
   dataSourceModelo: Modelo[] = []
   dataSourceOperation: Operation[] = []
+  dataSourceProgramacao: Pogramacao[] = []
+  displayedColumnsProgramacao: string[] = ["data", "previsto", "realizado"]
+  tabelas: string[] = ["nodemcu", "Realizado Horaria", "Realizado Horaria Tablet", "Pogramação", "Modelos", "Operações", "Programação Mensal"]
+  chosenTable: string = ""
+
+  resultadoGeral: ResultadoGeral[] = [];
+  dataImposto: number[] = [];
+  dataTcImpostado: number[] = []
+  dataRealizado: any[] = [];
+  data: string[] = [];
+  controleRealizado: RealizadoGeral[] = [];
+  realizado: Realizado[] = [];
+  dataImpostoRealizado: number[] = [];
+  realizadoData: number[] = [];
+  worstOp: number = 0
+  TCimpostado: number = 0;
+  months = ["Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro"
+  ];
+  worstTcOp: number = 0
+  bestOp: number = 0;
+  bestHour: string = ""
+  bestTcOp: number = 0
+  tcMedio: number[] = []
+  dataRealizadoTotal: any[] = []
+  dateRealizadoTotal: number[] = []
+  totalImposto: number = 0;
+  modelos: String[] = []
+  realizadoModelos: number[] = [];
+  totalRealizado: number = 0;
+  curreantMonth: number = new Date().getMonth()
+  worstHour: string = "";
+  time_excess: number[] = []
+  bestTimeExcessOp: number = 0
+  worstTimeExcessOp: number = 0
+  analise: number[] = []
+  ausencia: number[] = []
+  interrupcoes: number[] = []
+  tempoContadoExcedido: number[] = []
+  names: number[] = []
 
   ngOnInit(): void {
     this.nodemcuService.getAll().subscribe((res) => {
@@ -66,9 +122,48 @@ export class ConfiguracaoComponent implements OnInit {
       this.dataSourceOperation = res
     })
 
+    this.getData(new Date().getMonth())
+
   }
 
   saveData(data: Nodemcu[]) {
+  }
+
+  getData(month: number) {
+    this.data = [];
+    this.dataImposto = [];
+    this.dataRealizado = [];
+    this.modelos = [];
+    this.realizadoModelos = [];
+
+    this.nodemcuService.getAllResultadoGeral().subscribe(res => {
+      this.resultadoGeral = res;
+      const currentDate = new Date();
+      const currentMonth = month;
+      const currentYear = currentDate.getFullYear();
+
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(currentYear, currentMonth, day);
+        const dayOfWeek = date.getDay();
+        if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+          this.data.push(date.toLocaleDateString());
+          this.dataImposto.push(0);
+          this.dataRealizado.push(0);
+        }
+      }
+
+      this.resultadoGeral.forEach(item => {
+        for (let i = 0; i < this.data.length; i++) {
+          if (this.data[i] === new Date(item.data).toLocaleDateString()) {
+            this.dataImposto[i] = item.imposto;
+            this.dataRealizado[i] = item.realizado;
+            this.dataSourceProgramacao.push({date: new Date(item.data),previsto: item.imposto, realizado: item.realizado})
+          }
+        }
+      });
+    });
   }
 
   addData(columns: string[], name: string) {
@@ -104,7 +199,7 @@ export class ConfiguracaoComponent implements OnInit {
           ajuda: result.ajuda,
           thirdlastTC: result.thirdlastTC,
           shortestTC: result.shortestTC,
-          qtdeTCexcedido: result.qtdeTCexcedido,
+          qtdetcexcedido: result.qtdeTCexcedido,
           tcmedio: result.tcmedio
         }
         this.nodemcuService.postNodemcu(body).subscribe(res => {

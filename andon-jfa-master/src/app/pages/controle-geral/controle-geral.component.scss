@@ -10,6 +10,13 @@
   padding: 7px;
   margin-top: 20px;
   margin-bottom: 20px;
+  .option{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
 }
 
 .container_date{

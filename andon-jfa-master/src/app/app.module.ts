@@ -34,6 +34,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import {JsonPipe} from '@angular/common';
+import {MatChipsModule} from '@angular/material/chips';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import {JsonPipe} from '@angular/common';
     MatExpansionModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    JsonPipe
+    JsonPipe,
+    MatChipsModule
   ],
   providers: [DECIMAL_FORMAT_DEFAULT,{ provide: LOCALE_ID, useValue: 'pt' }, ],
   bootstrap: [AppComponent]

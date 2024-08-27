@@ -1,6 +1,6 @@
 import { Main } from './../../module/main';
 import { DialogRef } from '@angular/cdk/dialog';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Modelo } from 'src/app/module/modelo';
 import { Nodemcu } from 'src/app/module/nodemcu';
@@ -18,7 +18,7 @@ import { DialogPauseComponent } from 'src/app/shared/dialog-pause/dialog-pause.c
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   constructor(
     private nodemcuService: NodemcuService,
     public dialog: MatDialog,
@@ -103,6 +103,10 @@ export class HomeComponent implements OnInit {
   impostodivididoporshift: any = 0;
   dialogRef: any;
   realizado7 = 0
+
+  ngOnDestroy(): void {
+      clearInterval(this.intervaloRealizado)
+  }
 
   ngOnInit(): void {
     this.modeloService.getAll().subscribe(res => {

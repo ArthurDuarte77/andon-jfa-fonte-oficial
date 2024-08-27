@@ -88,6 +88,7 @@ export class ControleGeralComponent implements OnInit {
   interrupcoes: number[] = []
   tempoContadoExcedido: number[] = []
   dadosAnalizados: AnalysisResult[] = []
+  names: number[] = []
 
   ngOnInit(): void {
     this.getData(new Date().getMonth())
@@ -101,7 +102,7 @@ export class ControleGeralComponent implements OnInit {
         this.analise.push(item.analise)
         this.ausencia.push(item.ajuda)
         this.interrupcoes.push(item.time_excess)
-        this.tempoContadoExcedido.push(item.qtdeTCexcedido)
+        this.tempoContadoExcedido.push(item.qtdetcexcedido)
       })
       this.filteredData = [...this.nodemcu];
       this.mainService.getAllMain().subscribe(res => {
@@ -153,11 +154,14 @@ export class ControleGeralComponent implements OnInit {
             item.horas16
           ];
 
-          const horasFiltradas = horas.filter(hora => hora !== 0);
+          // const horasFiltradas = horas.filter(hora => hora !== 0);
+          const horasFiltradas = horas
+          horasFiltradas.splice(5, 1);
 
-          if (horasFiltradas.length > 0) {
+          if (horasFiltradas.length) {
             this.dataRealizadoTotal.push(horasFiltradas);
             this.dateRealizadoTotal.push(parseInt(item.nameId.name!));
+            this.names.push(parseInt(item.nameId.name!));
           }
 
         });
@@ -177,6 +181,7 @@ export class ControleGeralComponent implements OnInit {
         this.createChartMediaTC();
         this.createChartTimeExcess("Qtde Tempo Excedido");
         this.createChartTempoContadoExcedido()
+        console.log(this.dataRealizadoTotal)
       });
     })
 
@@ -452,31 +457,32 @@ export class ControleGeralComponent implements OnInit {
 
   createChartRealizadoTotal() {
     const colors = [
-      '#4E79A7',  // Azul Escuro
-      '#F28E2B',  // Laranja Suave
-      '#E15759',  // Vermelho Suave
-      '#76B7B2',  // Verde Água
-      '#59A14F',  // Verde Escuro
-      '#EDC948',  // Amarelo Suave
-      '#B07AA1',  // Roxo
-      '#FF9DA7',  // Rosa Suave
-      '#9C755F',  // Marrom
-      '#BAB0AC'   // Cinza
+      '#336699',  // Azul Médio
+      '#6699CC',  // Azul Claro
+      '#99CCFF',  // Azul Pastel
+      '#2F4F4F',  // Cinza Escuro
+      '#708090',  // Cinza Médio
+      '#A9A9A9',  // Cinza Claro
+      '#006666',  // Verde Azulado Escuro
+      '#66CCCC',  // Verde Azulado Claro
+      '#4C4C4C',  // Cinza Grafite
+      '#C0C0C0'   // Cinza Prata
     ];
-
 
     this.MyChartRealizadoTotal = new Chart("MyChartRealizadoTotal", {
       type: 'bar',
       data: {
         labels: this.dateRealizadoTotal,
-        datasets: this.dataRealizadoTotal[0].map((_: any, index: number) => (
-          {
-            label: `Hora ${index + 7}`,
+        datasets: this.dataRealizadoTotal[0].map((_: any, index: number) => {
+          // Calcula a hora com lógica de incremento que pula de 13 para 14
+          const hourLabel = index + 8 >= 13 ? index + 9 : index + 8;
+
+          return {
+            label: `Hora ${hourLabel}`,
             data: this.dataRealizadoTotal.map(hours => hours[index]),
             backgroundColor: colors[index]
-
-          }))
-
+          };
+        })
       },
       options: {
         aspectRatio: 2.5,
@@ -487,6 +493,22 @@ export class ControleGeralComponent implements OnInit {
         }
       }
     });
+  }
+
+
+  selectOP(value: number) {
+    if (this.dateRealizadoTotal.includes(value)) {
+      const index = this.dateRealizadoTotal.indexOf(value);
+      if (index > -1) {
+        this.dateRealizadoTotal.splice(index, 1);
+      }
+    } else {
+      this.dateRealizadoTotal.push(value);
+    }
+    if (this.MyChartRealizadoTotal) {
+      this.MyChartRealizadoTotal.destroy();
+    }
+    this.createChartRealizadoTotal()
   }
 
 }

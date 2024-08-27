@@ -14,7 +14,7 @@ export interface Nodemcu {
   ajuda:          number;
   thirdlastTC:    number;
   shortestTC:     number;
-  qtdeTCexcedido: number;
+  qtdetcexcedido: number;
   tcmedio:        number;
 }
 

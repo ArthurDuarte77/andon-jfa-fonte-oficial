@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { GeralNodemcu } from '../module/relatorio/nodemcu';
 import { GeralMain } from '../module/relatorio/main';
-import { GeralRealizadoHoraria } from '../module/relatorio/realizadohoraria';
+import { GeralRealizadoHoraria } from '../module/relatorio/realizadoHoraria';
 
 @Injectable({
   providedIn: 'root'
