@@ -165,14 +165,14 @@ public class NodemcuController {
         if (device.getShortestTC() > nodemcuUpdates.getShortestTC() && nodemcuUpdates.getShortestTC() > 10) {
             device.setShortestTC(nodemcuUpdates.getShortestTC());
         } else if (tcimposto.intValue() < nodemcuUpdates.getCurrentTC()) {
-            Integer excedido = device.getQtdeTCexcedido();
+            Integer excedido = device.getQtdetcexcedido();
             excedido++;
-            device.setQtdeTCexcedido(excedido);
+            device.setQtdetcexcedido(excedido);
         }
         
-        Integer media = (device.getTCmedio() + nodemcuUpdates.getCurrentTC()) / 2;
+        Integer media = (device.getTcmedio() + nodemcuUpdates.getCurrentTC()) / 2;
         
-        device.setTCmedio(media);
+        device.setTcmedio(media);
         device.setCount(nodemcuUpdates.getCount());
         device.setState(nodemcuUpdates.getState());
         device.setCurrentTC(nodemcuUpdates.getCurrentTC());
@@ -473,11 +473,11 @@ public class NodemcuController {
                     nodemcu.setFirtlastTC(nodemcuResultado.getFirtlastTC());
                     nodemcu.setMaintenance(nodemcuResultado.getMaintenance());
                     nodemcu.setNameId(nodemcuResultado.getNameId());
-                    nodemcu.setQtdeTCexcedido(nodemcuResultado.getQtdeTCexcedido());
+                    nodemcu.setQtdetcexcedido(nodemcuResultado.getQtdetcexcedido());
                     nodemcu.setSecondtlastTC(nodemcuResultado.getSecondtlastTC());
                     nodemcu.setShortestTC(nodemcuResultado.getShortestTC());
                     nodemcu.setState(nodemcuResultado.getState());
-                    nodemcu.setTCmedio(nodemcuResultado.getTCmedio());
+                    nodemcu.setTcmedio(nodemcuResultado.getTcmedio());
                     nodemcu.setThirdlastTC(nodemcuResultado.getThirdlastTC());
                     nodemcu.setTime_excess(nodemcuResultado.getTime_excess());
                     geralNodemcuRepository.save(nodemcu);
@@ -507,8 +507,8 @@ public class NodemcuController {
                     nodemcu.setThirdlastTC(0);
                     nodemcu.setState("verde");
                     nodemcu.setMaintenance(0);
-                    nodemcu.setQtdeTCexcedido(0);
-                    nodemcu.setTCmedio(0);
+                    nodemcu.setQtdetcexcedido(0);
+                    nodemcu.setTcmedio(0);
                     nodemcu.setShortestTC(9999);
                     nodemcu.setCount(0);
                     contadorController.atualizarTempo(nodemcu.getContador().getId(), false);

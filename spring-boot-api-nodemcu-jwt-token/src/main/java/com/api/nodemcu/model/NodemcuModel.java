@@ -50,9 +50,9 @@ public class NodemcuModel {
 
     private Integer shortestTC;
 
-    private Integer QtdeTCexcedido;
+    private Integer qtdetcexcedido;
 
-    private Integer TCmedio;
+    private Integer tcmedio;
 
     public int getId() {
         return id;
@@ -166,25 +166,22 @@ public class NodemcuModel {
         this.shortestTC = shortestTC;
     }
 
-    public Integer getQtdeTCexcedido() {
-        return QtdeTCexcedido;
+    public Integer getQtdetcexcedido() {
+        return qtdetcexcedido;
     }
 
-    public void setQtdeTCexcedido(Integer qtdeTCexcedido) {
-        QtdeTCexcedido = qtdeTCexcedido;
+    public void setQtdetcexcedido(Integer qtdetcexcedido) {
+        this.qtdetcexcedido = qtdetcexcedido;
     }
 
-    public Integer getTCmedio() {
-        return TCmedio;
+    public Integer getTcmedio() {
+        return tcmedio;
     }
 
-    public void setTCmedio(Integer tCmedio) {
-        TCmedio = tCmedio;
+    public void setTcmedio(Integer tcmedio) {
+        this.tcmedio = tcmedio;
     }
 
-    
-
-
-
+        
 }
 

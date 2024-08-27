@@ -16,7 +16,7 @@ public interface GeralRealizadoHorariaTabletRepository extends JpaRepository<Ger
 
     <GeralRealizado extends GeralRealizadoHorariaTabletModel> GeralRealizado save(GeralRealizado nodemcu);
 
-    @Query(value="SELECT n FROM geral_thdados n WHERE n.data BETWEEN :startDate AND :endDate", nativeQuery=true)
+    @Query(value="SELECT * FROM geral_realizadohoraria_tablet WHERE data BETWEEN :startDate AND :endDate", nativeQuery=true)
     List<GeralRealizadoHorariaTabletModel> findByDataBetween(@Param("startDate") String startDate, @Param("endDate") String endDate);
     
 }

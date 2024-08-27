@@ -91,7 +91,7 @@ export class ConfiguracaoComponent implements OnInit {
           contador: {
             id: result.contador_id,
             contadorAtual: result.contador,
-            _couting: result.contando
+            is_couting: result.contando
           },
           count: result.count,
           firtlastTC: result.firtlastTC,

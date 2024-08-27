@@ -18,6 +18,6 @@ public interface GeralMainRepository extends JpaRepository<GeralMainModel, Integ
 
     <GeralRealizado extends GeralMainModel> GeralRealizado save(GeralRealizado nodemcu);
     
-    @Query(value="SELECT n FROM geral_main n WHERE n.data BETWEEN :startDate AND :endDate", nativeQuery=true)
+    @Query(value="SELECT * FROM geral_main WHERE data BETWEEN :startDate AND :endDate", nativeQuery=true)
     List<GeralMainModel> findByDataBetween(@Param("startDate") String startDate, @Param("endDate") String endDate);
 }

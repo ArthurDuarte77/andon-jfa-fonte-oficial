@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import Chart from 'chart.js/auto';
 import { Nodemcu } from 'src/app/module/nodemcu';
 import { Realizado } from 'src/app/module/realizado';
@@ -18,13 +19,20 @@ interface AnalysisResult {
 @Component({
   selector: 'app-controle-geral',
   templateUrl: './controle-geral.component.html',
-  styleUrls: ['./controle-geral.component.scss']
+  styleUrls: ['./controle-geral.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Default
 })
 
 
 export class ControleGeralComponent implements OnInit {
 
   constructor(private nodemcuService: NodemcuService, private mainService: MainService) { }
+
+
+  readonly range = new FormGroup({
+    start: new FormControl<Date | null>(null),
+    end: new FormControl<Date | null>(null),
+  });
 
   public MyChart: any;
   public MyChartModelos: any;
@@ -208,7 +216,7 @@ export class ControleGeralComponent implements OnInit {
       //   reasons.push("Número de ajudas alto");
       // }
 
-      if (!item.contador._couting) {
+      if (!item.contador.is_couting) {
         status = "Ruim";
         reasons.push("Contador não está contando");
       }

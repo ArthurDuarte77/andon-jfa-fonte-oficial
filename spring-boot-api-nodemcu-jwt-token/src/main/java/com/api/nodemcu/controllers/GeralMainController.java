@@ -19,5 +19,10 @@ public class GeralMainController {
         return geralMainRepository.findByDataBetween(startDate, endDate);
     }
 
+    @GetMapping()
+    public List<GeralMainModel> findAll(){
+        return geralMainRepository.findAll();
+    }
+
 
 }

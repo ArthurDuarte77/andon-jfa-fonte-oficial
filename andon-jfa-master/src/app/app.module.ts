@@ -31,6 +31,9 @@ import { DialogAddComponent } from './shared/dialog-add/dialog-add.component';
 import { registerLocaleData } from '@angular/common';
 registerLocaleData(localePt, 'pt');
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import {JsonPipe} from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -63,7 +66,10 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     ReactiveFormsModule,
     MatSnackBarModule,
     MatTableModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    JsonPipe
   ],
   providers: [DECIMAL_FORMAT_DEFAULT,{ provide: LOCALE_ID, useValue: 'pt' }, ],
   bootstrap: [AppComponent]
