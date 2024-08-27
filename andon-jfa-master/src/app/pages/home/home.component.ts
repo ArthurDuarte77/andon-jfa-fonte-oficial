@@ -91,6 +91,13 @@ export class HomeComponent implements OnInit {
     horas15: 0,
     horas16: 0,
     horas17: 0,
+    nameId: {
+      id: 0,
+      name: '',
+      ocupado: false,
+      pausa: false,
+      analise: false
+    }
   };
   horasAtuais: any;
   impostodivididoporshift: any = 0;
@@ -118,7 +125,7 @@ export class HomeComponent implements OnInit {
     this.nodemcuService.getAll().subscribe((res) => {
       this.nodemcu = res;
       this.nodemcu.forEach(item => {
-        this.counting[item.id] = 0;
+        this.counting[item.id!] = 0;
       })
       this.mainService.getAllMain().subscribe((res: Main[]) => {
         this.imposto = res[0].imposto;

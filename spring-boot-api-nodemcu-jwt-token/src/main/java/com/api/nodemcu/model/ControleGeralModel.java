@@ -22,6 +22,8 @@ public class ControleGeralModel {
 
     private Date data;
 
+    private String modelo;
+
     @PrePersist
     protected void prePersist() {
         if (this.data == null) {

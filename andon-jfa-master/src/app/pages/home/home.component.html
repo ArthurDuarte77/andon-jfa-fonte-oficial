@@ -325,8 +325,9 @@
         </div>
         <div>
           <section class="two-items">
-            <span>{{ item.analise }}</span>
-            <span>{{ item.ajuda }}</span>
+            <span class="items"><span>{{ item.analise }}</span><p class="linha"></p></span>
+            <span class="items"><span>{{ item.ajuda }}</span><p class="linha"></p></span>
+            <span class="items"><span>{{ item.time_excess }}</span><p class="linha"></p></span>
           </section>
         </div>
         <div>
@@ -352,5 +353,11 @@
         </div>
       </div>
     </section>
+    <div class="legends">
+      <p>Analise</p>
+      <p>Ausência</p>
+      <p>Qtde Tempo Excedido</p>
+    </div>
   </main>
+  <button class="dashboard" color="primary" [routerLink]="['/painel']" mat-flat-button><mat-icon>open_in_new</mat-icon>Dashboard</button>
 </main>

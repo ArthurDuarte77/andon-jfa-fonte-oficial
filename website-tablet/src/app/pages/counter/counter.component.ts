@@ -22,7 +22,7 @@ export class CounterComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private _snackBar: MatSnackBar,
     public dialog: MatDialog
-  ) {}
+  ) { }
   // Declarando as váriaveis
   isOnline: boolean = false;
   imposto: number = 0;
@@ -88,7 +88,6 @@ export class CounterComponent implements OnInit, OnDestroy {
 
     // Atualiza o status inicial
     this.updateOnlineStatus();
-    this.nomeOperador = this.storage.getItem('nome')!;
     // Pega os parametros das rotas para saber qual operação
     this.route.params.subscribe((params) => {
       this.nomeOperacao = params['name'];
@@ -100,26 +99,6 @@ export class CounterComponent implements OnInit, OnDestroy {
           (res) => {
             this.count = res.count;
             this.maintenance = res.maintenance;
-            var newOperation = this.storage.getItem('operation')!;
-            this.newConter = parseInt(this.storage.getItem('counter')!);
-            this.newMaintenance = parseInt(
-              this.storage.getItem('maintenance')!
-            );
-            if (isNaN(this.newConter)) {
-              this.storage.setItem('operation', this.operation.name);
-              this.storage.setItem('counter', '0');
-              this.storage.setItem('maintenance', '0');
-            } else {
-              if (newOperation != this.operation.name) {
-                this.storage.setItem('operation', this.operation.name);
-                this.storage.setItem('counter', '0');
-                this.storage.setItem('maintenance', '0');
-              }
-            }
-            this.newConter = parseInt(this.storage.getItem('counter')!);
-            this.newMaintenance = parseInt(
-              this.storage.getItem('maintenance')!
-            );
           },
           (errr) => {
             this.openSnackBar('Erro no Service', 'Ok');
@@ -137,6 +116,8 @@ export class CounterComponent implements OnInit, OnDestroy {
         res.forEach((res) => {
           this.lmitedTime = res.tcimposto;
           this.limitedTimeOcioso = res.tcimposto;
+          this.imposto = res.imposto;
+          this.shiftTime = res.shiftTime;
           this.ajustarTempoEnvelhecimento();
         });
       },
@@ -150,6 +131,8 @@ export class CounterComponent implements OnInit, OnDestroy {
           res.forEach((res) => {
             this.lmitedTime = res.tcimposto;
             this.limitedTimeOcioso = res.tcimposto;
+            this.imposto = res.imposto;
+            this.shiftTime = res.shiftTime;
             this.ajustarTempoEnvelhecimento();
           });
         },
@@ -160,112 +143,15 @@ export class CounterComponent implements OnInit, OnDestroy {
       const data = new Date();
       if (data.getMinutes() == 0 && this.verificarSeFoiUmaVez == true) {
         this.verificarSeFoiUmaVez = false;
-        this.newConter = 0;
-        this.newMaintenance = 0;
-        this.storage.setItem('counter', this.newConter.toString());
-        this.storage.setItem('maintenance', this.newMaintenance.toString());
       } else if (data.getMinutes() == 1) {
         this.verificarSeFoiUmaVez = true;
       }
-    }, 40000);
+      this.getAllRealizado()
+    }, 60000);
     setTimeout(() => {
       this.intervaloCounter();
     }, 1000);
-
-    setInterval(() => {
-      this.operationService.get(this.operation.name).subscribe((res) => {
-        if (res.analise == true) {
-          this.onAnalise = true;
-          clearInterval(this.intervalRef);
-          clearInterval(this.intervalRefNew);
-          clearInterval(this.intervalo);
-          this.vermelhoStateCalled = false;
-          this.tempoOcioso = 0;
-          this.stateButton = true;
-          this.contador = 0;
-          this.tempoOcioso = 0;
-          this.stateButton = true;
-          this.contadorRodando = false;
-          this.contador = 0;
-          this.azulStateCalled = true;
-        } else {
-          this.onAnalise = false;
-          this.azulStateCalled = false;
-          this.currentState = 'verde';
-          clearInterval(this.intervalo);
-          this.intervaloCounter();
-        }
-
-        if (res.pausa == true) {
-          this.onPausa = true;
-          clearInterval(this.intervalRef);
-          clearInterval(this.intervalRefNew);
-          clearInterval(this.intervalo);
-          this.vermelhoStateCalled = false;
-          this.tempoOcioso = 0;
-          this.stateButton = true;
-          this.contador = 0;
-          this.tempoOcioso = 0;
-          this.stateButton = true;
-          this.contadorRodando = false;
-          this.contador = 0;
-          this.operationService.atualizar(this.operation.id, false).subscribe(res => {
-            this.openSnackBar('Enviado com sucesso', 'Ok');
-          }, error => {
-            this.openSnackBar('Erro no Service', 'Ok');
-          })
-          this.operationService.atualizarState(this.operation.name, 'verde');
-        } else {
-          this.onPausa = false;
-          clearInterval(this.intervalo);
-          this.intervaloCounter();
-        }
-      });
-    }, 20000);
-    this.operationService.getTCimposto().subscribe((res: Main[]) => {
-      this.imposto = res[0].imposto;
-      this.shiftTime = res[0].shiftTime;
-    });
     this.realizadoInterval = setInterval(() => {
-      this.operationService
-        .getRealizadoHoraria(`${this.nomeOperacao}`)
-        .subscribe((res: any) => {
-          this.count = 0;
-          this.realizadoHora = res;
-          this.count += res.horas7;
-          this.count += res.horas8;
-          this.count += res.horas9;
-          this.count += res.horas10;
-          this.count += res.horas11;
-          this.count += res.horas12;
-          this.count += res.horas13;
-          this.count += res.horas14;
-          this.count += res.horas15;
-          this.count += res.horas16;
-          this.count += res.horas17;
-          var horas = new Date().getHours();
-          if (horas == 7) {
-            this.realizadoHoraAtual = this.realizadoHora.horas7;
-          } else if (horas == 8) {
-            this.realizadoHoraAtual = this.realizadoHora.horas8;
-          } else if (horas == 9) {
-            this.realizadoHoraAtual = this.realizadoHora.horas9;
-          } else if (horas == 10) {
-            this.realizadoHoraAtual = this.realizadoHora.horas10;
-          } else if (horas == 11) {
-            this.realizadoHoraAtual = this.realizadoHora.horas11;
-          } else if (horas == 12) {
-            this.realizadoHoraAtual = this.realizadoHora.horas12;
-          } else if (horas == 13) {
-            this.realizadoHoraAtual = this.realizadoHora.horas13;
-          } else if (horas == 14) {
-            this.realizadoHoraAtual = this.realizadoHora.horas14;
-          } else if (horas == 15) {
-            this.realizadoHoraAtual = this.realizadoHora.horas15;
-          } else if (horas == 16) {
-            this.realizadoHoraAtual = this.realizadoHora.horas16;
-          }
-        });
       var horas = new Date().getHours();
       if (horas == 7) {
         this.minutos8 = new Date().getMinutes();
@@ -345,7 +231,99 @@ export class CounterComponent implements OnInit, OnDestroy {
         this.minutos17 = 60;
         this.minutos17 = new Date().getMinutes();
       }
-    }, 4000);
+    }, 100)
+  }
+
+  getAllRealizado() {
+    this.operationService
+      .getRealizadoHoraria(`${this.nomeOperacao}`)
+      .subscribe((res: any) => {
+        if (res.nameId.analise == true) {
+          this.onAnalise = true;
+          clearInterval(this.intervalRef);
+          clearInterval(this.intervalRefNew);
+          clearInterval(this.intervalo);
+          this.vermelhoStateCalled = false;
+          this.tempoOcioso = 0;
+          this.stateButton = true;
+          this.contador = 0;
+          this.tempoOcioso = 0;
+          this.stateButton = true;
+          this.contadorRodando = false;
+          this.contador = 0;
+          this.azulStateCalled = true;
+        } else {
+          this.onAnalise = false;
+          this.azulStateCalled = false;
+          this.currentState = 'verde';
+          clearInterval(this.intervalo);
+          this.intervaloCounter();
+        }
+
+        if (res.nameId.pausa == true) {
+          this.onPausa = true;
+          clearInterval(this.intervalRef);
+          clearInterval(this.intervalRefNew);
+          clearInterval(this.intervalo);
+          this.vermelhoStateCalled = false;
+          this.tempoOcioso = 0;
+          this.stateButton = true;
+          this.contador = 0;
+          this.tempoOcioso = 0;
+          this.stateButton = true;
+          this.contadorRodando = false;
+          this.contador = 0;
+          this.operationService.atualizar(this.operation.id, false).subscribe(res => {
+            this.openSnackBar('Enviado com sucesso', 'Ok');
+          }, error => {
+            this.openSnackBar('Erro no Service', 'Ok');
+          })
+          this.operationService.atualizarState(this.operation.name, 'verde');
+        } else {
+          this.onPausa = false;
+          clearInterval(this.intervalo);
+          this.intervaloCounter();
+        }
+
+
+
+
+        this.count = 0;
+        this.realizadoHora = res;
+        this.count += res.horas7;
+        this.count += res.horas8;
+        this.count += res.horas9;
+        this.count += res.horas10;
+        this.count += res.horas11;
+        this.count += res.horas12;
+        this.count += res.horas13;
+        this.count += res.horas14;
+        this.count += res.horas15;
+        this.count += res.horas16;
+        this.count += res.horas17;
+        var horas = new Date().getHours();
+        if (horas == 7) {
+          this.realizadoHoraAtual = this.realizadoHora.horas7;
+        } else if (horas == 8) {
+          this.realizadoHoraAtual = this.realizadoHora.horas8;
+        } else if (horas == 9) {
+          this.realizadoHoraAtual = this.realizadoHora.horas9;
+        } else if (horas == 10) {
+          this.realizadoHoraAtual = this.realizadoHora.horas10;
+        } else if (horas == 11) {
+          this.realizadoHoraAtual = this.realizadoHora.horas11;
+        } else if (horas == 12) {
+          this.realizadoHoraAtual = this.realizadoHora.horas12;
+        } else if (horas == 13) {
+          this.realizadoHoraAtual = this.realizadoHora.horas13;
+        } else if (horas == 14) {
+          this.realizadoHoraAtual = this.realizadoHora.horas14;
+        } else if (horas == 15) {
+          this.realizadoHoraAtual = this.realizadoHora.horas15;
+        } else if (horas == 16) {
+          this.realizadoHoraAtual = this.realizadoHora.horas16;
+        }
+      });
   }
 
   enterFullscreen() {
@@ -358,7 +336,6 @@ export class CounterComponent implements OnInit, OnDestroy {
 
   intervaloCounter() {
     this.intervalo = setInterval(() => {
-      console.log(this.tempoOcioso);
       if (
         !this.contadorRodando &&
         this.analiseButton != true &&
@@ -427,19 +404,14 @@ export class CounterComponent implements OnInit, OnDestroy {
     this.vermelhoStateCalled = false;
     this.tempoOcioso = 0;
     this.contadorRodando = true;
-    this.operationService.atualizar(this.operation.id, true).subscribe(res => {
-      this.openSnackBar('Enviado com sucesso', 'Ok');
-    }, error => {
-      this.openSnackBar('Erro no Service', 'Ok');
-    })
     this.operationService.getTempo(this.operation.id).subscribe(res => {
-      if(res._couting == false){
+      if (res._couting == false) {
         this.operationService.atualizar(this.operation.id, true).subscribe(res => {
           this.openSnackBar('Enviado com sucesso', 'Ok');
         }, error => {
           this.openSnackBar('Erro no Service', 'Ok');
         })
-      }else{
+      } else {
         this.operationService.atualizar(this.operation.id, false).subscribe(res => {
           this.openSnackBar('Enviado com sucesso', 'Ok');
           this.operationService.atualizar(this.operation.id, true).subscribe(res => {
@@ -453,11 +425,11 @@ export class CounterComponent implements OnInit, OnDestroy {
       }
     })
     this.intervalRef = setInterval(() => {
-      this.lmitedTime = parseInt(this.lmitedTime.toFixed(0))  
+      this.lmitedTime = parseInt(this.lmitedTime.toFixed(0))
       this.limitedTimeOcioso = parseInt(this.limitedTimeOcioso.toFixed(0))
       this.contador++;
       if (
-        this.contador === parseInt((this.limitedTimeOcioso + 60).toFixed(0))
+        this.contador === parseInt((this.lmitedTime + 60).toFixed(0))
       ) {
         this.operationService.changeTimeExcess(this.operation.name);
       }
@@ -476,35 +448,17 @@ export class CounterComponent implements OnInit, OnDestroy {
   }
 
   stopTimer(state: string) {
-    this.operationService.atualizarState(this.operation.name, 'verde');
-    this.operationService.getTCimposto().subscribe((res: Main[]) => {
-      this.imposto = res[0].imposto;
-      this.shiftTime = res[0].shiftTime;
-      this.operationService.atualizar(this.operation.id, false).subscribe(res => {
-        this.openSnackBar('Enviado com sucesso', 'Ok');
-      }, error => {
-        this.openSnackBar('Erro no Service', 'Ok');
-      })
-      this.operationService.getTempo(this.operation.id).subscribe(res => {
-        if(res._couting == true){
-          this.operationService.atualizar(this.operation.id, false).subscribe(res => {
-            this.openSnackBar('Enviado com sucesso', 'Ok');
-          }, error => {
-            this.openSnackBar('Erro no Service', 'Ok');
-          })
-        }
-      })
-      res.forEach((res) => {
-        this.lmitedTime = res.tcimposto;
-      });
-    });
-    if (state == 'count') {
-      this.newConter++;
-      this.storage.setItem('counter', this.newConter.toString());
-    } else if (state == 'refuse') {
+    this.operationService.getTempo(this.operation.id).subscribe(res => {
+      if (res._couting == true) {
+        this.operationService.atualizar(this.operation.id, false).subscribe(res => {
+          this.openSnackBar('Enviado com sucesso', 'Ok');
+        }, error => {
+          this.openSnackBar('Erro no Service', 'Ok');
+        })
+      }
+    })
+    if (state == 'refuse') {
       this.maintenance++;
-      this.newMaintenance++;
-      this.storage.setItem('maintenance', this.newMaintenance.toString());
     }
     this.contadorRodando = false;
     clearInterval(this.intervalRef);
@@ -521,7 +475,7 @@ export class CounterComponent implements OnInit, OnDestroy {
         maintenance: this.maintenance,
         shortestTC: this.contador,
       };
-      this.operationService.post(body).subscribe((res) => {});
+      this.operationService.post(body).subscribe((res) => { });
     } else if (this.contador >= this.lmitedTime * 2) {
       var body: Nodemcu = {
         count: this.count,
@@ -531,7 +485,7 @@ export class CounterComponent implements OnInit, OnDestroy {
         maintenance: this.maintenance,
         shortestTC: this.contador,
       };
-      this.operationService.post(body).subscribe((res) => {});
+      this.operationService.post(body).subscribe((res) => { });
     } else {
       var body: Nodemcu = {
         count: this.count,
@@ -541,9 +495,12 @@ export class CounterComponent implements OnInit, OnDestroy {
         maintenance: this.maintenance,
         shortestTC: this.contador,
       };
-      this.operationService.post(body).subscribe((res) => {});
+      this.operationService.post(body).subscribe((res) => { });
     }
     this.contador = 0;
+    setTimeout(() => {
+      this.getAllRealizado()
+    }, 1000)
   }
 
   openSnackBar(message: string, action: string) {
@@ -654,40 +611,6 @@ export class CounterComponent implements OnInit, OnDestroy {
       this.operation.name == '090'
     ) {
       this.lmitedTime = 180;
-      console.log('chamou1');
-    }
-  }
-
-  analise() {
-    this.operationService.changeAnalise(
-      this.operation.name,
-      !this.analiseButton
-    );
-    this.analiseButton = !this.analiseButton;
-    if (this.analiseButton) {
-      clearInterval(this.intervalRef);
-      clearInterval(this.intervalRefNew);
-      this.onAnalise = true;
-      this.contadorRodando = false;
-      this.vermelhoStateCalled = false;
-      this.tempoOcioso = 0;
-      this.intervaloCounter();
-      this.stateButton = true;
-      this.contador = 0;
-
-      clearInterval(this.intervalRefNew);
-      clearInterval(this.intervalRef);
-      this.operationService.atualizar(this.operation.id, false).subscribe(res => {
-        this.openSnackBar('Enviado com sucesso', 'Ok');
-      }, error => {
-        this.openSnackBar('Erro no Service', 'Ok');
-      })
-      setTimeout(() => {
-        this.azulStateCalled = true;
-      }, 100);
-    } else {
-      this.azulStateCalled = false;
-      this.onAnalise = false;
     }
   }
 
@@ -715,13 +638,8 @@ export class CounterComponent implements OnInit, OnDestroy {
     }
   }
 
-  
+
   private updateOnlineStatus() {
     this.isOnline = navigator.onLine;
-    if (this.isOnline) {
-      console.log('Internet voltou!');
-    } else {
-      console.log('Internet caiu!');
-    }
   }
 }

@@ -7,9 +7,9 @@ mat-spinner {
 
 $normal_font: 1.4rem;
 $color-font: white;
-$red: #ed3237;
-$green: #a8cf45;
-$blue: #00afef;
+$red: #FE0000;
+$green: #99FE00;
+$blue: #01CCFC;
 $background-gray: #0c4068;
 $title-font: 1vw;
 $other_font: 1rem;
@@ -22,6 +22,11 @@ $other_title_font: 1.4rem;
   justify-content: center;
   width: 100vw;
   height: 100vh;
+  .dashboard{
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+  }
 }
 
 .parent {
@@ -31,7 +36,7 @@ $other_title_font: 1.4rem;
   height: 100%;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: repeat(2, 1fr) 3.8fr;
+  grid-template-rows: repeat(2, 1fr) 3.8fr 0.1fr;
   gap: 2%;
   grid-column-gap: 1%;
   box-sizing: border-box;
@@ -243,7 +248,7 @@ $other_title_font: 1.4rem;
 }
 
 section {
-  padding: 10px;
+  // padding: 10px;
   grid-area: 3 / 1 / 4 / 13;
   display: flex;
   flex-direction: row;
@@ -439,38 +444,91 @@ section {
 
 div .two-items {
   position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  width: 95%;
+  height: 95%;
   border-radius: 0;
   background-color: transparent;
-  span {
-    width: 100%;
-    position: relative;
-    border-radius: 0;
-    font-size: 1.4rem !important;
+  .items:nth-child(1){
+    .linha{ 
+      background: $blue;
+    }
   }
-  span:nth-child(1)::after {
-    content: "";
-    position: absolute;
-    width: 10px;
-    bottom: 35%;
-    height: 8px;
-    background-color: $blue;
-    margin-left: 3px;
-    border-radius: 0px;
+  .items:nth-child(1){
+    .linha{ 
+      background: $blue;
+    }
   }
-  span:nth-child(2)::after {
-    content: "";
-    position: absolute;
-    width: 10px;
-    bottom: 35%;
-    height: 8px;
-    background-color: $red;
-    margin-left: 3px;
-    border-radius: 0px;
+  .items:nth-child(2){
+    .linha{ 
+      border: 2px solid $blue;
+      background: linear-gradient(to right, $blue 50%, white 50%);
+    }
+  }
+  .items:nth-child(3){
+    .linha{ 
+      background: $red;
+    }
+  }
+  .items {
+    margin: 1px 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // background-color: $background-gray;
+    padding: 2px;
+    border-radius: 5px;
+    gap: 0px;
+    span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: black;
+      text-align: center;
+      width: 100%;
+      border-radius: 0;
+      // font-weight: 500 !important;
+      font-size: 1.2rem !important;
+    }
+    .linha{
+      width: 30%;
+      height: 30%;  
+      border-radius: 0px;
+      margin: auto;
+      margin-left: 3px;
+    }
+    // span:nth-child(1)::after {
+    //   content: "";
+    //   position: absolute;
+    //   width: 8px;
+    //   bottom: 35%;
+    //   height: 8px;
+    //   background-color: $blue;
+    //   margin-left: 3px;
+    //   border-radius: 0px;
+    // }
+    // span:nth-child(2)::after {
+    //   content: "";
+    //   position: absolute;
+    //   width: 10px;
+    //   bottom: 35%;
+    //   height: 8px;
+    //   background: linear-gradient(to right, $blue 50%, $red 50%);
+    //   margin-left: 3px;
+    //   border-radius: 0px;
+    // }
+    // span:nth-child(3)::after {
+    //   content: "";
+    //   position: absolute;
+    //   width: 8px;
+    //   bottom: 35%;
+    //   height: 8px;
+    //   background-color: $red;
+    //   margin-left: 3px;
+    //   border-radius: 0px;
+    // }
   }
 }
 .col2:nth-child(9), .col2:nth-child(10) {
@@ -483,3 +541,42 @@ div .two-items {
   //rgb(238, 197, 168)
 
 }
+
+.legends {
+  grid-area: 4 / 1 / 5 / 12;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  p {
+    text-wrap: nowrap;
+    padding: 0px 10px;
+    font-size: 1rem;
+    color: white;
+    margin: 0;
+    display: flex;
+    align-items: center;
+
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      margin-right: 10px;
+      background-color: currentColor; // Usa a cor do texto como cor de fundo do quadrado
+    }
+  }
+
+  p:nth-child(1)::before {
+    background-color: $blue; // Cor para "Analise"
+  }
+
+  p:nth-child(2)::before {
+    // background-color: $red; // Cor para "Ajuda"
+    background: linear-gradient(to right, $blue 50%, white 50%);
+  }
+  p:nth-child(3)::before {
+    background-color: $red; // Cor para "Ajuda"
+  }
+}
+

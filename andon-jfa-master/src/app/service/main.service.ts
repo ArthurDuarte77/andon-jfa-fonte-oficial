@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { Main } from '../module/main';
 import { environment } from 'src/environments/environment.development';
 import { RealizadoGeral } from '../module/realizadoGeral';
+import { Realizado } from '../module/realizado';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,10 @@ export class MainService {
 
   getAllMain(): Observable<Main[]> {
     return this.http.get<Main[]>( environment.url + 'main');
+  }
+
+  getAllRealizado(): Observable<Realizado[]>{
+    return this.http.get<Realizado[]>(environment.url + "realizadoHorariaTablet")
   }
 
   postControleRealizado(imposto: number, realizado: number, realizadoHora: number, justificativa: string): Observable<RealizadoGeral>{

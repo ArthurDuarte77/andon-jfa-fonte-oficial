@@ -3,4 +3,5 @@ export interface ResultadoGeral {
     imposto:   number;
     realizado: number;
     data:      number;
+    modelo: string;
 }

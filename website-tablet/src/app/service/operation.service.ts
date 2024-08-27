@@ -41,7 +41,7 @@ export class OperationService {
   }
 
   atualizar(id: number, tempo: boolean) :Observable<any>{
-    return this.http.get<any>(environment.url + "contadores/" + id + "/" + tempo)
+    return this.http.put<any>(environment.url + "contadores/" + id + "/" + tempo, {})
   }
 
   atualizarState(name: string, state: string) {

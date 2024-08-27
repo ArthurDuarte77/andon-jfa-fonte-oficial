@@ -2,12 +2,13 @@ package com.api.nodemcu.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import com.api.nodemcu.model.Contador;
 import com.api.nodemcu.repository.ContadorRepository;
-
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,20 +19,20 @@ import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/api/v1/contadores")
+@EnableScheduling
 public class ContadorController {
 
     @Autowired
     private ContadorRepository contadorRepository;
 
-    private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
-    private ConcurrentHashMap<Long, ScheduledFuture<?>> contadorTasks = new ConcurrentHashMap<>();
+    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
+    private final ConcurrentHashMap<Long, ScheduledFuture<?>> contadorTasks = new ConcurrentHashMap<>();
 
-    @Transactional
-    @GetMapping("/{id}/{isCounting}")
-    public void atualizarTempo(@PathVariable("id") Long id, @PathVariable("isCounting") boolean isCounting) {
+    @PutMapping("/{id}/{isCounting}")
+    public ResponseEntity<Void> atualizarTempo(@PathVariable("id") Long id, @PathVariable("isCounting") boolean isCounting) {
         Contador contador = contadorRepository.findById(id).orElse(null);
         if (contador == null) {
-            return;
+            return ResponseEntity.notFound().build();
         }
 
         ScheduledFuture<?> task = contadorTasks.get(id);
@@ -39,10 +40,7 @@ public class ContadorController {
         if (isCounting) {
             if (task == null || task.isCancelled()) {
                 contador.set_couting(true);
-                task = executorService.scheduleAtFixedRate(() -> {
-                    contador.setContadorAtual(contador.getContadorAtual() + 1);
-                    contadorRepository.save(contador);
-                }, 0, 1, TimeUnit.SECONDS);
+                task = executorService.scheduleAtFixedRate(() -> updateContador(contador), 0, 1, TimeUnit.SECONDS);
                 contadorTasks.put(id, task);
             }
         } else {
@@ -54,6 +52,13 @@ public class ContadorController {
                 contadorRepository.save(contador);
             }
         }
+        return ResponseEntity.ok().build();
+    }
+
+    @Transactional
+    public void updateContador(Contador contador) {
+        contador.setContadorAtual(contador.getContadorAtual() + 1);
+        contadorRepository.save(contador);
     }
 
     @GetMapping("/todos")
@@ -64,11 +69,8 @@ public class ContadorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Contador> findById(@PathVariable("id") Long id) {
-        Contador contador = contadorRepository.findById(id).orElse(null);
-        if (contador == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(contador);
+        return contadorRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
-    
 }

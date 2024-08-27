@@ -1,5 +1,6 @@
 export interface Realizado {
   id: number;
+  nameId: NameID;
   horas7: number;
   horas8: number;
   horas9: number;
@@ -11,6 +12,14 @@ export interface Realizado {
   horas15: number;
   horas16: number;
   horas17: number;
+}
+
+export interface NameID {
+  id:      number;
+  name:    string;
+  ocupado: boolean;
+  pausa:   boolean;
+  analise: boolean;
 }
 
 

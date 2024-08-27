@@ -2,12 +2,22 @@ package com.api.nodemcu.controllers;
 
 import com.api.nodemcu.model.Contador;
 import com.api.nodemcu.model.ControleGeralModel;
+import com.api.nodemcu.model.FontesModel;
+import com.api.nodemcu.model.GeralMainModel;
+import com.api.nodemcu.model.GeralNodemcuModel;
+import com.api.nodemcu.model.GeralRealizadoHorariaModel;
+import com.api.nodemcu.model.GeralRealizadoHorariaTabletModel;
 import com.api.nodemcu.model.MainModel;
 import com.api.nodemcu.model.NodemcuModel;
 import com.api.nodemcu.model.OperationModel;
 import com.api.nodemcu.model.RealizadoHorariaModel;
 import com.api.nodemcu.model.RealizadoHorariaTabletModel;
 import com.api.nodemcu.repository.ControleGeralRepository;
+import com.api.nodemcu.repository.FontesRepository;
+import com.api.nodemcu.repository.GeralMainRepository;
+import com.api.nodemcu.repository.GeralNodemcuRepository;
+import com.api.nodemcu.repository.GeralRealizadoHorariaRepository;
+import com.api.nodemcu.repository.GeralRealizadoHorariaTabletRepository;
 import com.api.nodemcu.repository.MainRepostory;
 import com.api.nodemcu.repository.NodemcuRepository;
 import com.api.nodemcu.repository.OperationRepository;
@@ -15,6 +25,7 @@ import com.api.nodemcu.repository.RealizadoHorariaRepository;
 import com.api.nodemcu.repository.RealizadoHorariaTabletRepository;
 
 import java.io.IOException;
+import java.lang.foreign.Linker.Option;
 import java.text.SimpleDateFormat;
 
 import jakarta.transaction.Transactional;
@@ -54,26 +65,37 @@ public class NodemcuController {
     @Autowired
     private ContadorController contadorController;
 
+    @Autowired
+    private FontesRepository fontesRepository;
+
+    @Autowired
+    private GeralMainRepository geralMainRepository;
+
+    @Autowired
+    private GeralNodemcuRepository geralNodemcuRepository;
+
+    @Autowired
+    private GeralRealizadoHorariaRepository geralRealizadoHorariaRepository;
+
+    @Autowired
+    private GeralRealizadoHorariaTabletRepository geralRealizadoHorariaTabletRepository;
+
     boolean state = false;
     Integer anterior = 0;
     boolean isRefugo = false;
-    private boolean tarefaAgendada = false;
     private boolean zerouDados = false;
 
 
     private ScheduledExecutorService scheduler;
 
     public NodemcuController() {
-        System.out.println("passou 1");
         this.scheduler = Executors.newScheduledThreadPool(1);
         agendarTarefa();
     }
 
     private void agendarTarefa() {
-        System.out.println("passou 2");
         zerarDados();
         Runnable task = () -> {
-            System.out.println("IsCalling");
             Calendar calendar = Calendar.getInstance();
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
@@ -386,6 +408,14 @@ public class NodemcuController {
     public void zerarDados() {
         if (zerouDados) {
             try{
+                FontesModel fonteAtual = new FontesModel();
+                List<FontesModel> fontes = fontesRepository.findAll();
+
+                for(FontesModel fonte: fontes){
+                    if (fonte.getIs_current()){
+                        fonteAtual = fonte;
+                    }
+                }
                 OperationModel operations = operationRepository.findByName("160");
                 NodemcuModel nodemcuResultadoGeral = repository.findByNameId(operations);
                 Optional<MainModel> main = mainRepostory.findById(1);
@@ -393,8 +423,68 @@ public class NodemcuController {
                 controleGeral.setImposto((int) Math.floor(main.get().getImposto()));
                 controleGeral.setRealizado(nodemcuResultadoGeral.getCount());
                 controleGeral.setData(new Date());
+                controleGeral.setModelo(fonteAtual.getModelo());
                 controleGeralRepository.save(controleGeral);
 
+                GeralMainModel geralMain = new GeralMainModel();
+                geralMain.setImposto((int) Math.floor(main.get().getImposto()));
+                geralMain.setOp(main.get().getOp());
+                geralMain.setShiftTime(main.get().getShiftTime());
+                geralMain.setTCimposto(main.get().getTCimposto());
+                geralMainRepository.save(geralMain);
+
+                Optional<RealizadoHorariaModel> realizadoHoraria = realizadoHorariaRepository.findById(1);
+                GeralRealizadoHorariaModel geralRealizado = new GeralRealizadoHorariaModel();
+                geralRealizado.setHoras7(realizadoHoraria.get().getHoras7());
+                geralRealizado.setHoras8(realizadoHoraria.get().getHoras8());
+                geralRealizado.setHoras9(realizadoHoraria.get().getHoras9());
+                geralRealizado.setHoras10(realizadoHoraria.get().getHoras10());
+                geralRealizado.setHoras11(realizadoHoraria.get().getHoras11());
+                geralRealizado.setHoras12(realizadoHoraria.get().getHoras12());
+                geralRealizado.setHoras13(realizadoHoraria.get().getHoras13());
+                geralRealizado.setHoras14(realizadoHoraria.get().getHoras14());
+                geralRealizado.setHoras15(realizadoHoraria.get().getHoras15());
+                geralRealizado.setHoras16(realizadoHoraria.get().getHoras16());
+                geralRealizado.setHoras17(realizadoHoraria.get().getHoras17());
+                geralRealizadoHorariaRepository.save(geralRealizado);
+
+                List<RealizadoHorariaTabletModel> realizadoHorariaTablet = realizadoHorariaTabletRepository.findAll();
+                realizadoHorariaTablet.forEach(elemento -> {
+                    GeralRealizadoHorariaTabletModel geralRealizadoHorariaTablet = new GeralRealizadoHorariaTabletModel();
+                    geralRealizadoHorariaTablet.setHoras7(elemento.getHoras7());
+                    geralRealizadoHorariaTablet.setHoras8(elemento.getHoras8());
+                    geralRealizadoHorariaTablet.setHoras9(elemento.getHoras9());
+                    geralRealizadoHorariaTablet.setHoras10(elemento.getHoras10());
+                    geralRealizadoHorariaTablet.setHoras11(elemento.getHoras11());
+                    geralRealizadoHorariaTablet.setHoras12(elemento.getHoras12());
+                    geralRealizadoHorariaTablet.setHoras13(elemento.getHoras13());
+                    geralRealizadoHorariaTablet.setHoras14(elemento.getHoras14());
+                    geralRealizadoHorariaTablet.setHoras15(elemento.getHoras15());
+                    geralRealizadoHorariaTablet.setHoras16(elemento.getHoras16());
+                    geralRealizadoHorariaTablet.setHoras17(elemento.getHoras17());
+                    geralRealizadoHorariaTabletRepository.save(geralRealizadoHorariaTablet);
+                });
+
+                List<OperationModel> operation = operationRepository.findAll();
+                operation.forEach(element -> {
+                    NodemcuModel nodemcuResultado = repository.findByNameId(element);
+                    GeralNodemcuModel nodemcu = new GeralNodemcuModel();
+                    nodemcu.setAjuda(nodemcuResultado.getAjuda());
+                    nodemcu.setAnalise(nodemcuResultado.getAnalise());
+                    nodemcu.setCount(nodemcuResultado.getCount());
+                    nodemcu.setCurrentTC(nodemcuResultado.getCurrentTC());
+                    nodemcu.setFirtlastTC(nodemcuResultado.getFirtlastTC());
+                    nodemcu.setMaintenance(nodemcuResultado.getMaintenance());
+                    nodemcu.setNameId(nodemcuResultado.getNameId());
+                    nodemcu.setQtdeTCexcedido(nodemcuResultado.getQtdeTCexcedido());
+                    nodemcu.setSecondtlastTC(nodemcuResultado.getSecondtlastTC());
+                    nodemcu.setShortestTC(nodemcuResultado.getShortestTC());
+                    nodemcu.setState(nodemcuResultado.getState());
+                    nodemcu.setTCmedio(nodemcuResultado.getTCmedio());
+                    nodemcu.setThirdlastTC(nodemcuResultado.getThirdlastTC());
+                    nodemcu.setTime_excess(nodemcuResultado.getTime_excess());
+                    geralNodemcuRepository.save(nodemcu);
+                });
                 
                 Optional<RealizadoHorariaModel> realizadoReset = realizadoHorariaRepository.findById(1);
                 realizadoReset.ifPresent(reset -> {
@@ -449,7 +539,6 @@ public class NodemcuController {
                     realizado.setHoras17(0);
                     realizadoHorariaTabletRepository.save(realizado);
                 }
-                List<OperationModel> operation = operationRepository.findAll();
                 for (OperationModel op : operation) {
                     op.setOcupado(false);
                     operationRepository.save(op);

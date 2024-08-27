@@ -1,5 +1,5 @@
 <!-- <button class="analiseButton" (click)="analise()" *ngIf="!onAjuda">Analise</button> -->
-<button class="ajuda" (click)="ajuda()" *ngIf="!onAnalise">ajuda</button>
+<button class="ajuda" (click)="ajuda()" *ngIf="!onAnalise">Ausência</button>
 <section (click)="enterFullscreen()" [ngClass]="{'animationBlue': azulStateCalled}"
 [ngClass]="{'animationRed': vermelhoStateCalled || this.contador > lmitedTime}">
 <div class="online" *ngIf="isOnline; else offlineMessage">

@@ -1,0 +1,92 @@
+<main class="container">
+  <div class="total-container">
+    <h1>
+      <p>Total Imposto</p>{{totalImposto}}
+    </h1>
+    <h1>
+      <p>Total Realizado</p>{{totalRealizado}}
+    </h1>
+    <h1>
+      <p>Melhor Hora</p>{{bestHour}}
+    </h1>
+    <h1>
+      <p>Pior Hora</p>{{worstHour}}
+    </h1>
+    <h1>
+      <p>OP Com Maior Quantidade</p>{{bestOp}}
+    </h1>
+    <h1>
+      <p>OP Com Menos Quantidade</p>{{worstOp}}
+    </h1>
+    <h1>
+      <p>OP Com Maior TC</p>{{worstTcOp}}
+    </h1>
+    <h1>
+      <p>OP Com Menor TC</p>{{bestTcOp}}
+    </h1>
+    <h1>
+      <p>OP Com Menor Tempo Excedido</p>{{bestTimeExcessOp}}
+    </h1>
+    <h1>
+      <p>OP Com Maior Tempo Excedido</p>{{worstTimeExcessOp}}
+    </h1>
+  </div>
+  <div class="chart-container">
+    <h1>Evolução do Previsto vs. Realizado</h1>
+    <mat-form-field>
+      <mat-label>Meses</mat-label>
+      <mat-select name="month" (selectionChange)="getData($event.value)" [value]="curreantMonth">
+        <mat-option *ngFor="let month of months; let i = index" [value]="i">
+          {{ month }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <canvas id="MyChart">{{ MyChart }}</canvas>
+  </div>
+  <div class="chart-container">
+    <h1>Quantidade por Modelo</h1>
+    <canvas id="MyChartModelos">{{ MyChartModelos }}</canvas>
+  </div>
+  <div class="chart-container">
+    <h1>Previsto e Realizado Hora a Hora</h1>
+    <canvas id="MyChartRealizado">{{ MyChartRealizado }}</canvas>
+  </div>
+  <div class="chart-container">
+    <h1>Hora a Hora por Operação</h1>
+    <canvas id="MyChartRealizadoTotal">{{ MyChartRealizadoTotal }}</canvas>
+  </div>
+  <div class="chart-container">
+    <h1>Media Tempo Contado</h1>
+    <canvas id="MyChartMediaTc">{{ MyChartMediaTc }}</canvas>
+  </div>
+  <div class="chart-container">
+    <h1>Quantidade de {{value.value}}</h1>
+    <mat-form-field>
+      <mat-label>Interrupções</mat-label>
+      <mat-select name="interrupcoes" (selectionChange)="getInterrupcoes($event.value)" #value
+        value="Qtde Tempo Excedido">
+        <mat-option value="Análise">
+          Análise
+        </mat-option>
+        <mat-option value="Ausência">
+          Ausência
+        </mat-option>
+        <mat-option value="Qtde Tempo Excedido">
+          Qtde Tempo Excedido
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <canvas id="MyChartTimeExcess">{{ MyChartTimeExcess }}</canvas>
+  </div>
+  <div class="chart-container">
+    <h1>Qtde Tempo Contado Excedido</h1>
+    <canvas id="MyChartTcExcedido">{{ MyChartTcExcedido }}</canvas>
+  </div>
+  <div class="container_analise">
+    <div *ngFor="let item of dadosAnalizados"
+    [ngStyle]="{'background-color': item.status === 'Bom' ? '#99FE00' : '#FE0000'}">
+      <mat-icon [matTooltip]="item.reason.join(', ')" *ngIf="item.status == 'Ruim'">help</mat-icon>
+      <h1>{{nodemcu[item.id! - 1].nameId.name}}</h1>
+    </div>
+  </div>
+</main>

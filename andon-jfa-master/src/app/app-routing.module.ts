@@ -2,10 +2,16 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { PausaComponent } from './pages/pausa/pausa.component';
+import { ControleGeralComponent } from './pages/controle-geral/controle-geral.component';
+import { PainelComponent } from './pages/painel/painel.component';
+import { ConfiguracaoComponent } from './pages/configuracao/configuracao.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'pausa', component: PausaComponent},
+  {path: 'relatorio', component: ControleGeralComponent},
+  {path: 'configuracao', component: ConfiguracaoComponent},
+  {path: 'painel', component: PainelComponent},
   {path: '**', redirectTo: ""}
 ];
 

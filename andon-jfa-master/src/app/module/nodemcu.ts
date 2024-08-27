@@ -1,5 +1,5 @@
 export interface Nodemcu {
-    id:             number;
+    id?:             number;
     nameId:         NameID;
     contador:       Contador;
     count:          number;
