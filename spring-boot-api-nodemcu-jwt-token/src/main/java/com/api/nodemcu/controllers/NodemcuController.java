@@ -25,13 +25,10 @@ import com.api.nodemcu.repository.RealizadoHorariaRepository;
 import com.api.nodemcu.repository.RealizadoHorariaTabletRepository;
 
 import java.io.IOException;
-import java.lang.foreign.Linker.Option;
 import java.text.SimpleDateFormat;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -517,7 +514,7 @@ public class NodemcuController {
                     contadorController.atualizarTempo(nodemcu.getContador().getId(), false);
                     Contador contador = nodemcu.getContador();
                     contador.setContadorAtual(0);
-                    contador.set_couting(false);
+                    contador.setIs_couting(false);
                     nodemcu.setTime_excess(0);
                     nodemcu.setAnalise(0);
                     nodemcu.setAjuda(0);

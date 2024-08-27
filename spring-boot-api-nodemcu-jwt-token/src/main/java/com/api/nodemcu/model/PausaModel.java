@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 @Entity
-@Data
+// @Data
 @Table(name="pausa")
 public class PausaModel {
 
@@ -35,4 +35,36 @@ public class PausaModel {
             this.horario = LocalTime.now(zoneId);
         }
     }
+
+
+    public Integer getId() {
+        return id;
+    }
+
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+
+    public LocalDate getData() {
+        return data;
+    }
+
+
+    public void setData(LocalDate data) {
+        this.data = data;
+    }
+
+
+    public LocalTime getHorario() {
+        return horario;
+    }
+
+
+    public void setHorario(LocalTime horario) {
+        this.horario = horario;
+    }
+
+    
 }

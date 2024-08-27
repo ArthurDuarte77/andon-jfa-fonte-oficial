@@ -71,7 +71,7 @@ public class OperationController {
                 contadorController.atualizarTempo(item.getContador().getId(), false);
                 Contador novoContador = item.getContador();
                 novoContador.setContadorAtual(0);
-                novoContador.set_couting(false);
+                novoContador.setIs_couting(false);
                 item.setContador(novoContador);
                 nodemcuRepository.save(item);
             }

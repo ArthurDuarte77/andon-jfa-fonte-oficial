@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 @Entity
-@Data
+// @Data
 @Table(name = "realizado")
 public class ControleRealizadoModel {
 
@@ -33,4 +33,53 @@ public class ControleRealizadoModel {
         }
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Integer getImposto() {
+        return imposto;
+    }
+
+    public void setImposto(Integer imposto) {
+        this.imposto = imposto;
+    }
+
+    public Integer getRealizado() {
+        return realizado;
+    }
+
+    public void setRealizado(Integer realizado) {
+        this.realizado = realizado;
+    }
+
+    public Integer getRealizadoHora() {
+        return realizadoHora;
+    }
+
+    public void setRealizadoHora(Integer realizadoHora) {
+        this.realizadoHora = realizadoHora;
+    }
+
+    public String getJustificativa() {
+        return justificativa;
+    }
+
+    public void setJustificativa(String justificativa) {
+        this.justificativa = justificativa;
+    }
+
+    public Date getData() {
+        return data;
+    }
+
+    public void setData(Date data) {
+        this.data = data;
+    }
+
+    
 }

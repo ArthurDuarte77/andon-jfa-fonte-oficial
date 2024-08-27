@@ -39,7 +39,7 @@ public class ContadorController {
 
         if (isCounting) {
             if (task == null || task.isCancelled()) {
-                contador.set_couting(true);
+                contador.setIs_couting(true);
                 task = executorService.scheduleAtFixedRate(() -> updateContador(contador), 0, 1, TimeUnit.SECONDS);
                 contadorTasks.put(id, task);
             }
@@ -47,7 +47,7 @@ public class ContadorController {
             if (task != null && !task.isCancelled()) {
                 task.cancel(true);
                 contadorTasks.remove(id);
-                contador.set_couting(false);
+                contador.setIs_couting(false);
                 contador.setContadorAtual(0);
                 contadorRepository.save(contador);
             }

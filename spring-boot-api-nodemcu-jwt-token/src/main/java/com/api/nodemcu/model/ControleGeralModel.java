@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Data
+// @Data
 @Table(name = "geral")
 public class ControleGeralModel {
 
@@ -32,4 +32,45 @@ public class ControleGeralModel {
         }
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Integer getImposto() {
+        return imposto;
+    }
+
+    public void setImposto(Integer imposto) {
+        this.imposto = imposto;
+    }
+
+    public Integer getRealizado() {
+        return realizado;
+    }
+
+    public void setRealizado(Integer realizado) {
+        this.realizado = realizado;
+    }
+
+    public Date getData() {
+        return data;
+    }
+
+    public void setData(Date data) {
+        this.data = data;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
+    }
+
+    
 }
