@@ -21,7 +21,7 @@ export class PausaComponent implements OnInit {
     this.OnCafe = true;
     this.nodemcuService.pausa(true).subscribe();
     this.openSnackBar("Pausado com sucesso");
-  
+
    // Registrar o Service Worker
    if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
@@ -35,14 +35,14 @@ export class PausaComponent implements OnInit {
       });
     });
     }
-  
+
     setTimeout(() => {
       this.openSnackBar("Reiniciado com sucesso");
       this.nodemcuService.pausa(false).subscribe();
       this.OnCafe = false;
     }, 600000); // 10 minutos
   }
-  
+
   // Lógica para pausa no almoço
   almoco() {
     // Chamar a função para pausar
@@ -50,7 +50,7 @@ export class PausaComponent implements OnInit {
     this.OnAlmoco = true;
     this.openSnackBar("Pausado com sucesso");
     this.nodemcuService.pausa(true).subscribe();
-  
+
     // Registrar o Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
@@ -64,7 +64,7 @@ export class PausaComponent implements OnInit {
         });
       });
     }
-  
+
     setTimeout(() => {
       this.openSnackBar("Reiniciado com sucesso");
       this.nodemcuService.pausa(false).subscribe();

@@ -5,7 +5,7 @@ section {
   padding: 20px;
   border-radius: 10px;
   background-color: white;
-  
+
   div {
     display: flex;
     max-width: 100%;
@@ -28,17 +28,23 @@ section {
       width: 100%;
     }
 
-    
+
     td input{
       width: 60%;
       height: 100%;
       border: none;
       padding: 10px;
+      text-align: center;
     }
-    
+
+    th{
+      text-align: center;
+    }
+
     td{
       padding: 0;
       margin: 0;
+      text-align: center;
     }
   }
 }

@@ -448,6 +448,7 @@ public class NodemcuController {
                 List<RealizadoHorariaTabletModel> realizadoHorariaTablet = realizadoHorariaTabletRepository.findAll();
                 realizadoHorariaTablet.forEach(elemento -> {
                     GeralRealizadoHorariaTabletModel geralRealizadoHorariaTablet = new GeralRealizadoHorariaTabletModel();
+                    geralRealizadoHorariaTablet.setNameId(elemento.getNameId());
                     geralRealizadoHorariaTablet.setHoras7(elemento.getHoras7());
                     geralRealizadoHorariaTablet.setHoras8(elemento.getHoras8());
                     geralRealizadoHorariaTablet.setHoras9(elemento.getHoras9());

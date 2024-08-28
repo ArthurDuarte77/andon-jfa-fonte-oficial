@@ -35,6 +35,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import {JsonPipe} from '@angular/common';
 import {MatChipsModule} from '@angular/material/chips';
+import { RelatorioHistoricoComponent } from './pages/relatorio-historico/relatorio-historico.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import {MatChipsModule} from '@angular/material/chips';
     ControleGeralComponent,
     PainelComponent,
     ConfiguracaoComponent,
-    DialogAddComponent
+    DialogAddComponent,
+    RelatorioHistoricoComponent
   ],
   imports: [
     MatTooltipModule,

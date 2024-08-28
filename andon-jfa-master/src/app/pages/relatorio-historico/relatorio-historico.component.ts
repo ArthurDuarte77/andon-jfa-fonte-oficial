@@ -17,14 +17,11 @@ interface AnalysisResult {
 
 
 @Component({
-  selector: 'app-controle-geral',
-  templateUrl: './controle-geral.component.html',
-  styleUrls: ['./controle-geral.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Default
+  selector: 'app-relatorio-historico',
+  templateUrl: './relatorio-historico.component.html',
+  styleUrls: ['./relatorio-historico.component.scss']
 })
-
-
-export class ControleGeralComponent implements OnInit {
+export class RelatorioHistoricoComponent implements OnInit {
 
   constructor(private nodemcuService: NodemcuService, private mainService: MainService) { }
 

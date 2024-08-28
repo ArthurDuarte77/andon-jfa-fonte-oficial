@@ -14,12 +14,15 @@ import { ResultadoGeral } from 'src/app/module/resultadoGeral';
 import { MainService } from 'src/app/service/main.service';
 import { ModeloService } from 'src/app/service/modelo.service';
 import { NodemcuService } from 'src/app/service/nodemcu.service';
+import { RelatorioService } from 'src/app/service/relatorio.service';
 import { DialogAddComponent } from 'src/app/shared/dialog-add/dialog-add.component';
 
-export interface Pogramacao{
+export interface Programacao{
+  id: number,
   date: Date,
   previsto: number,
-  realizado: number
+  realizado: number,
+  modelo: string
 }
 
 @Component({
@@ -31,7 +34,7 @@ export class ConfiguracaoComponent implements OnInit {
 
   dialog = inject(MatDialog);
 
-  constructor(private nodemcuService: NodemcuService, private mainService: MainService, private modeloService: ModeloService, private _snackBar: MatSnackBar) { }
+  constructor(private nodemcuService: NodemcuService, private mainService: MainService, private modeloService: ModeloService, private _snackBar: MatSnackBar, private relatorioService: RelatorioService) { }
 
   nodemcu: Nodemcu[] = []
   filteredData: Nodemcu[] = []
@@ -47,10 +50,10 @@ export class ConfiguracaoComponent implements OnInit {
   dataSourceMain: Main[] = []
   dataSourceModelo: Modelo[] = []
   dataSourceOperation: Operation[] = []
-  dataSourceProgramacao: Pogramacao[] = []
-  displayedColumnsProgramacao: string[] = ["data", "previsto", "realizado"]
-  tabelas: string[] = ["nodemcu", "Realizado Horaria", "Realizado Horaria Tablet", "Pogramação", "Modelos", "Operações", "Programação Mensal"]
-  chosenTable: string = ""
+  dataSourceProgramacao: Programacao[] = []
+  displayedColumnsProgramacao: string[] = ["data", "previsto", "realizado", "modelo"]
+  tabelas: string[] = ["Andon", "Realizado Horaria", "Realizado Horaria Tablet", "Pogramação", "Modelos", "Operações", "Programação Mensal"]
+  chosenTable: string = "Andon"
 
   resultadoGeral: ResultadoGeral[] = [];
   dataImposto: number[] = [];
@@ -123,10 +126,18 @@ export class ConfiguracaoComponent implements OnInit {
     })
 
     this.getData(new Date().getMonth())
+    this.getData(new Date().getMonth())
 
   }
 
   saveData(data: Nodemcu[]) {
+  }
+
+  openSnackBar(text: string) {
+    this._snackBar.open(text, 'OK', {
+      horizontalPosition: "center",
+      verticalPosition: "bottom",
+    });
   }
 
   getData(month: number) {
@@ -151,6 +162,7 @@ export class ConfiguracaoComponent implements OnInit {
           this.data.push(date.toLocaleDateString());
           this.dataImposto.push(0);
           this.dataRealizado.push(0);
+          this.dataSourceProgramacao.push({id: 0,date: date,previsto: 0, realizado: 0, modelo: 'NA'})
         }
       }
 
@@ -159,10 +171,29 @@ export class ConfiguracaoComponent implements OnInit {
           if (this.data[i] === new Date(item.data).toLocaleDateString()) {
             this.dataImposto[i] = item.imposto;
             this.dataRealizado[i] = item.realizado;
-            this.dataSourceProgramacao.push({date: new Date(item.data),previsto: item.imposto, realizado: item.realizado})
+            this.dataSourceProgramacao[i].id = item.id!
+            this.dataSourceProgramacao[i].previsto = item.imposto
+            this.dataSourceProgramacao[i].realizado = item.realizado
+            this.dataSourceProgramacao[i].modelo = item.modelo
           }
         }
       });
+      this.dataSourceProgramacao.forEach(item => {
+        if(item.id == 0){
+          var body: ResultadoGeral = {
+            imposto: 0,
+            realizado: 0,
+            data: new Date(item.date).getTime(),
+            modelo: 'NA'
+          }
+          this.relatorioService.postGeral(body).subscribe(res => {
+            item.id = res.id!
+            item.realizado = res.realizado
+            item.previsto = res.imposto
+            item.modelo = res.modelo
+          })
+        }
+      })
     });
   }
 
@@ -232,6 +263,38 @@ export class ConfiguracaoComponent implements OnInit {
         })
       }
     })
+  }
+
+  saveDataProgramacao(data: Programacao[]) {
+
+    data.forEach((item) => {
+      const date1 = new Date(item.date);
+      this.resultadoGeral.forEach((item2) => {
+        const date2 = new Date(item2.data);
+
+        if (
+          date1.getDate() === date2.getDate() &&
+          date1.getMonth() === date2.getMonth() &&
+          date1.getFullYear() === date2.getFullYear()
+        ) {
+          if(item.previsto != item2.imposto || item.realizado != item2.realizado || item.modelo != item2.modelo){
+            console.log(item);
+            var body: ResultadoGeral = {
+              id: item2.id,
+              imposto: item.previsto,
+              realizado: item.realizado,
+              data: item2.data,
+              modelo: item.modelo
+            }
+            this.relatorioService.postGeral(body).subscribe(res => {
+              this.openSnackBar("Salvo com sucesso");
+            }, error => {
+              this.openSnackBar(`Ocorrou um erro ao salvar ${error}`);
+            })
+          }
+        }
+      });
+    });
   }
 
 

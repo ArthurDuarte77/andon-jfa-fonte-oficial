@@ -1,5 +1,5 @@
 export interface ResultadoGeral {
-    id:        number;
+    id?:        number;
     imposto:   number;
     realizado: number;
     data:      number;
