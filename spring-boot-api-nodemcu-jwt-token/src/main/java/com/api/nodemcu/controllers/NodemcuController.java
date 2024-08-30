@@ -1,5 +1,24 @@
 package com.api.nodemcu.controllers;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.api.nodemcu.model.Contador;
 import com.api.nodemcu.model.ControleGeralModel;
 import com.api.nodemcu.model.FontesModel;
@@ -24,18 +43,7 @@ import com.api.nodemcu.repository.OperationRepository;
 import com.api.nodemcu.repository.RealizadoHorariaRepository;
 import com.api.nodemcu.repository.RealizadoHorariaTabletRepository;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 @RestController
 @RequestMapping("/api/v1/nodemcu")
@@ -107,7 +115,7 @@ public class NodemcuController {
 
 
     @GetMapping()
-    public List<NodemcuModel> list() {
+    public List<NodemcuModel> list() throws java.text.ParseException {
         return repository.findAll();
     }
 
@@ -402,6 +410,7 @@ public class NodemcuController {
         repository.updateLocalTCByNameId(tempo, operation.getId());
     }
 
+
     public void zerarDados() {
         if (zerouDados) {
             try{
@@ -416,12 +425,13 @@ public class NodemcuController {
                 OperationModel operations = operationRepository.findByName("160");
                 NodemcuModel nodemcuResultadoGeral = repository.findByNameId(operations);
                 Optional<MainModel> main = mainRepostory.findById(1);
-                ControleGeralModel controleGeral = new ControleGeralModel();
-                controleGeral.setImposto((int) Math.floor(main.get().getImposto()));
-                controleGeral.setRealizado(nodemcuResultadoGeral.getCount());
-                controleGeral.setData(new Date());
-                controleGeral.setModelo(fonteAtual.getModelo());
-                controleGeralRepository.save(controleGeral);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date currentDate = new Date();
+                String formattedDate = dateFormat.format(currentDate);
+                List<ControleGeralModel> controleGeral = controleGeralRepository.findByDataBetween(formattedDate, formattedDate);
+                controleGeral.get(0).setRealizado(nodemcuResultadoGeral.getCount());
+                controleGeral.get(0).setModelo(fonteAtual.getModelo());
+                controleGeralRepository.save(controleGeral.get(0));
 
                 GeralMainModel geralMain = new GeralMainModel();
                 geralMain.setImposto((int) Math.floor(main.get().getImposto()));
