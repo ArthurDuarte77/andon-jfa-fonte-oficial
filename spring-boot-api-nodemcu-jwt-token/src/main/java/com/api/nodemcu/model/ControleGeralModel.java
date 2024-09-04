@@ -20,6 +20,7 @@ public class ControleGeralModel {
 
     private Integer realizado;
 
+    @Column(unique = true)
     private Date data;
 
     private String modelo;

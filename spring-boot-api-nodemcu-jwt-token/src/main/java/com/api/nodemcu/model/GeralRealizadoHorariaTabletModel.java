@@ -3,11 +3,15 @@ package com.api.nodemcu.model;
 import java.util.Date;
 import java.util.TimeZone;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
 // @Data
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 @Table(name = "geral_realizadohoraria_tablet")
 public class GeralRealizadoHorariaTabletModel {
 
@@ -16,7 +20,7 @@ public class GeralRealizadoHorariaTabletModel {
     @Column(name = "id")
     private Integer id;
 
-    @OneToOne
+    @OneToOne()
     @JoinColumn(name = "name_id")
     private OperationModel nameId;
 

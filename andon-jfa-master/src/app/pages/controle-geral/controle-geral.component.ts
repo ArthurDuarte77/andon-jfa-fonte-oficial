@@ -29,13 +29,6 @@ export class ControleGeralComponent implements OnInit {
   constructor(private nodemcuService: NodemcuService, private mainService: MainService) { }
 
 
-  readonly range = new FormGroup({
-    start: new FormControl<Date | null>(new Date()),
-    end: new FormControl<Date | null>(new Date()),
-  });
-
-  public MyChart: any;
-  public MyChartModelos: any;
   public MyChartRealizado: any;
   public MyChartRealizadoTotal: any;
   public MyChartMediaTc: any;
@@ -53,21 +46,9 @@ export class ControleGeralComponent implements OnInit {
   nodemcu: Nodemcu[] = []
   worstOp: number = 0
   TCimpostado: number = 0;
-  months = ["Janeiro",
-    "Fevereiro",
-    "Março",
-    "Abril",
-    "Maio",
-    "Junho",
-    "Julho",
-    "Agosto",
-    "Setembro",
-    "Outubro",
-    "Novembro",
-    "Dezembro"
-  ];
   worstTcOp: number = 0
   bestOp: number = 0;
+  qtdeNames: any[] = []
   bestHour: string = ""
   bestTcOp: number = 0
   tcMedio: number[] = []
@@ -91,8 +72,6 @@ export class ControleGeralComponent implements OnInit {
   names: number[] = []
 
   ngOnInit(): void {
-    this.getData(new Date().getMonth())
-
     this.nodemcuService.getAll().subscribe((res) => {
       this.nodemcu = res;
       this.dadosAnalizados = this.analyzeData(res)
@@ -162,6 +141,7 @@ export class ControleGeralComponent implements OnInit {
             this.dataRealizadoTotal.push(horasFiltradas);
             this.dateRealizadoTotal.push(parseInt(item.nameId.name!));
             this.names.push(parseInt(item.nameId.name!));
+            this.qtdeNames.push(horasFiltradas);
           }
 
         });
@@ -251,118 +231,6 @@ export class ControleGeralComponent implements OnInit {
     }
     this.createChartTimeExcess(interrupcao)
 
-  }
-
-
-  getData(month: number) {
-    this.data = [];
-    this.dataImposto = [];
-    this.dataRealizado = [];
-    this.modelos = [];
-    this.realizadoModelos = [];
-    this.totalImposto = 0;
-    this.totalRealizado = 0;
-
-    this.nodemcuService.getAllResultadoGeral().subscribe(res => {
-      this.resultadoGeral = res;
-      const currentDate = new Date();
-      const currentMonth = month;
-      const currentYear = currentDate.getFullYear();
-
-      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-      for (let day = 1; day <= daysInMonth; day++) {
-        const date = new Date(currentYear, currentMonth, day);
-        const dayOfWeek = date.getDay();
-        if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-          this.data.push(date.toLocaleDateString());
-          this.dataImposto.push(0);
-          this.dataRealizado.push(0);
-        }
-      }
-
-      this.resultadoGeral.forEach((item) => {
-        const itemDate = new Date(item.data).toLocaleDateString();
-
-        if (this.data.includes(itemDate)) {
-          const index = this.modelos.indexOf(item.modelo);
-          if (index === -1) {
-            this.modelos.push(item.modelo);
-            this.realizadoModelos.push(item.realizado || 0);
-          } else {
-            this.realizadoModelos[index] = (this.realizadoModelos[index] || 0) + item.realizado;
-          }
-        }
-      });
-
-      if (this.MyChartModelos) {
-        this.MyChartModelos.destroy();
-      }
-      this.createChartModelos();
-
-      this.resultadoGeral.forEach(item => {
-        for (let i = 0; i < this.data.length; i++) {
-          if (this.data[i] === new Date(item.data).toLocaleDateString()) {
-            this.dataImposto[i] = item.imposto;
-            this.dataRealizado[i] = item.realizado;
-            this.totalImposto += item.imposto;
-            this.totalRealizado += item.realizado;
-          }
-        }
-      });
-
-      // Destruir o gráfico anterior se existir
-      if (this.MyChart) {
-        this.MyChart.destroy();
-      }
-      this.createChart();
-    });
-  }
-
-
-  createChart() {
-    this.MyChart = new Chart("MyChart", {
-      data: {
-        labels: this.data,
-        datasets: [
-          {
-            type: 'line',
-            label: "Previsto",
-            data: this.dataImposto,
-            fill: false,
-            borderColor: 'orange'
-          },
-          {
-            type: 'bar',
-            label: "Realizado",
-            data: this.dataRealizado,
-            backgroundColor: '#11548F'
-          }
-        ]
-      },
-      options: {
-        aspectRatio: 2.5
-      }
-    });
-  }
-
-  createChartModelos() {
-    this.MyChartModelos = new Chart("MyChartModelos", {
-      data: {
-        labels: this.modelos,
-        datasets: [
-          {
-            type: 'bar',
-            label: "Realizado",
-            data: this.realizadoModelos,
-            backgroundColor: '#11548F'
-          }
-        ]
-      },
-      options: {
-        aspectRatio: 2.5
-      }
-    });
   }
 
   createChartRealizado() {
@@ -496,14 +364,19 @@ export class ControleGeralComponent implements OnInit {
   }
 
 
-  selectOP(value: number) {
+  selectOP(value: number, qtde: number[]) {
     if (this.dateRealizadoTotal.includes(value)) {
-      const index = this.dateRealizadoTotal.indexOf(value);
+      var index = this.dateRealizadoTotal.indexOf(value);
       if (index > -1) {
         this.dateRealizadoTotal.splice(index, 1);
+        this.dataRealizadoTotal.splice(index, 1)
       }
     } else {
-      this.dateRealizadoTotal.push(value);
+      index = this.names.indexOf(value)
+      // this.dateRealizadoTotal.push(value);
+      this.dateRealizadoTotal.splice(index, 0, value);
+      // this.dataRealizadoTotal.push(qtde)
+      this.dataRealizadoTotal.splice(index, 0, qtde);
     }
     if (this.MyChartRealizadoTotal) {
       this.MyChartRealizadoTotal.destroy();

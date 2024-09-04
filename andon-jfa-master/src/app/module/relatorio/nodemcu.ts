@@ -1,5 +1,5 @@
 export interface GeralNodemcu {
-  id:             number;
+  id?:             number;
   nameId:         NameID;
   data:           number;
   count:          number;

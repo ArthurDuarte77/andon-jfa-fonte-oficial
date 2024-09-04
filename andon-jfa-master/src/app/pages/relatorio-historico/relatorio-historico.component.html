@@ -1,3 +1,7 @@
+<a mat-fab extended [routerLink]="['/painel']" color="primary" class="return">
+  <mat-icon>keyboard_return</mat-icon>
+  Voltar
+</a>
 <main class="container">
   <div class="container_date">
     <mat-form-field>
@@ -6,17 +10,10 @@
         <input matStartDate formControlName="start" placeholder="Start date" />
         <input matEndDate formControlName="end" placeholder="End date" />
       </mat-date-range-input>
-      <mat-datepicker-toggle
-        matIconSuffix
-        [for]="picker"
-      ></mat-datepicker-toggle>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-date-range-picker #picker></mat-date-range-picker>
-      <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')"
-        >Invalid start date</mat-error
-      >
-      <mat-error *ngIf="range.controls.end.hasError('mat-matEndDateInvalid')"
-        >Invalid end date</mat-error
-      >
+      <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+      <mat-error *ngIf="range.controls.end.hasError('mat-matEndDateInvalid')">Invalid end date</mat-error>
     </mat-form-field>
     <!-- <mat-form-field>
       <mat-label>Mês</mat-label>
@@ -31,48 +28,6 @@
       </mat-select>
     </mat-form-field> -->
   </div>
-  <div class="total-container">
-    <h1>
-      <p>Total Imposto</p>
-      {{ totalImposto }}
-    </h1>
-    <h1>
-      <p>Total Realizado</p>
-      {{ totalRealizado }}
-    </h1>
-    <h1>
-      <p>Melhor Hora</p>
-      {{ bestHour }}
-    </h1>
-    <h1>
-      <p>Pior Hora</p>
-      {{ worstHour }}
-    </h1>
-    <h1>
-      <p>OP Com Maior Quantidade</p>
-      {{ bestOp }}
-    </h1>
-    <h1>
-      <p>OP Com Menos Quantidade</p>
-      {{ worstOp }}
-    </h1>
-    <h1>
-      <p>OP Com Maior TC</p>
-      {{ worstTcOp }}
-    </h1>
-    <h1>
-      <p>OP Com Menor TC</p>
-      {{ bestTcOp }}
-    </h1>
-    <h1>
-      <p>OP Com Menor Tempo Excedido</p>
-      {{ bestTimeExcessOp }}
-    </h1>
-    <h1>
-      <p>OP Com Maior Tempo Excedido</p>
-      {{ worstTimeExcessOp }}
-    </h1>
-  </div>
   <div class="chart-container">
     <h1>Evolução do Previsto vs. Realizado</h1>
     <canvas id="MyChart">{{ MyChart }}</canvas>
@@ -82,55 +37,21 @@
     <canvas id="MyChartModelos">{{ MyChartModelos }}</canvas>
   </div>
   <div class="chart-container">
-    <h1>Previsto e Realizado Hora a Hora</h1>
-    <canvas id="MyChartRealizado">{{ MyChartRealizado }}</canvas>
+    <h1>Realizado Horaria</h1>
+    <canvas id="MyChartRealizadoHoraria">{{ MyChartRealizadoHoraria }}</canvas>
   </div>
   <div class="chart-container">
-    <h1>Hora a Hora por Operação</h1>
-    <div class="option">
-      <mat-chip-option selected *ngFor="let name of names" (click)="selectOP(name)">{{name}}</mat-chip-option>
-    </div>
-    <canvas id="MyChartRealizadoTotal">{{ MyChartRealizadoTotal }}</canvas>
+    <h1>Media TC</h1>
+    <canvas id="MyChartMediaTC">{{ MyChartMediaTC }}</canvas>
   </div>
   <div class="chart-container">
-    <h1>Media Tempo Contado</h1>
-    <canvas id="MyChartMediaTc">{{ MyChartMediaTc }}</canvas>
-  </div>
-  <div class="chart-container">
-    <mat-form-field>
-      <mat-label>Interrupções</mat-label>
-      <mat-select
-        name="interrupcoes"
-        (selectionChange)="getInterrupcoes($event.value)"
-        #value
-        value="Qtde Tempo Excedido"
-      >
-        <mat-option value="Análise"> Análise </mat-option>
-        <mat-option value="Ausência"> Ausência </mat-option>
-        <mat-option value="Qtde Tempo Excedido">
-          Qtde Tempo Excedido
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <canvas id="MyChartTimeExcess">{{ MyChartTimeExcess }}</canvas>
-  </div>
-  <div class="chart-container">
-    <h1>Qtde Tempo Contado Excedido</h1>
-    <canvas id="MyChartTcExcedido">{{ MyChartTcExcedido }}</canvas>
-  </div>
-  <div class="container_analise">
-    <div
-      *ngFor="let item of dadosAnalizados"
-      [ngStyle]="{
-        'background-color': item.status === 'Bom' ? '#99FE00' : '#FE0000'
-      }"
-    >
-      <mat-icon
-        [matTooltip]="item.reason.join(', ')"
-        *ngIf="item.status == 'Ruim'"
-        >help</mat-icon
-      >
-      <h1>{{ nodemcu[item.id! - 1].nameId.name }}</h1>
-    </div>
+    <h1>Realizado Horaria Tablet</h1>
+    <mat-chip-listbox class="option" [selectable]="selectedEntry">
+      <mat-chip-option selected *ngFor="let entry of realizadoHorariaTabletKeys"
+        (click)="createChartRealizadoHorariaTablet(entry)" value="entry" [selected]="selectedEntry">
+        {{ entry }}
+      </mat-chip-option>
+    </mat-chip-listbox>
+    <canvas id="MyChartRealizadoHorariaTablet">{{ MyChartRealizadoHorariaTablet }}</canvas>
   </div>
 </main>

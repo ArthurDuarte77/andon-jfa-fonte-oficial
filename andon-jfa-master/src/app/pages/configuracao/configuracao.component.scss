@@ -1,3 +1,7 @@
+.return{
+  margin: 10px 0 0 10px;
+}
+
 section {
   max-width: 95%;
   margin: auto;
@@ -13,14 +17,20 @@ section {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    div{
+
+    div {
       display: flex;
       flex-direction: row;
       align-self: flex-end;
+
       button {
         margin: 10px;
         align-self: flex-end;
       }
+    }
+
+    mat-form-field {
+      align-self: flex-start;
     }
 
     h2 {
@@ -29,7 +39,7 @@ section {
     }
 
 
-    td input{
+    td input {
       width: 60%;
       height: 100%;
       border: none;
@@ -37,15 +47,14 @@ section {
       text-align: center;
     }
 
-    th{
+    th {
       text-align: center;
     }
 
-    td{
+    td {
       padding: 0;
       margin: 0;
       text-align: center;
     }
   }
 }
-

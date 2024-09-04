@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import Chart from 'chart.js/auto';
@@ -16,6 +17,10 @@ import { ModeloService } from 'src/app/service/modelo.service';
 import { NodemcuService } from 'src/app/service/nodemcu.service';
 import { RelatorioService } from 'src/app/service/relatorio.service';
 import { DialogAddComponent } from 'src/app/shared/dialog-add/dialog-add.component';
+import { MatDatepicker } from '@angular/material/datepicker';
+import * as moment from 'moment';
+
+
 
 export interface Programacao{
   id: number,
@@ -25,16 +30,28 @@ export interface Programacao{
   modelo: string
 }
 
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'MM/YYYY',
+  },
+  display: {
+    dateInput: 'MM/YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
+
 @Component({
   selector: 'app-configuracao',
   templateUrl: './configuracao.component.html',
-  styleUrls: ['./configuracao.component.scss']
+  styleUrls: ['./configuracao.component.scss'],
 })
 export class ConfiguracaoComponent implements OnInit {
 
   dialog = inject(MatDialog);
 
-  constructor(private nodemcuService: NodemcuService, private mainService: MainService, private modeloService: ModeloService, private _snackBar: MatSnackBar, private relatorioService: RelatorioService) { }
+  constructor(private cdr: ChangeDetectorRef, private nodemcuService: NodemcuService, private mainService: MainService, private modeloService: ModeloService, private _snackBar: MatSnackBar, private relatorioService: RelatorioService) { }
 
   nodemcu: Nodemcu[] = []
   filteredData: Nodemcu[] = []
@@ -59,7 +76,7 @@ export class ConfiguracaoComponent implements OnInit {
   dataImposto: number[] = [];
   dataTcImpostado: number[] = []
   dataRealizado: any[] = [];
-  data: string[] = [];
+  data: Date[] = [];
   controleRealizado: RealizadoGeral[] = [];
   realizado: Realizado[] = [];
   dataImpostoRealizado: number[] = [];
@@ -100,6 +117,22 @@ export class ConfiguracaoComponent implements OnInit {
   interrupcoes: number[] = []
   tempoContadoExcedido: number[] = []
   names: number[] = []
+  valueDataAtual = `${new Date().getFullYear()}-${new Date().getMonth()}`
+  today = new Date();
+
+
+  date = new FormControl(moment());
+
+  chosenMonthHandler(normalizedMonth: moment.Moment, datepicker: MatDatepicker<any>) {
+    const ctrlValue = this.date.value!;
+    const month = moment(normalizedMonth);
+    ctrlValue.month(month.month() + 1);
+    ctrlValue.year(month.year());
+    ctrlValue.date(month.date());
+    this.date.setValue(ctrlValue);
+    datepicker.close();
+    this.getData(month.month(), month.year())
+  }
 
   ngOnInit(): void {
     this.nodemcuService.getAll().subscribe((res) => {
@@ -125,8 +158,7 @@ export class ConfiguracaoComponent implements OnInit {
       this.dataSourceOperation = res
     })
 
-    this.getData(new Date().getMonth())
-    this.getData(new Date().getMonth())
+    this.getData(new Date().getMonth(), new Date().getFullYear())
 
   }
 
@@ -140,7 +172,8 @@ export class ConfiguracaoComponent implements OnInit {
     });
   }
 
-  getData(month: number) {
+  getData(month: number, year: number) {
+    console.log(month, year)
     this.data = [];
     this.dataImposto = [];
     this.dataRealizado = [];
@@ -151,15 +184,15 @@ export class ConfiguracaoComponent implements OnInit {
       this.resultadoGeral = res;
       const currentDate = new Date();
       const currentMonth = month;
-      const currentYear = currentDate.getFullYear();
+      const currentYear = year
 
       const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
+      this.dataSourceProgramacao = []
       for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(currentYear, currentMonth, day);
         const dayOfWeek = date.getDay();
         if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-          this.data.push(date.toLocaleDateString());
+          this.data.push(date);
           this.dataImposto.push(0);
           this.dataRealizado.push(0);
           this.dataSourceProgramacao.push({id: 0,date: date,previsto: 0, realizado: 0, modelo: 'NA'})
@@ -168,7 +201,7 @@ export class ConfiguracaoComponent implements OnInit {
 
       this.resultadoGeral.forEach(item => {
         for (let i = 0; i < this.data.length; i++) {
-          if (this.data[i] === new Date(item.data).toLocaleDateString()) {
+          if (this.data[i].getDate() === new Date(item.data).getDate() && this.data[i].getMonth() === new Date(item.data).getMonth() && this.data[i].getFullYear() === new Date(item.data).getFullYear()) {
             this.dataImposto[i] = item.imposto;
             this.dataRealizado[i] = item.realizado;
             this.dataSourceProgramacao[i].id = item.id!
@@ -178,22 +211,25 @@ export class ConfiguracaoComponent implements OnInit {
           }
         }
       });
-      this.dataSourceProgramacao.forEach(item => {
-        if(item.id == 0){
-          var body: ResultadoGeral = {
-            imposto: 0,
-            realizado: 0,
-            data: new Date(item.date).getTime(),
-            modelo: 'NA'
+      setTimeout(() => {      
+        this.dataSourceProgramacao.forEach(item => {
+          if(item.id == 0){
+            var body: ResultadoGeral = {
+              imposto: 0,
+              realizado: 0,
+              data: new Date(item.date).getTime(),
+              modelo: 'NA'
+            }
+            this.relatorioService.postGeral(body).subscribe(res => {
+              item.id = res.id!
+              item.realizado = res.realizado
+              item.previsto = res.imposto
+              item.modelo = res.modelo
+            })
           }
-          this.relatorioService.postGeral(body).subscribe(res => {
-            item.id = res.id!
-            item.realizado = res.realizado
-            item.previsto = res.imposto
-            item.modelo = res.modelo
-          })
-        }
-      })
+        })
+        this.cdr.detectChanges();
+      }, 1000);
     });
   }
 
@@ -298,5 +334,8 @@ export class ConfiguracaoComponent implements OnInit {
   }
 
 
+}
+function provideMomentDateAdapter(MY_FORMATS: { parse: { dateInput: string; }; display: { dateInput: string; monthYearLabel: string; dateA11yLabel: string; monthYearA11yLabel: string; }; }): import("@angular/core").Provider {
+  throw new Error('Function not implemented.');
 }
 

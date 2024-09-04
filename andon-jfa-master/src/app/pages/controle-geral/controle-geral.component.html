@@ -1,45 +1,9 @@
+<a mat-fab extended [routerLink]="['/painel']" color="primary" class="return">
+  <mat-icon>keyboard_return</mat-icon>
+  Voltar
+</a>
 <main class="container">
-  <div class="container_date">
-    <mat-form-field>
-      <mat-label>Enter a date range</mat-label>
-      <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
-        <input matStartDate formControlName="start" placeholder="Start date" />
-        <input matEndDate formControlName="end" placeholder="End date" />
-      </mat-date-range-input>
-      <mat-datepicker-toggle
-        matIconSuffix
-        [for]="picker"
-      ></mat-datepicker-toggle>
-      <mat-date-range-picker #picker></mat-date-range-picker>
-      <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')"
-        >Invalid start date</mat-error
-      >
-      <mat-error *ngIf="range.controls.end.hasError('mat-matEndDateInvalid')"
-        >Invalid end date</mat-error
-      >
-    </mat-form-field>
-    <!-- <mat-form-field>
-      <mat-label>Mês</mat-label>
-      <mat-select
-        name="month"
-        (selectionChange)="getData($event.value)"
-        [value]="curreantMonth"
-      >
-        <mat-option *ngFor="let month of months; let i = index" [value]="i">
-          {{ month }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field> -->
-  </div>
   <div class="total-container">
-    <h1>
-      <p>Total Imposto</p>
-      {{ totalImposto }}
-    </h1>
-    <h1>
-      <p>Total Realizado</p>
-      {{ totalRealizado }}
-    </h1>
     <h1>
       <p>Melhor Hora</p>
       {{ bestHour }}
@@ -74,21 +38,13 @@
     </h1>
   </div>
   <div class="chart-container">
-    <h1>Evolução do Previsto vs. Realizado</h1>
-    <canvas id="MyChart">{{ MyChart }}</canvas>
-  </div>
-  <div class="chart-container">
-    <h1>Quantidade por Modelo</h1>
-    <canvas id="MyChartModelos">{{ MyChartModelos }}</canvas>
-  </div>
-  <div class="chart-container">
     <h1>Previsto e Realizado Hora a Hora</h1>
     <canvas id="MyChartRealizado">{{ MyChartRealizado }}</canvas>
   </div>
   <div class="chart-container">
     <h1>Hora a Hora por Operação</h1>
     <div class="option">
-      <mat-chip-option selected *ngFor="let name of names" (click)="selectOP(name)">{{name}}</mat-chip-option>
+      <mat-chip-option selected *ngFor="let name of names;let i = index" (click)="selectOP(name, qtdeNames[i])">{{name}}</mat-chip-option>
     </div>
     <canvas id="MyChartRealizadoTotal">{{ MyChartRealizadoTotal }}</canvas>
   </div>

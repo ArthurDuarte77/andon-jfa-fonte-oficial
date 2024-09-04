@@ -32,10 +32,11 @@ import { registerLocaleData } from '@angular/common';
 registerLocaleData(localePt, 'pt');
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MAT_DATE_FORMATS, MatNativeDateModule } from '@angular/material/core';
 import {JsonPipe} from '@angular/common';
 import {MatChipsModule} from '@angular/material/chips';
 import { RelatorioHistoricoComponent } from './pages/relatorio-historico/relatorio-historico.component';
+import { MAT_MOMENT_DATE_FORMATS } from '@angular/material-moment-adapter';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,8 @@ import { RelatorioHistoricoComponent } from './pages/relatorio-historico/relator
     JsonPipe,
     MatChipsModule
   ],
-  providers: [DECIMAL_FORMAT_DEFAULT,{ provide: LOCALE_ID, useValue: 'pt' }, ],
+  providers: [DECIMAL_FORMAT_DEFAULT,{ provide: LOCALE_ID, useValue: 'pt' },     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS }
+],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

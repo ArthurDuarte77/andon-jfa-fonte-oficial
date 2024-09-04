@@ -1,14 +1,17 @@
+<a mat-fab extended [routerLink]="['/painel']" color="primary" class="return">
+  <mat-icon>keyboard_return</mat-icon>
+  Voltar
+</a>
 <section>
   <mat-form-field>
     <mat-label>Tabelas</mat-label>
     <mat-select [(ngModel)]="chosenTable" name="food">
       <mat-option *ngFor="let table of tabelas" [value]="table">{{
         table
-      }}</mat-option>
+        }}</mat-option>
     </mat-select>
   </mat-form-field>
   <div *ngIf="chosenTable == 'Andon'">
-    <h2>Dados do Andon</h2>
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
       <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef>ID</th>
@@ -155,12 +158,7 @@
   </div>
 
   <div *ngIf="chosenTable == 'Realizado Horaria'">
-    <h2>Dados do Realizado</h2>
-    <table
-      mat-table
-      [dataSource]="dataSourceRealizado"
-      class="mat-elevation-z8"
-    >
+    <table mat-table [dataSource]="dataSourceRealizado" class="mat-elevation-z8">
       <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef>ID</th>
         <td mat-cell *matCellDef="let element">
@@ -248,12 +246,7 @@
   </div>
 
   <div *ngIf="chosenTable == 'Realizado Horaria Tablet'">
-    <h2>Dados do Realizado Tablet</h2>
-    <table
-      mat-table
-      [dataSource]="dataSourceRealizadoTablet"
-      class="mat-elevation-z8"
-    >
+    <table mat-table [dataSource]="dataSourceRealizadoTablet" class="mat-elevation-z8">
       <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef>ID</th>
         <td mat-cell *matCellDef="let element">
@@ -357,30 +350,20 @@
           <input type="text" [(ngModel)]="element.horas17" />
         </td>
       </ng-container>
-      <tr
-        mat-header-row
-        *matHeaderRowDef="displayedColumnsRealizadoTablet"
-      ></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumnsRealizadoTablet"
-      ></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsRealizadoTablet"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsRealizadoTablet"></tr>
     </table>
 
     <div>
       <button mat-fab color="primary" (click)="saveData(filteredData)">
         <mat-icon>save</mat-icon>
       </button>
-      <button
-        mat-fab
-        (click)="addData(displayedColumnsRealizadoTablet, 'realizadoTablet')"
-      >
+      <button mat-fab (click)="addData(displayedColumnsRealizadoTablet, 'realizadoTablet')">
         <mat-icon>add_circle</mat-icon>
       </button>
     </div>
   </div>
   <div *ngIf="chosenTable == 'Pogramação'">
-    <h2>Dados do Main</h2>
     <table mat-table [dataSource]="dataSourceMain" class="mat-elevation-z8">
       <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef>ID</th>
@@ -432,7 +415,6 @@
   </div>
 
   <div *ngIf="chosenTable == 'Modelos'">
-    <h2>Dados do Modelo</h2>
     <table mat-table [dataSource]="dataSourceModelo" class="mat-elevation-z8">
       <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef>ID</th>
@@ -484,12 +466,7 @@
   </div>
 
   <div *ngIf="chosenTable == 'Operações'">
-    <h2>Dados do Operation</h2>
-    <table
-      mat-table
-      [dataSource]="dataSourceOperation"
-      class="mat-elevation-z8"
-    >
+    <table mat-table [dataSource]="dataSourceOperation" class="mat-elevation-z8">
       <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef>ID</th>
         <td mat-cell *matCellDef="let element">
@@ -540,12 +517,7 @@
   </div>
 
   <div *ngIf="chosenTable == 'Operações'">
-    <h2>Dados do Operation</h2>
-    <table
-      mat-table
-      [dataSource]="dataSourceOperation"
-      class="mat-elevation-z8"
-    >
+    <table mat-table [dataSource]="dataSourceOperation" class="mat-elevation-z8">
 
       <ng-container matColumnDef="analise">
         <th mat-header-cell *matHeaderCellDef>analise</th>
@@ -589,12 +561,28 @@
     </div>
   </div>
   <div *ngIf="chosenTable == 'Programação Mensal'">
-    <h2>Programação Mensal</h2>
-    <table
-      mat-table
-      [dataSource]="dataSourceProgramacao"
-      class="mat-elevation-z8"
-    >
+    <mat-form-field appearance="fill">
+      <mat-label>Escolha o mês e o ano</mat-label>
+      <input matInput [matDatepicker]="picker" placeholder="MM/YYYY" [value]="date.value?.format('YYYY-MM-DD')">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker startView="multi-year" (monthSelected)="chosenMonthHandler($event, picker)" panelClass="month-picker">
+      </mat-datepicker>
+    </mat-form-field>
+    <!-- <mat-form-field>
+      <input matInput [matDatepicker]="dp2" [min]="sixMonthsAgo" [max]="today" placeholder="Select a Date"
+        (click)="openDatePicker(dp2)">
+      <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+      <mat-datepicker #dp2 startView="multi-year" (monthSelected)="closeDatePicker($event, dp2)"></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Mês</mat-label>
+      <mat-select name="month" (selectionChange)="getData($event.value);" [value]="curreantMonth">
+        <mat-option *ngFor="let month of months; let i = index" [value]="i">
+          {{ month }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field> -->
+    <table mat-table [dataSource]="dataSourceProgramacao" class="mat-elevation-z8">
       <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef>ID</th>
         <td mat-cell *matCellDef="let element">

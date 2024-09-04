@@ -7,6 +7,7 @@ import { GeralNodemcu } from '../module/relatorio/nodemcu';
 import { GeralMain } from '../module/relatorio/main';
 import { GeralRealizadoHoraria } from '../module/relatorio/realizadoHoraria';
 import { ResultadoGeral } from '../module/resultadoGeral';
+import { Geral } from '../module/relatorio/geral';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,11 @@ export class RelatorioService {
   }
 
   getGeralRealizadoHorariaTablet(startedDate: string, endDate: string): Observable<GeralRealizadoHorariaTablet[]>{
-    return this.http.get<GeralRealizadoHorariaTablet[]>(environment.url + `geral/realizadoHorariaTablet/filterByDate?startDate=${startedDate}¨&endDate=${endDate}`)
+    return this.http.get<GeralRealizadoHorariaTablet[]>(environment.url + `geral/realizadoHorariaTablet/filterByDate?startDate=${startedDate}&endDate=${endDate}`)
+  }
+
+  getGeral(startedDate: string, endDate: string): Observable<Geral[]>{
+    return this.http.get<Geral[]>(environment.url + `geral/filterByDate?startDate=${startedDate}¨&endDate=${endDate}`)
   }
 
   postGeral(body: ResultadoGeral): Observable<ResultadoGeral>{

@@ -1,13 +1,62 @@
+import { group } from '@angular/animations';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import Chart from 'chart.js/auto';
 import { Nodemcu } from 'src/app/module/nodemcu';
 import { Realizado } from 'src/app/module/realizado';
 import { RealizadoGeral } from 'src/app/module/realizadoGeral';
+import { Geral } from 'src/app/module/relatorio/geral';
+import { GeralNodemcu } from 'src/app/module/relatorio/nodemcu';
+import { GeralRealizadoHoraria } from 'src/app/module/relatorio/realizadoHoraria';
+import { GeralRealizadoHorariaTablet } from 'src/app/module/relatorio/realizadoHorariaTablet';
 import { ResultadoGeral } from 'src/app/module/resultadoGeral';
 import { MainService } from 'src/app/service/main.service';
 import { NodemcuService } from 'src/app/service/nodemcu.service';
+import { RelatorioService } from 'src/app/service/relatorio.service';
 
+
+interface dataNodemcu {
+  data: number,
+  count: number,
+  firtlastTC: number,
+  state: string,
+  currentTC: number,
+  analise: number,
+  time_excess: number,
+  maintenance: number,
+  secondtlastTC: number,
+  ajuda: number,
+  thirdlastTC: number,
+  shortestTC: number,
+  qtdetcexcedido: number,
+  tcmedio: number
+}
+
+interface NodemcuGeral {
+  data: dataNodemcu[]
+}
+
+interface RealizadoHorariaTablet {
+  nameId: {
+    name: string;
+  };
+  horas7: RealizadoHoraria[];
+  horas8: RealizadoHoraria[];
+  horas9: RealizadoHoraria[];
+  horas10: RealizadoHoraria[];
+  horas11: RealizadoHoraria[];
+  horas12: RealizadoHoraria[];
+  horas13: RealizadoHoraria[];
+  horas14: RealizadoHoraria[];
+  horas15: RealizadoHoraria[];
+  horas16: RealizadoHoraria[];
+  horas17: RealizadoHoraria[];
+}
+
+interface RealizadoHoraria {
+  data: Date,
+  count: number
+}
 
 interface AnalysisResult {
   id?: number;
@@ -15,6 +64,10 @@ interface AnalysisResult {
   reason: string[];
 }
 
+interface MediaTC {
+  name: string[],
+  media: number[]
+}
 
 @Component({
   selector: 'app-relatorio-historico',
@@ -23,33 +76,28 @@ interface AnalysisResult {
 })
 export class RelatorioHistoricoComponent implements OnInit {
 
-  constructor(private nodemcuService: NodemcuService, private mainService: MainService) { }
+  constructor(private relatorioService: RelatorioService) { }
 
 
   readonly range = new FormGroup({
-    start: new FormControl<Date | null>(new Date()),
-    end: new FormControl<Date | null>(new Date()),
+    start: new FormControl<Date | null>(new Date(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`)),
+    end: new FormControl<Date | null>(new Date(`${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDate()}`)),
   });
 
   public MyChart: any;
   public MyChartModelos: any;
-  public MyChartRealizado: any;
-  public MyChartRealizadoTotal: any;
-  public MyChartMediaTc: any;
-  public MyChartTimeExcess: any;
-  public MyChartTcExcedido: any;
-  resultadoGeral: ResultadoGeral[] = [];
+  public MyChartRealizadoHorariaTablet: any;
+  public MyChartMediaTC: any;
+  MyChartRealizadoHoraria: any;
+  resultadoGeral: Geral[] = [];
   dataImposto: number[] = [];
-  dataTcImpostado: number[] = []
+  realizadoHoraria: GeralRealizadoHoraria[] = []
+  nodemcu: GeralNodemcu[] = []
+  realizadoHorariaTablet: RealizadoHorariaTablet | any;
+  realizadoHorariaTabletKeys: string[] = [];
   dataRealizado: any[] = [];
   data: string[] = [];
-  controleRealizado: RealizadoGeral[] = [];
-  realizado: Realizado[] = [];
-  dataImpostoRealizado: number[] = [];
-  realizadoData: number[] = [];
-  nodemcu: Nodemcu[] = []
-  worstOp: number = 0
-  TCimpostado: number = 0;
+  selectedEntry: string = "010"
   months = ["Janeiro",
     "Fevereiro",
     "Março",
@@ -63,195 +111,153 @@ export class RelatorioHistoricoComponent implements OnInit {
     "Novembro",
     "Dezembro"
   ];
-  worstTcOp: number = 0
-  bestOp: number = 0;
-  bestHour: string = ""
-  bestTcOp: number = 0
-  tcMedio: number[] = []
-  dataRealizadoTotal: any[] = []
-  dateRealizadoTotal: number[] = []
-  filteredData: Nodemcu[] = []
   totalImposto: number = 0;
   modelos: String[] = []
   realizadoModelos: number[] = [];
   totalRealizado: number = 0;
+  dataMediaTC: MediaTC = {
+    name: [],
+    media: []
+  };
   curreantMonth: number = new Date().getMonth()
-  worstHour: string = "";
-  time_excess: number[] = []
-  bestTimeExcessOp: number = 0
-  worstTimeExcessOp: number = 0
-  analise: number[] = []
-  ausencia: number[] = []
-  interrupcoes: number[] = []
-  tempoContadoExcedido: number[] = []
-  dadosAnalizados: AnalysisResult[] = []
-  names: number[] = []
 
   ngOnInit(): void {
-    this.getData(new Date().getMonth())
-
-    this.nodemcuService.getAll().subscribe((res) => {
-      this.nodemcu = res;
-      this.dadosAnalizados = this.analyzeData(res)
-      this.nodemcu.forEach(item => {
-        this.tcMedio.push(item.tcmedio)
-        this.time_excess.push(item.time_excess)
-        this.analise.push(item.analise)
-        this.ausencia.push(item.ajuda)
-        this.interrupcoes.push(item.time_excess)
-        this.tempoContadoExcedido.push(item.qtdetcexcedido)
-      })
-      this.filteredData = [...this.nodemcu];
-      this.mainService.getAllMain().subscribe(res => {
-
-        for (let i = 0; i < this.nodemcu.length; i++) {
-          this.dataImpostoRealizado.push((res[0].imposto / 8.66))
-          this.dataTcImpostado.push((res[0].tcimposto))
-        }
-        this.TCimpostado = res[0].tcimposto
-      })
-      this.mainService.getAllRealizado().subscribe(res => {
-        this.realizado = res;
-        var horas7 = 0
-        var horas8 = 0
-        var horas9 = 0
-        var horas10 = 0
-        var horas11 = 0
-        var horas12 = 0
-        var horas13 = 0
-        var horas14 = 0
-        var horas15 = 0
-        var horas16 = 0
-        var horas17 = 0
-        this.realizado.forEach(item => {
-          if (item.nameId.name == "160") {
-            horas7 += item.horas7;
-            horas8 += item.horas8;
-            horas9 += item.horas9;
-            horas10 += item.horas10;
-            horas11 += item.horas11;
-            horas12 += item.horas12;
-            horas13 += item.horas13;
-            horas14 += item.horas14;
-            horas15 += item.horas15;
-            horas16 += item.horas16;
-            horas17 += item.horas17;
-          }
-
-          const horas = [
-            item.horas7,
-            item.horas8,
-            item.horas9,
-            item.horas10,
-            item.horas11,
-            item.horas12,
-            item.horas13,
-            item.horas14,
-            item.horas15,
-            item.horas16
-          ];
-
-          // const horasFiltradas = horas.filter(hora => hora !== 0);
-          const horasFiltradas = horas
-          horasFiltradas.splice(5, 1);
-
-          if (horasFiltradas.length) {
-            this.dataRealizadoTotal.push(horasFiltradas);
-            this.dateRealizadoTotal.push(parseInt(item.nameId.name!));
-            this.names.push(parseInt(item.nameId.name!));
-          }
-
-        });
-        this.realizadoData.push(horas7, horas8, horas9, horas10, horas11, horas12, horas13, horas14, horas15, horas16)
-        var hours: string[] = ["horas 7", "horas 8", "horas 9", "horas 10", "horas 11", "horas 12", "horas 13", "horas 14", "horas 15", "horas 16"]
-        this.worstHour = hours[this.realizadoData.indexOf(Math.min(...this.realizadoData.filter(item => item > 0).slice(0, -1)))];
-        this.bestHour = hours[this.realizadoData.indexOf(Math.max(...this.realizadoData.filter(item => item > 0).slice(0, -1)))];
-        const sums: number[] = this.dataRealizadoTotal.map(subArray => subArray.reduce((acc: any, num: any) => acc + num, 0));
-        this.worstOp = this.dateRealizadoTotal[sums.indexOf(Math.min(...sums))]
-        this.bestOp = this.dateRealizadoTotal[sums.indexOf(Math.max(...sums))]
-        this.worstTcOp = this.dateRealizadoTotal[this.tcMedio.indexOf(Math.max(...this.tcMedio))]
-        this.bestTcOp = this.dateRealizadoTotal[this.tcMedio.indexOf(Math.min(...this.tcMedio))]
-        this.bestTimeExcessOp = this.dateRealizadoTotal[this.time_excess.indexOf(Math.min(...this.time_excess))]
-        this.worstTimeExcessOp = this.dateRealizadoTotal[this.time_excess.indexOf(Math.max(...this.time_excess))]
-        this.createChartRealizadoTotal()
-        this.createChartRealizado();
-        this.createChartMediaTC();
-        this.createChartTimeExcess("Qtde Tempo Excedido");
-        this.createChartTempoContadoExcedido()
-        console.log(this.dataRealizadoTotal)
-      });
-    })
-
-
-
-  }
-
-  trackByMonth(index: number, month: string): string {
-    return month;
-  }
-
-  analyzeData(data: Nodemcu[]): AnalysisResult[] {
-    return data.map(item => {
-      let status = "Bom";
-      let reasons: string[] = [];
-
-      if (item.state === "vermelho") {
-        status = "Ruim";
-        reasons.push("Estado vermelho");
-      } else if (item.state === "piscar") {
-        status = "Ruim";
-        reasons.push("Estado piscando");
+    this.getData(`${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDate()}`, `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`)
+    this.range.valueChanges.subscribe(val => {
+      if (val.start != null && val.end != null) {
+        this.getData(`${val.start.getFullYear()}-${val.start.getMonth() + 1}-${val.start.getDate()}`, `${val.end.getFullYear()}-${val.end.getMonth() + 1}-${val.end.getDate()}`)
       }
-
-      // if (item.qtdeTCexcedido > 50) {
-      //   status = "Ruim";
-      //   reasons.push("Quantidade de TCs excedidos muito alta");
-      // }
-
-      // if (item.time_excess > 30) {
-      //   status = "Ruim";
-      //   reasons.push("Excesso de tempo elevado");
-      // }
-
-      // if (item.ajuda > 3) {
-      //   status = "Ruim";
-      //   reasons.push("Número de ajudas alto");
-      // }
-
-      if (!item.contador.is_couting) {
-        status = "Ruim";
-        reasons.push("Contador não está contando");
-      }
-
-      if (item.currentTC > item.tcmedio) {
-        status = "Ruim";
-        reasons.push("Tempo atual de ciclo maior que o tempo médio de ciclo");
-      }
-
-      return {
-        id: item.id,
-        status,
-        reason: reasons
-      };
     });
   }
-  getInterrupcoes(interrupcao: string) {
-    if (interrupcao == "Análise") {
-      this.interrupcoes = this.analise
-    } else if (interrupcao == "Ausência") {
-      this.interrupcoes = this.ausencia
-    } else {
-      this.interrupcoes = this.time_excess
-    }
-    if (this.MyChartTimeExcess) {
-      this.MyChartTimeExcess.destroy();
-    }
-    this.createChartTimeExcess(interrupcao)
 
+  getAllRealizadoHoraria(start: string, end: string) {
+    var startDate = `${new Date(start).getFullYear()}-${(new Date(start).getMonth() + 1).toString().padStart(2, '0')}-${new Date(start).getDate().toString().padStart(2, '0')}`;
+    var endDate = `${new Date(end).getFullYear()}-${(new Date(end).getMonth() + 1).toString().padStart(2, '0')}-${(new Date(end).getDate() + 1).toString().padStart(2, '0')}`;
+    this.relatorioService.getGeralRealizadoHoraria(startDate, endDate
+    ).subscribe(res => {
+      this.realizadoHoraria = res
+      this.createChartRealizadoHoraria()
+    })
+  }
+
+  getAllNodemcu(start: string, end: string) {
+    var startDate = `${new Date(start).getFullYear()}-${(new Date(start).getMonth() + 1).toString().padStart(2, '0')}-${new Date(start).getDate().toString().padStart(2, '0')}`;
+    var endDate = `${new Date(end).getFullYear()}-${(new Date(end).getMonth() + 1).toString().padStart(2, '0')}-${(new Date(end).getDate() + 1).toString().padStart(2, '0')}`;
+    this.relatorioService.getGeralNodemcu(startDate, endDate
+    ).subscribe(res => {
+      const groupedData: Record<string, NodemcuGeral> = {};
+
+      res.forEach(item => {
+        const name = item.nameId.name;
+
+        if (!groupedData[name]) {
+          groupedData[name] = {
+            data: []
+          };
+        }
+
+        groupedData[name].data.push({
+          data: item.data,
+          count: item.count,
+          firtlastTC: item.firtlastTC,
+          state: item.state,
+          currentTC: item.currentTC,
+          analise: item.analise,
+          time_excess: item.time_excess,
+          maintenance: item.maintenance,
+          secondtlastTC: item.secondtlastTC,
+          ajuda: item.ajuda,
+          thirdlastTC: item.thirdlastTC,
+          shortestTC: item.shortestTC,
+          qtdetcexcedido: item.qtdetcexcedido,
+          tcmedio: item.tcmedio
+        })
+      })
+      Object.keys(groupedData).forEach(name => {
+        var tcmedio = 0
+        groupedData[name].data.forEach(element => {
+          tcmedio += element.tcmedio
+        });
+        this.dataMediaTC.name.push(name)
+        this.dataMediaTC.media.push(parseInt((tcmedio / groupedData['010'].data.length).toFixed(2)))
+      })
+      this.createChartMediaTC()
+    })
+  }
+
+  getAllRealizadoHorariaTablet(start: string, end: string) {
+    var startDate = `${new Date(start).getFullYear()}-${(new Date(start).getMonth() + 1).toString().padStart(2, '0')}-${new Date(start).getDate().toString().padStart(2, '0')}`;
+    var endDate = `${new Date(end).getFullYear()}-${(new Date(end).getMonth() + 1).toString().padStart(2, '0')}-${new Date(end).getDate().toString().padStart(2, '0')}`;
+    this.relatorioService.getGeralRealizadoHorariaTablet(startDate, endDate).subscribe(res => {
+      const groupedData: Record<string, RealizadoHorariaTablet> = {};
+
+      res.forEach(item => {
+        const name = item.nameId.name;
+
+        if (!groupedData[name]) {
+          groupedData[name] = {
+            nameId: { name },
+            horas7: [],
+            horas8: [],
+            horas9: [],
+            horas10: [],
+            horas11: [],
+            horas12: [],
+            horas13: [],
+            horas14: [],
+            horas15: [],
+            horas16: [],
+            horas17: []
+          };
+        }
+
+        groupedData[name].horas7.push({
+          data: new Date(item.data), count: item.horas7
+        })
+        groupedData[name].horas8.push({
+          data: new Date(item.data), count: item.horas8,
+        })
+        groupedData[name].horas9.push({
+          data: new Date(item.data), count: item.horas9,
+        })
+        groupedData[name].horas10.push({
+          data: new Date(item.data), count: item.horas10,
+        })
+        groupedData[name].horas11.push({
+          data: new Date(item.data), count: item.horas11,
+        })
+        groupedData[name].horas12.push({
+          data: new Date(item.data), count: item.horas12,
+        })
+        groupedData[name].horas13.push({
+          data: new Date(item.data), count: item.horas13,
+        })
+        groupedData[name].horas14.push({
+          data: new Date(item.data), count: item.horas14,
+        })
+        groupedData[name].horas15.push({
+          data: new Date(item.data), count: item.horas15,
+        })
+        groupedData[name].horas16.push({
+          data: new Date(item.data), count: item.horas16,
+        })
+        groupedData[name].horas17.push({
+          data: new Date(item.data), count: item.horas17,
+        })
+      });
+
+      this.realizadoHorariaTablet = groupedData
+      this.realizadoHorariaTabletKeys = Object.keys(this.realizadoHorariaTablet)
+      this.createChartRealizadoHorariaTablet("010")
+
+    })
   }
 
 
-  getData(month: number) {
+  getData(start: string, end: string) {
+    this.getAllRealizadoHorariaTablet(start, end)
+    this.getAllRealizadoHoraria(start, end)
+    this.getAllNodemcu(start, end)
     this.data = [];
     this.dataImposto = [];
     this.dataRealizado = [];
@@ -260,35 +266,20 @@ export class RelatorioHistoricoComponent implements OnInit {
     this.totalImposto = 0;
     this.totalRealizado = 0;
 
-    this.nodemcuService.getAllResultadoGeral().subscribe(res => {
+    this.relatorioService.getGeral(start, end).subscribe(res => {
       this.resultadoGeral = res;
-      const currentDate = new Date();
-      const currentMonth = month;
-      const currentYear = currentDate.getFullYear();
-
-      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-      for (let day = 1; day <= daysInMonth; day++) {
-        const date = new Date(currentYear, currentMonth, day);
-        const dayOfWeek = date.getDay();
-        if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-          this.data.push(date.toLocaleDateString());
-          this.dataImposto.push(0);
-          this.dataRealizado.push(0);
-        }
-      }
 
       this.resultadoGeral.forEach((item) => {
-        const itemDate = new Date(item.data).toLocaleDateString();
-
-        if (this.data.includes(itemDate)) {
-          const index = this.modelos.indexOf(item.modelo);
-          if (index === -1) {
-            this.modelos.push(item.modelo);
-            this.realizadoModelos.push(item.realizado || 0);
-          } else {
-            this.realizadoModelos[index] = (this.realizadoModelos[index] || 0) + item.realizado;
-          }
+        this.data.push(new Date(item.data).toLocaleDateString())
+        this.dataImposto.push(item.imposto)
+        this.dataRealizado.push(item.realizado)
+        const index = this.modelos.indexOf(item.modelo);
+        if (index === -1) {
+          this.modelos.push(item.modelo);
+          this.realizadoModelos.push(item.realizado || 0);
+        } else {
+          this.
+            realizadoModelos[index] = (this.realizadoModelos[index] || 0) + item.realizado;
         }
       });
 
@@ -338,7 +329,10 @@ export class RelatorioHistoricoComponent implements OnInit {
         ]
       },
       options: {
-        aspectRatio: 2.5
+        aspectRatio: 2.5,
+        onClick: (event, elements, chart) => {
+          elements[0].index
+        }
       }
     });
   }
@@ -362,22 +356,20 @@ export class RelatorioHistoricoComponent implements OnInit {
     });
   }
 
-  createChartRealizado() {
-    this.MyChartRealizado = new Chart("MyChartRealizado", {
+  createChartMediaTC() {
+
+    if (this.MyChartMediaTC) {
+      this.MyChartMediaTC.destroy();
+    }
+
+    this.MyChartMediaTC = new Chart("MyChartMediaTC", {
       data: {
-        labels: ["horas 7", "horas 8", "horas 9", "horas 10", "horas 11", "horas 12", "horas 13", "horas 14", "horas 15", "horas 16"],
+        labels: this.dataMediaTC.name,
         datasets: [
-          {
-            type: 'line',
-            label: "Previsto",
-            data: this.dataImpostoRealizado,
-            fill: false,
-            borderColor: 'orange'
-          },
           {
             type: 'bar',
             label: "Realizado",
-            data: this.realizadoData,
+            data: this.dataMediaTC.media,
             backgroundColor: '#11548F'
           }
         ]
@@ -388,71 +380,7 @@ export class RelatorioHistoricoComponent implements OnInit {
     });
   }
 
-  createChartMediaTC() {
-    this.MyChartMediaTc = new Chart("MyChartMediaTc", {
-      data: {
-        labels: this.dateRealizadoTotal,
-        datasets: [
-          {
-            type: 'line',
-            label: "Previsto",
-            data: this.dataTcImpostado,
-            fill: false,
-            borderColor: 'orange'
-          },
-          {
-            type: 'bar',
-            label: "TC Médio",
-            data: this.tcMedio,
-            backgroundColor: '#11548F'
-          }
-        ]
-      },
-      options: {
-        aspectRatio: 2.5
-      }
-    });
-  }
-
-  createChartTimeExcess(title: string) {
-    this.MyChartTimeExcess = new Chart("MyChartTimeExcess", {
-      data: {
-        labels: this.dateRealizadoTotal,
-        datasets: [
-          {
-            type: 'bar',
-            label: title,
-            data: this.interrupcoes,
-            backgroundColor: '#11548F'
-          }
-        ]
-      },
-      options: {
-        aspectRatio: 2.5
-      }
-    });
-  }
-
-  createChartTempoContadoExcedido() {
-    this.MyChartTcExcedido = new Chart("MyChartTcExcedido", {
-      data: {
-        labels: this.dateRealizadoTotal,
-        datasets: [
-          {
-            type: 'bar',
-            label: "Qtde Tempo Contado Excedido",
-            data: this.tempoContadoExcedido,
-            backgroundColor: '#11548F'
-          }
-        ]
-      },
-      options: {
-        aspectRatio: 2.5
-      }
-    });
-  }
-
-  createChartRealizadoTotal() {
+  createChartRealizadoHoraria() {
     const colors = [
       '#336699',  // Azul Médio
       '#6699CC',  // Azul Claro
@@ -465,25 +393,154 @@ export class RelatorioHistoricoComponent implements OnInit {
       '#4C4C4C',  // Cinza Grafite
       '#C0C0C0'   // Cinza Prata
     ];
-
-    this.MyChartRealizadoTotal = new Chart("MyChartRealizadoTotal", {
+    if (this.MyChartRealizadoHoraria) {
+      this.MyChartRealizadoHoraria.destroy();
+    }
+    this.MyChartRealizadoHoraria = new Chart("MyChartRealizadoHoraria", {
       type: 'bar',
       data: {
-        labels: this.dateRealizadoTotal,
-        datasets: this.dataRealizadoTotal[0].map((_: any, index: number) => {
-          // Calcula a hora com lógica de incremento que pula de 13 para 14
-          const hourLabel = index + 8 >= 13 ? index + 9 : index + 8;
-
-          return {
-            label: `Hora ${hourLabel}`,
-            data: this.dataRealizadoTotal.map(hours => hours[index]),
-            backgroundColor: colors[index]
-          };
-        })
+        labels: ['7h', '8h', '9h', '10h', '11h', '13h', '14h', '15h', '16h'],
+        datasets: this.realizadoHoraria.map((item: any, index: number) => ({
+          label: `Dia ${index + 1}`, // ou use new Date(item.data).toLocaleDateString() para datas
+          data: [
+            item.horas7, item.horas8, item.horas9, item.horas10, item.horas11, item.horas13, item.horas14, item.horas15, item.horas16
+          ],
+          backgroundColor: colors[index],
+        }))
       },
       options: {
         aspectRatio: 2.5,
         scales: {
+          // r: { // Configurações específicas para o gráfico de radar
+          //   beginAtZero: true
+          // }
+        }
+      }
+    });
+  }
+
+  createChartRealizadoHorariaTablet(name: string) {
+    // Verifica se há dados disponíveis
+    if (this.realizadoHorariaTablet.length === 0) {
+      console.error("Nenhum dado disponível para 'realizadoHorariaTablet'.");
+      return;
+    }
+
+    // Itera sobre cada operação
+
+    const dataset = this.realizadoHorariaTablet[name];
+
+    // Extrai as datas e os dados de contagem para cada hora
+    const labels = dataset.horas7.map((item: any) => new Date(item.data).toLocaleDateString());
+    const datasets = [
+      {
+        label: 'Horas 7',
+        data: dataset.horas7.map((item: any) => item.count),
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        fill: false,
+        borderWidth: 5,
+      },
+      {
+        label: 'Horas 8',
+        data: dataset.horas8.map((item: any) => item.count),
+        borderColor: 'rgba(153, 102, 255, 1)',
+        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+        fill: false,
+        borderWidth: 5,
+      },
+      {
+        label: 'Horas 9',
+        data: dataset.horas9.map((item: any) => item.count),
+        borderColor: 'rgba(255, 159, 64, 1)',
+        backgroundColor: 'rgba(255, 159, 64, 0.2)',
+        fill: false,
+        borderWidth: 5,
+      },
+      {
+        label: 'Horas 10',
+        data: dataset.horas10.map((item: any) => item.count),
+        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        fill: false,
+        borderWidth: 5,
+      },
+      {
+        label: 'Horas 11',
+        data: dataset.horas11.map((item: any) => item.count),
+        borderColor: 'rgba(255, 206, 86, 1)',
+        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+        fill: false,
+        borderWidth: 5,
+      },
+      {
+        label: 'Horas 12',
+        data: dataset.horas12.map((item: any) => item.count),
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        fill: false,
+        borderWidth: 5,
+      },
+      {
+        label: 'Horas 13',
+        data: dataset.horas13.map((item: any) => item.count),
+        borderColor: 'rgba(153, 102, 255, 1)',
+        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+        fill: false,
+        borderWidth: 5,
+      },
+      {
+        label: 'Horas 14',
+        data: dataset.horas14.map((item: any) => item.count),
+        borderColor: 'rgba(255, 159, 64, 1)',
+        backgroundColor: 'rgba(255, 159, 64, 0.2)',
+        fill: false,
+        borderWidth: 5,
+      },
+      {
+        label: 'Horas 15',
+        data: dataset.horas15.map((item: any) => item.count),
+        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        fill: false,
+        borderWidth: 5,
+      },
+      {
+        label: 'Horas 16',
+        data: dataset.horas16.map((item: any) => item.count),
+        borderColor: 'rgba(255, 206, 86, 1)',
+        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+        fill: false,
+        borderWidth: 5,
+      },
+    ];
+
+    if (this.MyChartRealizadoHorariaTablet) {
+      this.MyChartRealizadoHorariaTablet.destroy();
+    }
+
+    this.MyChartRealizadoHorariaTablet = new Chart(`MyChartRealizadoHorariaTablet`, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: datasets
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: `Realizado Horário Tablet - Operação 010`
+          }
+        },
+        scales: {
+          x: {
+            type: 'category',
+            labels: labels
+          },
           y: {
             beginAtZero: true
           }
@@ -491,22 +548,4 @@ export class RelatorioHistoricoComponent implements OnInit {
       }
     });
   }
-
-
-  selectOP(value: number) {
-    if (this.dateRealizadoTotal.includes(value)) {
-      const index = this.dateRealizadoTotal.indexOf(value);
-      if (index > -1) {
-        this.dateRealizadoTotal.splice(index, 1);
-      }
-    } else {
-      this.dateRealizadoTotal.push(value);
-    }
-    if (this.MyChartRealizadoTotal) {
-      this.MyChartRealizadoTotal.destroy();
-    }
-    this.createChartRealizadoTotal()
-  }
-
 }
-

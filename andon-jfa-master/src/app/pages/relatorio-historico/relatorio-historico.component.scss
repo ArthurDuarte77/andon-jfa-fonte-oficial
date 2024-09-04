@@ -1,3 +1,7 @@
+.return{
+  margin: 10px 0 0 10px;
+}
+
 .chart-container {
   display: flex;
   flex-direction: column;
@@ -81,7 +85,6 @@
 .container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  // background: white;
   width: 98%;
   margin: auto;
   border-radius: 7px;
