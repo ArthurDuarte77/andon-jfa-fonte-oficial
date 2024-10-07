@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import * as LZString from 'lz-string';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -25,8 +26,10 @@ export class CounterComponent implements OnInit, OnDestroy {
   ) { }
   // Declarando as váriaveis
   isOnline: boolean = false;
+  loadVideo: boolean = false
   imposto: number = 0;
   shiftTime: number = 8.66;
+  videoSrc: string | null = null;
   minutos8: number = 0;
   minutos9: number = 0;
   realizadoInterval!: NodeJS.Timer;
@@ -39,6 +42,7 @@ export class CounterComponent implements OnInit, OnDestroy {
   minutos15: number = 0;
   minutos16: number = 0;
   minutos17: number = 0;
+  arquivoVideo: string = ""
   realizadoHora!: Realizado;
   realizadoHoraAtual: number = 0;
   currentState: string = '';
@@ -80,12 +84,13 @@ export class CounterComponent implements OnInit, OnDestroy {
   // Declaro a variavel storage que vai armazenar o local Storage
   storage: Storage = localStorage;
 
-  // Quando o site iniciar ele vai executar tudo que esta aqui dentro
+  @ViewChild('videoPlayer') videoPlayer!: ElementRef<HTMLVideoElement>;
+
   ngOnInit() {
     // Adiciona listeners para os eventos de online e offline
     window.addEventListener('online', () => this.updateOnlineStatus());
     window.addEventListener('offline', () => this.updateOnlineStatus());
-
+    
     // Atualiza o status inicial
     this.updateOnlineStatus();
     // Pega os parametros das rotas para saber qual operação
@@ -94,7 +99,7 @@ export class CounterComponent implements OnInit, OnDestroy {
       // Faz a requisição para pegar todos os dados da operação
       this.operationService.get(params['name']).subscribe((res) => {
         this.operation = res;
-
+        
         this.operationService.getByName(this.operation.name).subscribe(
           (res) => {
             this.count = res.count;
@@ -103,24 +108,25 @@ export class CounterComponent implements OnInit, OnDestroy {
           (errr) => {
             this.openSnackBar('Erro no Service', 'Ok');
           }
-        );
-      });
-      this.operationService
+          );
+        });
+        this.operationService
         .getRealizadoHoraria(`${this.nomeOperacao}`)
         .subscribe((res: any) => {
           this.realizadoHora = res;
         });
-    });
-    this.operationService.getTCimposto().subscribe(
-      (res: Main[]) => {
-        res.forEach((res) => {
-          this.lmitedTime = res.tcimposto;
-          this.limitedTimeOcioso = res.tcimposto;
-          this.imposto = res.imposto;
-          this.shiftTime = res.shiftTime;
-          this.ajustarTempoEnvelhecimento();
-        });
-      },
+      });
+      this.operationService.getTCimposto().subscribe(
+        (res: Main[]) => {
+          res.forEach((res) => {
+            this.lmitedTime = res.tcimposto;
+            this.limitedTimeOcioso = res.tcimposto;
+            this.imposto = res.imposto;
+            this.shiftTime = res.shiftTime;
+            this.ajustarTempoEnvelhecimento();
+          });
+          this.loadVideoFromLocalStorage();
+        },
       (error) => {
         this.openSnackBar('Erro no Service', 'Ok');
       }
@@ -233,7 +239,6 @@ export class CounterComponent implements OnInit, OnDestroy {
       }
     }, 100)
   }
-
   getAllRealizado() {
     this.operationService
       .getRealizadoHoraria(`${this.nomeOperacao}`)
@@ -331,6 +336,99 @@ export class CounterComponent implements OnInit, OnDestroy {
 
     if (element.requestFullscreen) {
       element.requestFullscreen();
+    }
+  }
+
+  downloadFile(fileUrl: string): void {
+  
+    // Criar um elemento de âncora (link)
+    const link = document.createElement('a');
+    link.href = fileUrl;
+  
+    // Definir o nome do arquivo que será salvo
+    link.download = 'video.mp4';
+  
+    // Adicionar o link temporariamente ao DOM
+    document.body.appendChild(link);
+  
+    // Simular um clique no link para iniciar o download
+    link.click();
+  
+    // Remover o link do DOM após o clique
+    document.body.removeChild(link);
+  }
+
+  getVideo(){
+    if (this.operation.name === '010') {
+      this.downloadFile('assets/010/video.mp4')
+    } else if (this.operation.name === '020') {
+      this.downloadFile('assets/020/video.mp4')
+    } else if (this.operation.name === '030') {
+      this.downloadFile('assets/030/video.mp4')
+    } else if (this.operation.name === '040') {
+      this.downloadFile('assets/040/video.mp4')
+    } else if (this.operation.name === '050') {
+      this.downloadFile('assets/050/video.mp4')
+    } else if (this.operation.name === '060') {
+      this.downloadFile('assets/060/video.mp4')
+    } else if (this.operation.name === '070') {
+      this.downloadFile('assets/070/video.mp4')
+    } else if (this.operation.name === '080') {
+      this.downloadFile('assets/080/video.mp4')
+    } else if (this.operation.name === '090') {
+      this.downloadFile('assets/090/video.mp4')
+    } else if (this.operation.name === '100') {
+      this.downloadFile('assets/100/video.mp4')
+    } else if (this.operation.name === '110') {
+      this.downloadFile('assets/110/video.mp4')
+    } else if (this.operation.name === '120') {
+      this.downloadFile('assets/120/video.mp4')
+    } else if (this.operation.name === '130') {
+      this.downloadFile('assets/130/video.mp4')
+    } else if (this.operation.name === '140') {
+      this.downloadFile('assets/140/video.mp4')
+    } else if (this.operation.name === '150') {
+      this.downloadFile('assets/150/video.mp4')
+    } else if (this.operation.name === '160') {
+      this.downloadFile('assets/160/video.mp4')
+    }
+  }
+
+  getVersion(){
+    if (this.operation.name === '010') {
+      return "1"
+    } else if (this.operation.name === '020') {
+      return "1"
+    } else if (this.operation.name === '030') {
+      return "1"
+    } else if (this.operation.name === '040') {
+      return "1"
+    } else if (this.operation.name === '050') {
+      return "1"
+    } else if (this.operation.name === '060') {
+      return "1"
+    } else if (this.operation.name === '070') {
+      return "1"
+    } else if (this.operation.name === '080') {
+      return "1"
+    } else if (this.operation.name === '090') {
+      return "1"
+    } else if (this.operation.name === '100') {
+      return "1"
+    } else if (this.operation.name === '110') {
+      return "1"
+    } else if (this.operation.name === '120') {
+      return "1"
+    } else if (this.operation.name === '130') {
+      return "1"
+    } else if (this.operation.name === '140') {
+      return "1"
+    } else if (this.operation.name === '150') {
+      return "1"
+    } else if (this.operation.name === '160') {
+      return "1"
+    }else{
+      return "0"
     }
   }
 
@@ -510,6 +608,17 @@ export class CounterComponent implements OnInit, OnDestroy {
   }
 
   openDialog() {
+    this.loadVideo = true;
+    this.operationService.postVideo(this.operation).subscribe()
+    setTimeout(() => {
+      if (this.videoPlayer && this.videoPlayer.nativeElement) {
+        this.videoPlayer.nativeElement.play();
+      }
+      this.videoPlayer.nativeElement.onended = () => {
+        this.loadVideo = false
+      };
+    }, 1000);
+    return
     if (this.operation.name === '010') {
       var data = [
         'https://www.youtube.com/embed/s2vDuQ9jpdw?si=h07QbnjSl0jEzYEs&vq=small&quality=tiny',
@@ -641,5 +750,49 @@ export class CounterComponent implements OnInit, OnDestroy {
 
   private updateOnlineStatus() {
     this.isOnline = navigator.onLine;
+  }
+
+  fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Função chamada quando o vídeo é selecionado
+  async onFileSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files ? input.files[0] : null;
+
+    if (file && file.type.startsWith('video/')) {
+      try {
+        let videoBase64 = await this.fileToBase64(file);
+        videoBase64 = LZString.compress(videoBase64);
+        console.log(videoBase64.length)
+        localStorage.setItem('videoBase64', videoBase64);  
+        this.videoSrc = videoBase64;  
+      } catch (error) {
+        console.error('Erro ao carregar o vídeo:', error);
+      }
+    } else {
+      alert('Por favor, selecione um arquivo de vídeo válido.');
+    }
+  }
+
+  // Função para carregar o vídeo salvo no LocalStorage
+  loadVideoFromLocalStorage(): void {
+    let savedVideoBase64 = localStorage.getItem('videoBase64');
+    const versionOfVideo = localStorage.getItem('version')
+    if (savedVideoBase64 && this.getVersion() == versionOfVideo) {
+      savedVideoBase64 = LZString.decompress(savedVideoBase64);
+      this.videoSrc = savedVideoBase64;
+    }else{
+      localStorage.removeItem("version")
+      localStorage.removeItem("videoBase64")
+      localStorage.setItem('version', this.getVersion())
+      this.getVideo()
+    }
   }
 }

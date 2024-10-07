@@ -13,6 +13,7 @@ com\api\nodemcu\repository\MainRepostory.class
 com\api\nodemcu\repository\OperationRepository.class
 com\api\nodemcu\repository\GeralMainRepository.class
 com\api\nodemcu\controllers\FontesController.class
+com\api\nodemcu\model\VideoReproducaoModel.class
 com\api\nodemcu\repository\FontesRepository.class
 com\api\nodemcu\controllers\ControleRealizadoController.class
 com\api\nodemcu\controllers\GeralRealizadoHorariaTabletController.class
@@ -24,6 +25,7 @@ com\api\nodemcu\model\RealizadoHorariaModel.class
 com\api\nodemcu\model\OperationModel.class
 com\api\nodemcu\repository\RealizadoHorariaTabletRepository.class
 com\api\nodemcu\model\RealizadoHorariaTabletModel.class
+com\api\nodemcu\repository\VideoReproducaoRepository.class
 com\api\nodemcu\model\GeralNodemcuDTO.class
 com\api\nodemcu\repository\ControleRealizadoRepository.class
 com\api\nodemcu\controllers\GeralNodemcuController.class
@@ -32,16 +34,20 @@ com\api\nodemcu\Services\ScheduledTasks.class
 com\api\nodemcu\configs\WebMvcConfig.class
 com\api\nodemcu\controllers\PausaController.class
 com\api\nodemcu\repository\PausaRepository.class
+com\api\nodemcu\model\VideoModel.class
 com\api\nodemcu\model\GeralMainModel.class
+com\api\nodemcu\controllers\VideoReproducaoController.class
 com\api\nodemcu\controllers\ContadorController.class
 com\api\nodemcu\model\OperationDTO.class
 com\api\nodemcu\repository\GeralRealizadoHorariaTabletRepository.class
 com\api\nodemcu\controllers\OperationController.class
 com\api\nodemcu\repository\ContadorRepository.class
+com\api\nodemcu\repository\VideoRepository.class
 com\api\nodemcu\model\GeralRealizadoHorariaTabletModel.class
 com\api\nodemcu\model\ControleGeralModel.class
 com\api\nodemcu\repository\NodemcuRepository.class
 com\api\nodemcu\repository\JpaRepository.class
+com\api\nodemcu\controllers\VideoController.class
 com\api\nodemcu\model\GeralNodemcuModel.class
 com\api\nodemcu\controllers\ControleGeralController.class
 com\api\nodemcu\model\GeralRealizadoHorariaModel.class

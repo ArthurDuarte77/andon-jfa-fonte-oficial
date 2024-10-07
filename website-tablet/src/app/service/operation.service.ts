@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Operation } from '../model/operation/operation';
 import { Nodemcu } from '../model/nodemcu';
 import { Main } from '../model/main';
-import { Realizado } from '../model/realizado';
+import { NameID, Realizado } from '../model/realizado';
 import { environment } from 'src/environments/environment';
 import { Modelo } from '../model/operation/modelo';
 
@@ -129,6 +129,10 @@ export class OperationService {
 
   getAll(): Observable<Operation[]>{
     return this.http.get<Operation[]>(environment.url + "operation")
+  }
+
+  postVideo(name_id: NameID){
+    return this.http.post(environment.url + "geral/video", {nameId: name_id})
   }
 
 }

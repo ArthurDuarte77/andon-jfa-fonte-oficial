@@ -8,6 +8,8 @@ import { GeralMain } from '../module/relatorio/main';
 import { GeralRealizadoHoraria } from '../module/relatorio/realizadoHoraria';
 import { ResultadoGeral } from '../module/resultadoGeral';
 import { Geral } from '../module/relatorio/geral';
+import { Video } from '../module/relatorio/video';
+import { Reproducao } from '../module/relatorio/reproducao';
 
 @Injectable({
   providedIn: 'root'
@@ -33,12 +35,21 @@ export class RelatorioService {
   }
 
   getGeral(startedDate: string, endDate: string): Observable<Geral[]>{
-    return this.http.get<Geral[]>(environment.url + `geral/filterByDate?startDate=${startedDate}¨&endDate=${endDate}`)
+    return this.http.get<Geral[]>(environment.url + `geral/filterByDate?startDate=${startedDate}&endDate=${endDate}`)
   }
 
   postGeral(body: ResultadoGeral): Observable<ResultadoGeral>{
     return this.http.post<ResultadoGeral>(environment.url + 'geral', body)
   }
+
+  getGeralVideo(start: string, end: string): Observable<Video[]>{
+    return this.http.get<Video[]>(environment.url + `geral/video/filterByDate?startDate=${start}&endDate=${end}`)
+  }
+
+  getGeralReproducoes(): Observable<Reproducao[]>{
+    return this.http.get<Reproducao[]>(environment.url + 'video')
+  }
+  
 
   updateGeral(){
     // return this.http.patch(environment.url)

@@ -19,6 +19,7 @@ import { RelatorioService } from 'src/app/service/relatorio.service';
 import { DialogAddComponent } from 'src/app/shared/dialog-add/dialog-add.component';
 import { MatDatepicker } from '@angular/material/datepicker';
 import * as moment from 'moment';
+import { Reproducao } from 'src/app/module/relatorio/reproducao';
 
 
 
@@ -63,13 +64,15 @@ export class ConfiguracaoComponent implements OnInit {
   displayedColumnsMain: string[] = ['id', 'tcimposto', 'imposto', 'shiftTime', 'op'];
   displayedColumnsModelo: string[] = ['id', 'is_current', 'modelo', 'realizado', 'tempo'];
   displayedColumnsOperation: string[] = ['id', 'analise', 'name', 'ocupado', 'pausa'];
+  displayedColumnsReproducao: string[] = ['id', 'name', 'video'];
+  dataSourceReproducao: Reproducao[] = []
   dataSourceRealizadoTablet: Realizado[] = []
   dataSourceMain: Main[] = []
   dataSourceModelo: Modelo[] = []
   dataSourceOperation: Operation[] = []
   dataSourceProgramacao: Programacao[] = []
   displayedColumnsProgramacao: string[] = ["data", "previsto", "realizado", "modelo"]
-  tabelas: string[] = ["Andon", "Realizado Horaria", "Realizado Horaria Tablet", "Pogramação", "Modelos", "Operações", "Programação Mensal"]
+  tabelas: string[] = ["Andon", "Realizado Horaria", "Realizado Horaria Tablet", "Pogramação", "Modelos", "Operações", "Programação Mensal", "Reproduções"]
   chosenTable: string = "Andon"
 
   resultadoGeral: ResultadoGeral[] = [];
@@ -119,6 +122,7 @@ export class ConfiguracaoComponent implements OnInit {
   names: number[] = []
   valueDataAtual = `${new Date().getFullYear()}-${new Date().getMonth()}`
   today = new Date();
+  videoSrc: string = ""
 
 
   date = new FormControl(moment());
@@ -135,6 +139,8 @@ export class ConfiguracaoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.videoSrc = localStorage.getItem("videoBase64")!
+    this.getReproducoes();
     this.nodemcuService.getAll().subscribe((res) => {
       this.nodemcu = res;
       this.filteredData = [...this.nodemcu];
@@ -170,6 +176,15 @@ export class ConfiguracaoComponent implements OnInit {
       horizontalPosition: "center",
       verticalPosition: "bottom",
     });
+  }
+
+  getReproducoes(){
+    this.relatorioService.getGeralReproducoes().subscribe(res => {
+      this.dataSourceReproducao = res
+      if(this.dataSourceReproducao[0].codigo != this.videoSrc){
+        console.log("error")
+      }
+    })
   }
 
   getData(month: number, year: number) {
@@ -314,7 +329,6 @@ export class ConfiguracaoComponent implements OnInit {
           date1.getFullYear() === date2.getFullYear()
         ) {
           if(item.previsto != item2.imposto || item.realizado != item2.realizado || item.modelo != item2.modelo){
-            console.log(item);
             var body: ResultadoGeral = {
               id: item2.id,
               imposto: item.previsto,

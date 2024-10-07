@@ -37,6 +37,7 @@ import {JsonPipe} from '@angular/common';
 import {MatChipsModule} from '@angular/material/chips';
 import { RelatorioHistoricoComponent } from './pages/relatorio-historico/relatorio-historico.component';
 import { MAT_MOMENT_DATE_FORMATS } from '@angular/material-moment-adapter';
+import { VideoRelatorioComponent } from './pages/video-relatorio/video-relatorio.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { MAT_MOMENT_DATE_FORMATS } from '@angular/material-moment-adapter';
     PainelComponent,
     ConfiguracaoComponent,
     DialogAddComponent,
-    RelatorioHistoricoComponent
+    RelatorioHistoricoComponent,
+    VideoRelatorioComponent
   ],
   imports: [
     MatTooltipModule,

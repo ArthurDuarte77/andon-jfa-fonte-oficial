@@ -6,6 +6,7 @@ import { ControleGeralComponent } from './pages/controle-geral/controle-geral.co
 import { PainelComponent } from './pages/painel/painel.component';
 import { ConfiguracaoComponent } from './pages/configuracao/configuracao.component';
 import { RelatorioHistoricoComponent } from './pages/relatorio-historico/relatorio-historico.component';
+import { VideoRelatorioComponent } from './pages/video-relatorio/video-relatorio.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -14,6 +15,7 @@ const routes: Routes = [
   {path: 'relatorio-historico', component: RelatorioHistoricoComponent},
   {path: 'configuracao', component: ConfiguracaoComponent},
   {path: 'painel', component: PainelComponent},
+  {path: 'video', component: VideoRelatorioComponent},
   {path: '**', redirectTo: ""}
 ];
 

@@ -134,6 +134,11 @@ public class NodemcuController {
         repository.save((nodemcu));
     }
 
+    @GetMapping("/zerar")
+    public void zerar(){
+        zerarDados();
+    }
+
     @GetMapping("/ajuda/{name}")
     public void AddAjuda(@PathVariable String name){
         OperationModel operation = operationRepository.findByName(name);
