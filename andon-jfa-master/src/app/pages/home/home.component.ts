@@ -561,9 +561,9 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.shiftTime = result.split(',')[1];
         if (this.shiftTime == 0) {
           if (this.diaDaSemanda.getDay() == 5) {
-            this.shiftTime = 7.66
+            this.shiftTime = 6.66
           } else {
-            this.shiftTime = 8.66;
+            this.shiftTime = 7.66;
           }
           this.mainService
             .put(this.imposto, this.TCimpostado, this.shiftTime, this.op)

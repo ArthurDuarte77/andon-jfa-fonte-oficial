@@ -21,4 +21,8 @@ public interface NodemcuRepository extends JpaRepository<NodemcuModel, Integer> 
 
     <NodemcuMod extends NodemcuModel> NodemcuMod save(NodemcuMod nodemcu);
 
+    @Modifying
+    @Query(value = "update thdados set state = :newState where name_id = :nameId", nativeQuery = true)
+    void updateStateByNameId(@Param("newState") String newState, @Param("nameId") Integer nameId);
+
 }
