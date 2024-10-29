@@ -65,8 +65,8 @@ export class OperationService {
     const dataFormatada = `${dataAtual.getFullYear()}-${(dataAtual.getMonth() + 1).toString().padStart(2, '0')}-${dataAtual.getDate().toString().padStart(2, '0')}`;
     const horaFormatada = dataAtual.toLocaleTimeString();
 
-    return this.http.post("http://172.16.34.147:3000/qrcode", {
-      "nome": nome,
+    return this.http.post(`${environment.url}qrcode`, {
+      "name": nome,
       "cod": cod,
       "data": dataFormatada,
       "hora": horaFormatada,

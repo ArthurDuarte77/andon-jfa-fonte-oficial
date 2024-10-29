@@ -18,7 +18,8 @@ import {MatChipsModule} from '@angular/material/chips';
 import { DialogFonteComponent } from './shared/dialog-fonte/dialog-fonte.component';
 import { DialogAvisoComponent } from './shared/dialog-aviso/dialog-aviso.component';
 import { AnaliseComponent } from './pages/analise/analise.component';
-
+import { DialogNameComponent } from './shared/dialog-name/dialog-name.component';
+import {MatInputModule} from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -28,11 +29,12 @@ import { AnaliseComponent } from './pages/analise/analise.component';
     DialogFonteComponent,
     DialogAvisoComponent,
     AnaliseComponent,
-  
+    DialogNameComponent,
+
   ],
-  
+
   imports: [
-    BrowserModule,  
+    BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
@@ -45,7 +47,8 @@ import { AnaliseComponent } from './pages/analise/analise.component';
     MatCheckboxModule,
     MatRadioModule,
     FormsModule,
-    MatChipsModule
+    MatChipsModule,
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Nodemcu } from 'src/app/model/nodemcu';
 import { Operation } from 'src/app/model/operation/operation';
 import { OperationService } from 'src/app/service/operation.service';
+import { WebsocketService } from 'src/app/service/websocket.service';
 
 @Component({
   selector: 'app-analise',
@@ -10,7 +11,7 @@ import { OperationService } from 'src/app/service/operation.service';
 })
 export class AnaliseComponent implements OnInit, OnDestroy{
 
-  constructor(private service: OperationService) { }
+  constructor(private service: OperationService,     private websocketService: WebsocketService) { }
 
 
 
@@ -34,6 +35,11 @@ export class AnaliseComponent implements OnInit, OnDestroy{
 
   changeAnalise(item: Operation){
     this.service.changeAnalise(item.name, !item.analise)
+    if(!item.analise){
+      this.websocketService.enviarMensagem(item.name, 'azul');
+    }else{
+      this.websocketService.enviarMensagem(item.name, 'verde');
+    }
   }
 
   enterFullscreen() {

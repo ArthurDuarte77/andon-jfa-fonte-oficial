@@ -30,7 +30,7 @@ video{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    
+
 }
 
 .animationRed{
@@ -90,7 +90,7 @@ section {
 .info {
     flex-grow: 1;
     margin-top: 50px;
-    
+
     div{
         display: flex;
         align-items: center;
@@ -186,7 +186,7 @@ button {
     font-size: 2rem;
     .valor{
         padding: 10px;
-        
+
         width: 8%;
         font-weight: 700;
         color: black;
@@ -214,7 +214,7 @@ button {
 
 .ajuda{
     color: black;
-    width: 100px;
+    width: auto;
     text-transform: uppercase;
     height: 50px;
     font-size: 1rem;

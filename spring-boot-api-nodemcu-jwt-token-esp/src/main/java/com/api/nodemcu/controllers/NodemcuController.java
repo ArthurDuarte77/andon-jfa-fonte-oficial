@@ -35,23 +35,6 @@ public class NodemcuController {
         this.messagingTemplate = messagingTemplate;
     }
 
-    private Map<String, String> dados = new HashMap<>();
-
-    @MessageMapping("/register")
-    public void registerClient(SimpMessageHeaderAccessor headerAccessor, @Payload String message) {
-        String sessionId = headerAccessor.getSessionId();
-        System.out.println("Novo cliente registrado - SessionId: " + sessionId);
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            JsonNode jsonNode = mapper.readTree(message);
-            String op = jsonNode.get("op").asText();
-            dados.put(op, sessionId);
-            // enviarMensagemParaCliente(op);
-        } catch (JsonProcessingException e) {
-            System.out.println("Erro ao processar a mensagem JSON: " + e.getMessage());
-        }
-    }
-
     @Transactional
     @MessageMapping("/news")
     public void broadcastNews(@Payload String message) throws JsonProcessingException {
@@ -69,14 +52,9 @@ public class NodemcuController {
         OperationModel operation = operationRepository.findByName(op);
         try {
             nodemcuRepository.updateStateByNameId(status, operation.getId());
-            String sessionId = dados.get(op);
-            if (sessionId != null) {
-                messagingTemplate.convertAndSend(
-                        "/user/" + sessionId + "/news",
-                        status);
-            } else {
-                System.out.println("Aviso: SessionId não encontrado para a operação " + op);
-            }
+            messagingTemplate.convertAndSend(
+                    "/user/" + operation.getName() + "/news",
+                    status);
         } catch (
 
         InvalidDataAccessApiUsageException e) {
