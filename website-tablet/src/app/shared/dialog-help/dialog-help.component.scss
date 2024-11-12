@@ -1,0 +1,18 @@
+main{
+    width: 70vw;
+    mat-dialog-content{
+        iframe {
+            margin: auto;
+            width:  100%;
+            height: 80vh;
+        }
+        video{
+            margin-top: 2rem;
+            width: 100%;
+            height: 600px;
+        }
+        mat-accordion{
+            padding: 0 1rem;
+        }
+    }
+}

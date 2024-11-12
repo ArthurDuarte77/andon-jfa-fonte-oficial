@@ -1,0 +1,36 @@
+<main>
+
+  <h2 mat-dialog-title>TUTORIAL</h2>
+  <mat-dialog-content class="mat-typography">
+    <!-- <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            tutorial 1
+          </mat-panel-title>
+          <mat-panel-description>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <iframe [src]="pdfUrl" type="application/pdf">
+          Seu navegador não suporta a exibição de PDFs. Você pode <a href="seuarquivo.pdf">baixar o PDF</a> para
+          visualizá-lo.
+        </iframe>
+      </mat-expansion-panel>
+    </mat-accordion> -->
+    <mat-accordion *ngFor="let item of data; let i = index">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{title[i]}}
+          </mat-panel-title>
+          <mat-panel-description>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <iframe width="560" height="315" [src]="item" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>      
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Fechar</button>
+  </mat-dialog-actions>
+</main>

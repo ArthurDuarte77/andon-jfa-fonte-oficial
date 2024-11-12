@@ -1,0 +1,38 @@
+<section>
+  <div>
+    <h1>DIGITE AQUI A META</h1>
+  </div>
+  <div class="input_value">
+    <div>
+      <p>Meta</p>
+      <mat-form-field>
+        <mat-label>Digite a meta</mat-label>
+        <input matInput [formControl]="input">
+      </mat-form-field>
+    </div>
+    <div>
+      <p>OP</p>
+      <mat-form-field>
+        <mat-label>Digite a OP</mat-label>
+        <input matInput [formControl]="op">
+      </mat-form-field>
+    </div>
+    <div>
+      <div>
+        <p>Fonte</p>
+        <mat-form-field>
+          <mat-label>Selecione uma fonte</mat-label>
+          <mat-select>
+            <mat-option *ngFor="let item of modelos" [value]="item.modelo" (click)="changeIsCurrent(item)">
+              {{ item.modelo }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-raised-button color="warn" [mat-dialog-close]="input.value +',' + 0 + ',' + op.value" cdkFocusInitial>ok</button>
+  </mat-dialog-actions>
+</section>

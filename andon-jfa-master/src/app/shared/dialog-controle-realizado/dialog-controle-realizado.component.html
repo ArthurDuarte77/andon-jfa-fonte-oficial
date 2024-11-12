@@ -1,0 +1,14 @@
+
+<mat-dialog-content class="mat-typography">
+    <form class="example-form">
+      <mat-form-field class="example-full-width">
+        <mat-label>Justificativa</mat-label>
+        <input matInput #message maxlength="256">
+        <mat-hint align="end">{{message.value.length}} / 256</mat-hint>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button [mat-dialog-close]="message.value" cdkFocusInitial>Enviar</button>
+  </mat-dialog-actions>

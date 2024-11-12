@@ -1,0 +1,92 @@
+<a mat-fab extended [routerLink]="['/painel']" color="primary" class="return">
+  <mat-icon>keyboard_return</mat-icon>
+  Voltar
+</a>
+<main class="container">
+  <div class="total-container">
+    <h1>
+      <p>Melhor Hora</p>
+      {{ bestHour }}
+    </h1>
+    <h1>
+      <p>Pior Hora</p>
+      {{ worstHour }}
+    </h1>
+    <h1>
+      <p>OP Com Maior Quantidade</p>
+      {{ bestOp }}
+    </h1>
+    <h1>
+      <p>OP Com Menos Quantidade</p>
+      {{ worstOp }}
+    </h1>
+    <h1>
+      <p>OP Com Maior TC</p>
+      {{ worstTcOp }}
+    </h1>
+    <h1>
+      <p>OP Com Menor TC</p>
+      {{ bestTcOp }}
+    </h1>
+    <h1>
+      <p>OP Com Menor Tempo Excedido</p>
+      {{ bestTimeExcessOp }}
+    </h1>
+    <h1>
+      <p>OP Com Maior Tempo Excedido</p>
+      {{ worstTimeExcessOp }}
+    </h1>
+  </div>
+  <div class="chart-container">
+    <h1>Previsto e Realizado Hora a Hora</h1>
+    <canvas id="MyChartRealizado">{{ MyChartRealizado }}</canvas>
+  </div>
+  <div class="chart-container">
+    <h1>Hora a Hora por Operação</h1>
+    <div class="option">
+      <mat-chip-option selected *ngFor="let name of names;let i = index" (click)="selectOP(name, qtdeNames[i])">{{name}}</mat-chip-option>
+    </div>
+    <canvas id="MyChartRealizadoTotal">{{ MyChartRealizadoTotal }}</canvas>
+  </div>
+  <div class="chart-container">
+    <h1>Media Tempo Contado</h1>
+    <canvas id="MyChartMediaTc">{{ MyChartMediaTc }}</canvas>
+  </div>
+  <div class="chart-container">
+    <mat-form-field>
+      <mat-label>Interrupções</mat-label>
+      <mat-select
+        name="interrupcoes"
+        (selectionChange)="getInterrupcoes($event.value)"
+        #value
+        value="Qtde Tempo Excedido"
+      >
+        <mat-option value="Análise"> Análise </mat-option>
+        <mat-option value="Ausência"> Ausência </mat-option>
+        <mat-option value="Qtde Tempo Excedido">
+          Qtde Tempo Excedido
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <canvas id="MyChartTimeExcess">{{ MyChartTimeExcess }}</canvas>
+  </div>
+  <div class="chart-container">
+    <h1>Qtde Tempo Contado Excedido</h1>
+    <canvas id="MyChartTcExcedido">{{ MyChartTcExcedido }}</canvas>
+  </div>
+  <div class="container_analise">
+    <div
+      *ngFor="let item of dadosAnalizados"
+      [ngStyle]="{
+        'background-color': item.status === 'Bom' ? '#99FE00' : '#FE0000'
+      }"
+    >
+      <mat-icon
+        [matTooltip]="item.reason.join(', ')"
+        *ngIf="item.status == 'Ruim'"
+        >help</mat-icon
+      >
+      <h1>{{ nodemcu[item.id! - 1].nameId.name }}</h1>
+    </div>
+  </div>
+</main>

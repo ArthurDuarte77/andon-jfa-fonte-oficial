@@ -1,0 +1,8 @@
+<h1>Análise</h1>
+<section (click)="enterFullscreen()">
+    <div *ngFor="let item of nodemcu" (click)="changeAnalise(item)" [ngStyle]="{
+        'background-color': item.analise ? 'blue' : '#5ac5e9'
+      }">
+        <h2>{{item.name}}</h2>
+    </div>
+</section>  

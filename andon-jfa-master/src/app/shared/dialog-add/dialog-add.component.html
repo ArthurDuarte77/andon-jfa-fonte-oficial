@@ -1,0 +1,11 @@
+<form class="example-form">
+    <mat-form-field class="example-full-width" *ngFor="let item of data.columns">
+      <mat-label>{{ item }}</mat-label>
+      <input matInput [placeholder]="item" [(ngModel)]="formData[item]" [ngModelOptions]="{standalone: true}">
+    </mat-form-field>
+  </form>
+  <div class="container_button">
+    <button mat-fab [mat-dialog-close]="formData"><mat-icon>add_circle</mat-icon></button>
+    <button mat-fab mat-dialog-close><mat-icon>exit_to_app</mat-icon></button>
+  </div>
+  

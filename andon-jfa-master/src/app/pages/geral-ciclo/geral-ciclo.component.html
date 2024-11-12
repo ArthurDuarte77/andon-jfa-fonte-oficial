@@ -1,0 +1,48 @@
+<a mat-fab extended [routerLink]="['/painel']" color="primary" class="return">
+  <mat-icon>keyboard_return</mat-icon>
+  Voltar
+</a>
+
+<section>
+  <mat-form-field>
+    <mat-label>Operação</mat-label>
+    <mat-select
+      [formControl]="selectFormControl"
+      required
+      [(value)]="selectedValue"
+    >
+      <mat-option *ngFor="let op of operation" [value]="op.name">{{
+        op.name
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+
+    <table mat-table [dataSource]="ciclo" class="mat-elevation-z8" *ngIf="ciclo.length > 0">
+
+      <ng-container matColumnDef="op">
+        <th mat-header-cell *matHeaderCellDef>OP</th>
+        <td mat-cell *matCellDef="let element">{{ element.nameId.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="count">
+        <th mat-header-cell *matHeaderCellDef>Quantidade</th>
+        <td mat-cell *matCellDef="let element">{{ element.count }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="data">
+        <th mat-header-cell *matHeaderCellDef>Data</th>
+        <td mat-cell *matCellDef="let element">{{ element.data | date: 'dd/MM/yyyy  hh:mm:ss' }}</td>
+      </ng-container>
+
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">
+          No data matching
+        </td>
+      </tr>
+    </table>
+</section>
