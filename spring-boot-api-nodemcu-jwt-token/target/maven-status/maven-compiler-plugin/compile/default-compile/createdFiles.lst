@@ -27,10 +27,12 @@ com\api\nodemcu\repository\QrCodeRepository.class
 com\api\nodemcu\model\OperationModel.class
 com\api\nodemcu\repository\RealizadoHorariaTabletRepository.class
 com\api\nodemcu\model\RealizadoHorariaTabletModel.class
+com\api\nodemcu\repository\GeralCicloRepository.class
 com\api\nodemcu\repository\VideoReproducaoRepository.class
 com\api\nodemcu\model\GeralNodemcuDTO.class
 com\api\nodemcu\model\QrCodeModel.class
 com\api\nodemcu\repository\ControleRealizadoRepository.class
+com\api\nodemcu\controllers\GeralCiclosController.class
 com\api\nodemcu\controllers\GeralNodemcuController.class
 com\api\nodemcu\model\MainModel.class
 com\api\nodemcu\Services\ScheduledTasks.class
@@ -45,6 +47,7 @@ com\api\nodemcu\model\OperationDTO.class
 com\api\nodemcu\repository\GeralRealizadoHorariaTabletRepository.class
 com\api\nodemcu\controllers\OperationController.class
 com\api\nodemcu\repository\ContadorRepository.class
+com\api\nodemcu\model\GeralCiclosModel.class
 com\api\nodemcu\repository\VideoRepository.class
 com\api\nodemcu\model\GeralRealizadoHorariaTabletModel.class
 com\api\nodemcu\model\ControleGeralModel.class
