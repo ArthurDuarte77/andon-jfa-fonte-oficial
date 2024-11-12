@@ -242,3 +242,11 @@ Stacktrace:   em System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInter
    em winsw.WrapperService.OnShutdown()
 2024-10-18 07:55:28 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\node-windows\lib\wrapper.js --file C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js --scriptoptions= --log "andonfonte wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
 2024-10-18 07:55:28 - Started 7048
+2024-10-29 17:10:16 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\node-windows\lib\wrapper.js --file C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js --scriptoptions= --log "andonfonte wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2024-10-29 17:10:16 - Started 9840
+2024-10-29 17:19:53 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\node-windows\lib\wrapper.js --file C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js --scriptoptions= --log "andonfonte wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2024-10-29 17:19:53 - Started 11428
+2024-11-04 07:34:46 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\node-windows\lib\wrapper.js --file C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js --scriptoptions= --log "andonfonte wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2024-11-04 07:34:46 - Started 17268
+2024-11-05 17:06:01 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\node-windows\lib\wrapper.js --file C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js --scriptoptions= --log "andonfonte wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2024-11-05 17:06:01 - Started 7764

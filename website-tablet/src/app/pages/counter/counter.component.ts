@@ -490,6 +490,7 @@ export class CounterComponent implements OnInit, OnDestroy, AfterViewInit {
           parseInt((this.limitedTimeOcioso + 60).toFixed(0))
         ) {
           this.operationService.changeTimeExcess(this.operation.name);
+          this.websocketService.enviarMensagem(this.operation.name, 'piscar');
         }
 
         this.tempoOcioso++;
@@ -592,6 +593,7 @@ export class CounterComponent implements OnInit, OnDestroy, AfterViewInit {
       this.contador++;
       if (this.contador === parseInt((this.lmitedTime + 60).toFixed(0))) {
         this.operationService.changeTimeExcess(this.operation.name);
+        this.websocketService.enviarMensagem(this.operation.name, 'piscar');
       }
       if (this.contador > 9999) {
         this.stopTimer(state);
@@ -814,6 +816,7 @@ export class CounterComponent implements OnInit, OnDestroy, AfterViewInit {
       clearInterval(this.intervalRefNew);
       this.vermelhoStateCalled = false;
       this.azulStateCalled = false;
+      this.websocketService.enviarMensagem(this.operation.name, 'piscar_azul');
       this.operationService.atualizar(this.operation.id, false).subscribe(
         (res) => {
           this.openSnackBar('Enviado com sucesso', 'Ok');

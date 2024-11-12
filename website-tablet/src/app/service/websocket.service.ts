@@ -10,7 +10,7 @@ export class WebsocketService {
 
   constructor() {
     this.client = new Client({
-      brokerURL: 'ws://172.16.34.147:8080/ws',
+      brokerURL: 'ws://172.16.34.147:8070/ws',
       onConnect: () => {
         console.log('Conectado ao WebSocket');
         // this.conectar().subscribe(res => {

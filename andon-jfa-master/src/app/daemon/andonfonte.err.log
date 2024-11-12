@@ -365,3 +365,95 @@ Node.js v20.15.0
 Error: ENOENT: no such file or directory, stat 'C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\dist\andon\index.html'
 Error: ENOENT: no such file or directory, stat 'C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\dist\andon\index.html'
 Error: ENOENT: no such file or directory, stat 'C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\dist\andon\index.html'
+node:internal/modules/cjs/loader:1228
+  throw err;
+  ^
+
+Error: Cannot find module 'C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\node-windows\lib\wrapper.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+    at Module._load (node:internal/modules/cjs/loader:1051:27)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v20.17.0
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::4300
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\express\lib\application.js:635:24)
+    at Object.<anonymous> (C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js:15:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 4300
+}
+
+Node.js v22.11.0
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::4300
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\express\lib\application.js:635:24)
+    at Object.<anonymous> (C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js:15:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 4300
+}
+
+Node.js v22.11.0
+node:events:496
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::4300
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at Server.listen (node:net:2066:7)
+    at Function.listen (C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\express\lib\application.js:635:24)
+    at Object.<anonymous> (C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js:15:5)
+    at Module._compile (node:internal/modules/cjs/loader:1546:14)
+    at Object..js (node:internal/modules/cjs/loader:1689:10)
+    at Module.load (node:internal/modules/cjs/loader:1318:32)
+    at Function._load (node:internal/modules/cjs/loader:1128:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:315:14)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1943:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 4300
+}
+
+Node.js v22.11.0

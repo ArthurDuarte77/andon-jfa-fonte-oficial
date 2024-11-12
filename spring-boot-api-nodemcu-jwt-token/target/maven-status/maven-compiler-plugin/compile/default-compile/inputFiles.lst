@@ -3,6 +3,7 @@ C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-t
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\controllers\ControleRealizadoController.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\controllers\FontesController.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\repository\GeralMainRepository.java
+C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\controllers\QrCodeController.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\model\VideoReproducaoModel.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\controllers\VideoReproducaoController.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\model\Contador.java
@@ -15,6 +16,7 @@ C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-t
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\model\RealizadoHorariaModel.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\model\GeralNodemcuModel.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\controllers\ControleGeralController.java
+C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\repository\QrCodeRepository.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\repository\RealizadoHorariaRepository.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\controllers\VideoController.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\controllers\MainController.java
@@ -30,6 +32,7 @@ C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-t
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\controllers\GeralMainController.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\model\ImpostoDTO.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\model\GeralRealizadoHorariaTabletModel.java
+C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\model\QrCodeModel.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\repository\MainRepostory.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\model\VideoModel.java
 C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\spring-boot-api-nodemcu-jwt-token\src\main\java\com\api\nodemcu\repository\FontesRepository.java

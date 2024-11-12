@@ -116,7 +116,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         }
       })
       if (this.modeloAtual == undefined) {
-        this.modeloService.changeIsCurrent('storm 120A', true)
+        this.modeloService.changeIsCurrent('FONTE 120A', true)
       }
     })
     window.onload = () => {

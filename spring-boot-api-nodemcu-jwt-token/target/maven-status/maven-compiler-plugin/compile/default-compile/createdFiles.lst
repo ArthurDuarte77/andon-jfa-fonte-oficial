@@ -15,6 +15,7 @@ com\api\nodemcu\repository\GeralMainRepository.class
 com\api\nodemcu\controllers\FontesController.class
 com\api\nodemcu\model\VideoReproducaoModel.class
 com\api\nodemcu\repository\FontesRepository.class
+com\api\nodemcu\controllers\QrCodeController.class
 com\api\nodemcu\controllers\ControleRealizadoController.class
 com\api\nodemcu\controllers\GeralRealizadoHorariaTabletController.class
 com\api\nodemcu\repository\GeralRealizadoHorariaRepository.class
@@ -22,11 +23,13 @@ com\api\nodemcu\repository\RealizadoHorariaRepository.class
 com\api\nodemcu\controllers\MainController.class
 com\api\nodemcu\model\FontesModel.class
 com\api\nodemcu\model\RealizadoHorariaModel.class
+com\api\nodemcu\repository\QrCodeRepository.class
 com\api\nodemcu\model\OperationModel.class
 com\api\nodemcu\repository\RealizadoHorariaTabletRepository.class
 com\api\nodemcu\model\RealizadoHorariaTabletModel.class
 com\api\nodemcu\repository\VideoReproducaoRepository.class
 com\api\nodemcu\model\GeralNodemcuDTO.class
+com\api\nodemcu\model\QrCodeModel.class
 com\api\nodemcu\repository\ControleRealizadoRepository.class
 com\api\nodemcu\controllers\GeralNodemcuController.class
 com\api\nodemcu\model\MainModel.class

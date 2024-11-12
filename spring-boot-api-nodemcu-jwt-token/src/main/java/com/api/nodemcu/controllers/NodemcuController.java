@@ -99,7 +99,6 @@ public class NodemcuController {
     }
 
     private void agendarTarefa() {
-        zerarDados();
         Runnable task = () -> {
             Calendar calendar = Calendar.getInstance();
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -136,6 +135,7 @@ public class NodemcuController {
 
     @GetMapping("/zerar")
     public void zerar(){
+        zerouDados = false;
         zerarDados();
     }
 
@@ -417,7 +417,8 @@ public class NodemcuController {
 
 
     public void zerarDados() {
-        if (zerouDados) {
+        if (true) {
+            System.out.println("entrou");
             try{
                 FontesModel fonteAtual = new FontesModel();
                 List<FontesModel> fontes = fontesRepository.findAll();
@@ -437,14 +438,13 @@ public class NodemcuController {
                 controleGeral.get(0).setRealizado(nodemcuResultadoGeral.getCount());
                 controleGeral.get(0).setModelo(fonteAtual.getModelo());
                 controleGeralRepository.save(controleGeral.get(0));
-
                 GeralMainModel geralMain = new GeralMainModel();
                 geralMain.setImposto((int) Math.floor(main.get().getImposto()));
                 geralMain.setOp(main.get().getOp());
                 geralMain.setShiftTime(main.get().getShiftTime());
                 geralMain.setTCimposto(main.get().getTCimposto());
                 geralMainRepository.save(geralMain);
-
+                
                 Optional<RealizadoHorariaModel> realizadoHoraria = realizadoHorariaRepository.findById(1);
                 GeralRealizadoHorariaModel geralRealizado = new GeralRealizadoHorariaModel();
                 geralRealizado.setHoras7(realizadoHoraria.get().getHoras7());
