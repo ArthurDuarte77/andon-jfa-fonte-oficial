@@ -24,6 +24,8 @@ public class GeralCiclosModel {
 
     private Integer count;
 
+    private Integer time;
+
     private Date data;
 
     public int getId() {
@@ -50,6 +52,14 @@ public class GeralCiclosModel {
         this.count = count;
     }
 
+    public Integer getTime() {
+        return time;
+    }
+
+    public void setTime(Integer time) {
+        this.time = time;
+    }
+
     public Date getData() {
         return data;
     }
@@ -59,6 +69,4 @@ public class GeralCiclosModel {
     }
 
     
-
-
 }

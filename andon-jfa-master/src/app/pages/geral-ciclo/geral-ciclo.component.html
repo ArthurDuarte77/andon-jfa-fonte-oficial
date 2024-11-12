@@ -2,6 +2,12 @@
   <mat-icon>keyboard_return</mat-icon>
   Voltar
 </a>
+<a mat-fab extended (click)="exportToExcel()" color="primary" class="return">
+  <mat-icon>cloud_download</mat-icon>
+  Exportar para EXCEL
+</a>
+
+
 
 <section>
   <mat-form-field>
@@ -28,6 +34,11 @@
       <ng-container matColumnDef="count">
         <th mat-header-cell *matHeaderCellDef>Quantidade</th>
         <td mat-cell *matCellDef="let element">{{ element.count }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="time">
+        <th mat-header-cell *matHeaderCellDef>Tempo Contado</th>
+        <td mat-cell *matCellDef="let element">{{ element.time }}s</td>
       </ng-container>
 
       <ng-container matColumnDef="data">

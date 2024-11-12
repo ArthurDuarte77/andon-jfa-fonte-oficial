@@ -175,7 +175,7 @@ public class NodemcuController {
         geralCiclo.setCount(nodemcuUpdates.getCount());
         geralCiclo.setData(new Date());
         geralCiclo.setNameId(operation);
-
+        geralCiclo.setTime(nodemcuUpdates.getCurrentTC());
         geralCicloRepository.save(geralCiclo);
         
         device.setThirdlastTC(device.getSecondtlastTC());
@@ -432,6 +432,8 @@ public class NodemcuController {
         if (true) {
             System.out.println("entrou");
             try{
+                geralCicloRepository.deleteAll();
+
                 FontesModel fonteAtual = new FontesModel();
                 List<FontesModel> fontes = fontesRepository.findAll();
 
