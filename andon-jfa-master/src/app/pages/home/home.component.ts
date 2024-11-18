@@ -511,38 +511,50 @@ export class HomeComponent implements OnInit, OnDestroy {
     return parseInt(value, 0);
   }
 
+
   retirarPausa() {
     const now = new Date();
     const hours = now.getHours();
     const minutes = now.getMinutes();
-    if(new Date().getDay() != 5){
+    if (new Date().getDay() != 5) {
       if (hours === 9 && minutes === 30) {
         this.nodemcuService.pausa(true).subscribe()
-      } else if (hours === 9 && minutes === 40) {
+      }
+      if (hours === 9 && minutes === 40) {
         this.nodemcuService.pausa(false).subscribe()
-      } else if (hours === 12 && minutes === 0) {
+      }
+      if (hours === 12 && minutes === 0) {
         this.nodemcuService.pausa(true).subscribe()
-      } else if (hours === 13 && minutes === 0) {
+      }
+      if (hours === 13 && minutes === 0) {
         this.nodemcuService.pausa(false).subscribe()
-      } else if (hours === 15 && minutes === 5) {
+      }
+      if (hours === 15 && minutes === 20) {
         this.nodemcuService.pausa(true).subscribe()
-      } else if (hours === 15 && minutes === 15) {
+      }
+      if (hours === 15 && minutes === 30) {
         this.nodemcuService.pausa(false).subscribe()
       }
     }else{
       if (hours === 9 && minutes === 30) {
         this.nodemcuService.pausa(true).subscribe()
-      } else if (hours === 9 && minutes === 40) {
-        this.nodemcuService.pausa(false).subscribe()
-      } else if (hours === 12 && minutes === 0) {
-        this.nodemcuService.pausa(true).subscribe()
-      } else if (hours === 13 && minutes === 0) {
-        this.nodemcuService.pausa(false).subscribe()
-      } else if (hours === 14 && minutes === 25) {
-        this.nodemcuService.pausa(true).subscribe()
-      } else if (hours === 14 && minutes === 35) {
+      }
+      if (hours === 9 && minutes === 40) {
         this.nodemcuService.pausa(false).subscribe()
       }
+      if (hours === 12 && minutes === 0) {
+        this.nodemcuService.pausa(true).subscribe()
+      }
+      if (hours === 13 && minutes === 0) {
+        this.nodemcuService.pausa(false).subscribe()
+      }
+      if (hours === 14 && minutes === 35) {
+        this.nodemcuService.pausa(true).subscribe()
+      }
+      if (hours === 14 && minutes === 45) {
+        this.nodemcuService.pausa(false).subscribe()
+      }
+
     }
   }
 

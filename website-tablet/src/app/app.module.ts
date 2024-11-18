@@ -30,7 +30,6 @@ import {MatInputModule} from '@angular/material/input';
     DialogAvisoComponent,
     AnaliseComponent,
     DialogNameComponent,
-
   ],
 
   imports: [

@@ -250,3 +250,37 @@ Stacktrace:   em System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInter
 2024-11-04 07:34:46 - Started 17268
 2024-11-05 17:06:01 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\node-windows\lib\wrapper.js --file C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js --scriptoptions= --log "andonfonte wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
 2024-11-05 17:06:01 - Started 7764
+2024-11-12 11:44:11 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\node-windows\lib\wrapper.js --file C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js --scriptoptions= --log "andonfonte wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2024-11-12 11:44:11 - Started 608
+2024-11-13 17:04:21 - Stopping andonfonte.exe
+2024-11-13 17:04:21 - ProcessKill 608
+2024-11-13 17:04:21 - Shutdown exception
+Message:O sistema está sendo desligado.
+
+Stacktrace:   em System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   em System.Management.ManagementScope.InitializeGuts(Object o)
+   em System.Management.ManagementScope.Initialize()
+   em System.Management.ManagementObjectSearcher.Initialize()
+   em System.Management.ManagementObjectSearcher.Get()
+   em winsw.WrapperService.GetChildPids(Int32 pid)
+   em winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   em winsw.WrapperService.StopIt()
+   em winsw.WrapperService.OnShutdown()
+2024-11-13 17:05:06 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\node-windows\lib\wrapper.js --file C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js --scriptoptions= --log "andonfonte wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2024-11-13 17:05:06 - Started 6920
+2024-11-14 13:18:17 - Stopping andonfonte.exe
+2024-11-14 13:18:17 - ProcessKill 6920
+2024-11-14 13:18:18 - Shutdown exception
+Message:O sistema está sendo desligado.
+
+Stacktrace:   em System.Runtime.InteropServices.Marshal.ThrowExceptionForHRInternal(Int32 errorCode, IntPtr errorInfo)
+   em System.Management.ManagementScope.InitializeGuts(Object o)
+   em System.Management.ManagementScope.Initialize()
+   em System.Management.ManagementObjectSearcher.Initialize()
+   em System.Management.ManagementObjectSearcher.Get()
+   em winsw.WrapperService.GetChildPids(Int32 pid)
+   em winsw.WrapperService.StopProcessAndChildren(Int32 pid)
+   em winsw.WrapperService.StopIt()
+   em winsw.WrapperService.OnShutdown()
+2024-11-14 13:18:38 - Starting C:\Program Files\nodejs\node.exe  --harmony C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\node_modules\node-windows\lib\wrapper.js --file C:\andon-jfa-fonte-oficial\andon-jfa-fonte-oficial\andon-jfa-master\src\app\express.js --scriptoptions= --log "andonfonte wrapper" --grow 0.25 --wait 1 --maxrestarts 3 --abortonerror n --stopparentfirst undefined
+2024-11-14 13:18:38 - Started 6840

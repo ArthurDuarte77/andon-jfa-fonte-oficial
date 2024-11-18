@@ -26,12 +26,12 @@
           }">TEMPO: {{contador}}s</h1>
   </div>
   <div class="actions">
-    <button (click)="toggleContagem('count')" *ngIf="stateButton == false">TERMINAR</button>
+    <button (click)="toggleContagem('count')" *ngIf="stateButton == false">OK</button>
 
     <button *ngIf="loadingButton" disabled="true">AGUARDE</button>
     <button (click)="toggleContagem('count'); cod = ''" *ngIf="stateButton && loadingButton == false"
-      [disabled]="onPausa || onAnalise || onFonteGrande || onAjuda" >INICIAR</button>
-    <button [disabled]="stateButton" (click)="toggleContagem('refuse')">REFUGO</button>
+      [disabled]="onPausa || onAnalise || onFonteGrande || onAjuda" >OK</button>
+    <button (click)="toggleContagem('refuse')">REFUGO</button>
     <button (click)="openDialog()">TUTORIAL</button>
   </div>
   <table class="realizado"

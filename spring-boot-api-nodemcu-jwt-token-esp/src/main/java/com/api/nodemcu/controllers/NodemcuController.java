@@ -38,6 +38,7 @@ public class NodemcuController {
     @Transactional
     @MessageMapping("/news")
     public void broadcastNews(@Payload String message) throws JsonProcessingException {
+
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode;
         try {
@@ -49,6 +50,7 @@ public class NodemcuController {
 
         String status = jsonNode.get("status").asText();
         String op = jsonNode.get("op").asText();
+        System.out.println(op);
         OperationModel operation = operationRepository.findByName(op);
         try {
             nodemcuRepository.updateStateByNameId(status, operation.getId());
