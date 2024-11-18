@@ -432,7 +432,7 @@ public class NodemcuController {
         if (true) {
             System.out.println("entrou");
             try{
-                geralCicloRepository.deleteAll();
+                // geralCicloRepository.deleteAll();
 
                 FontesModel fonteAtual = new FontesModel();
                 List<FontesModel> fontes = fontesRepository.findAll();

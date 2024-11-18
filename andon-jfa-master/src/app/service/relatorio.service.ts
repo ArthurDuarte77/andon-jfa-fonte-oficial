@@ -20,6 +20,10 @@ export class RelatorioService {
   constructor(private http:HttpClient) { }
 
 
+  getGeralCicloByDate(startedDate: string, endDate: string, name: string): Observable<Ciclo[]>{
+    return this.http.get<Ciclo[]>(environment.url + `geral/ciclo/filterByDate/${name}?startDate=${startedDate}&endDate=${endDate}`)
+  }
+
   getGeralCiclo(name: string): Observable<Ciclo[]>{
     return this.http.get<Ciclo[]>(environment.url + `geral/ciclo/${name}`)
   }
