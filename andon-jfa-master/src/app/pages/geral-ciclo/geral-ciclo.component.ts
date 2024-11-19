@@ -20,7 +20,7 @@ export class GeralCicloComponent implements OnInit, AfterViewInit {
 
   readonly range = new FormGroup({
     start: new FormControl<Date | null>(new Date(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate() + 1}`)),
-    end: new FormControl<Date | null>(new Date(`${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDate() + 1}`)),
+    end: new FormControl<Date | null>(new Date(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate() + 1}`)),
   });
 
   constructor(
@@ -45,7 +45,7 @@ export class GeralCicloComponent implements OnInit, AfterViewInit {
 
     this.range.valueChanges.subscribe(val => {
       if (val.start != null && val.end != null) {
-        this.getGeralCicloByDate(this.selectFormControl.value!,`${val.start.getFullYear()}-${val.start.getMonth() + 1}-${val.start.getDate()}`, `${val.end.getFullYear()}-${val.end.getMonth() + 1}-${val.end.getDate()}`)
+        this.getGeralCicloByDate(this.selectFormControl.value!,`${val.start.getFullYear()}-${val.start.getMonth() + 1}-${val.start.getDate()}`, `${val.end.getFullYear()}-${val.end.getMonth() + 1}-${val.end.getDate() + 1}`)
       }
     });
   }
@@ -56,9 +56,9 @@ export class GeralCicloComponent implements OnInit, AfterViewInit {
 
 
   getCicloByName(name: string) {
-    this.relatorioService.getGeralCiclo(name).subscribe((res) => {
+    this.relatorioService.getGeralCicloByDate(`${this.range.value.start!.getFullYear()}-${this.range.value.start!.getMonth() + 1}-${this.range.value.start!.getDate()}`, `${this.range.value.end!.getFullYear()}-${this.range.value.end!.getMonth() + 1}-${this.range.value.end!.getDate() + 1}`, name).subscribe(res =>
       this.ciclo = res
-    });
+    )
   }
 
   getGeralCicloByDate(name: string, startedDate: string, endDate: string){
@@ -78,7 +78,7 @@ export class GeralCicloComponent implements OnInit, AfterViewInit {
 
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataToExport);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'DadosCiclo');
-    XLSX.writeFile(wb, 'dados_ciclo.xlsx');
+    XLSX.utils.book_append_sheet(wb, ws, `${this.selectFormControl.value}`);
+    XLSX.writeFile(wb, `${this.selectFormControl.value}.xlsx`);
   }
 }
