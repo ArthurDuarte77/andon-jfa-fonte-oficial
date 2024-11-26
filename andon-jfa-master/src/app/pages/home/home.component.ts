@@ -109,6 +109,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.init = true
     this.modeloService.getAll().subscribe(res => {
       res.forEach(item => {
         if (item.is_current == true) {
