@@ -7,6 +7,8 @@
   Exportar para EXCEL
 </a>
 
+
+
 <section>
   <div class="container_filter">
     <mat-form-field>
@@ -40,7 +42,10 @@
       </mat-select>
     </mat-form-field>
   </div>
-
+  <div class="chart-container">
+    <h1>Tempo Contado</h1>
+    <canvas id="MyChart">{{ MyChart }}</canvas>
+  </div>
   <table
     mat-table
     [dataSource]="ciclo"
