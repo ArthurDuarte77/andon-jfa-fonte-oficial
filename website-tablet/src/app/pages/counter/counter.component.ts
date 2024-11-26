@@ -20,6 +20,7 @@ import { DialogAvisoComponent } from 'src/app/shared/dialog-aviso/dialog-aviso.c
 import { application } from 'express';
 import { DialogNameComponent } from 'src/app/shared/dialog-name/dialog-name.component';
 import { WebsocketService } from 'src/app/service/websocket.service';
+import { DialogChartComponent } from 'src/app/shared/dialog-chart/dialog-chart.component';
 
 @Component({
   selector: 'app-counter',
@@ -508,6 +509,17 @@ export class CounterComponent implements OnInit, OnDestroy, AfterViewInit {
     this.dialog.open(DialogAvisoComponent, {
       width: '900px',
       height: '400px',
+    });
+  }
+
+  openDialogChart(): void {
+    this.dialog.open(DialogChartComponent, {
+      width: '100vw',
+      minWidth: '100vw',
+      minHeight: '100vh',
+      data: {
+        operation: this.operation.name
+      },
     });
   }
 

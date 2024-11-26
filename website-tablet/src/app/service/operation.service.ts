@@ -7,6 +7,7 @@ import { Main } from '../model/main';
 import { NameID, Realizado } from '../model/realizado';
 import { environment } from 'src/environments/environment';
 import { Modelo } from '../model/operation/modelo';
+import { Ciclo } from '../model/ciclo';
 
 const headers = new HttpHeaders({
   'Authorization': 'Bearer meu-token-de-autenticacao',
@@ -22,6 +23,11 @@ export class OperationService {
 
   constructor(private http: HttpClient) { }
 
+
+
+  getGeralCicloByDate(startedDate: string, endDate: string, name: string): Observable<Ciclo[]>{
+    return this.http.get<Ciclo[]>(environment.url + `geral/ciclo/filterByDate/${name}?startDate=${startedDate}&endDate=${endDate}`)
+  }
 
   get(name: string): Observable<Operation> {
     return this.http.get<Operation>(environment.url + "operation/" + name)
