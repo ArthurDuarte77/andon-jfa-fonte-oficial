@@ -4,7 +4,7 @@
 </div> -->
 <!-- <input type="text" #inputFocus (keyup.enter)="getCode(inputFocus.value)" style="position: absolute;opacity: 0;"> -->
 <video #videoPlayer *ngIf="loadVideo" [src]="videoSrc" controls></video>
-<button class="chart" (click)="openDialogChart()">Grafico</button>
+<!-- <button class="chart" (click)="openDialogChart()">Grafico</button> -->
 <button class="back-video" (click)="loadVideo = false" *ngIf="loadVideo"><mat-icon>exit_to_app</mat-icon> Sair</button>
 <button class="ajuda" (click)="ajuda()" *ngIf="!onAnalise">Ausência</button>
 <section (click)="enterFullscreen()" [ngClass]="{'animationBlue': azulStateCalled}"
