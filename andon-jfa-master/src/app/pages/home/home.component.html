@@ -1,6 +1,6 @@
-<mat-spinner *ngIf="init == false"></mat-spinner>
+<mat-spinner *ngIf="isInitialized == false"></mat-spinner>
 <main class="container">
-  <main class="parent" *ngIf="init">
+  <main class="parent" *ngIf="isInitialized">
     <div class="div1" (click)="openDialog()">
       <!-- <img src="assets\download-removebg-preview.png" alt="logo"> -->
       <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="73.0255mm" height="24.4668mm" version="1.1"
@@ -49,13 +49,13 @@
     <div class="div3 simple-div">
       <h1>DATA</h1>
       <div>
-        <span>{{ dataAtual | date : "dd/MM/YYYY" }}</span>
+        <span>{{ currentDate | date : "dd/MM/YYYY" }}</span>
       </div>
     </div>
     <div class="div4 simple-div">
       <h1>PRODUTO</h1>
       <div>
-        <span>FONTE {{ modeloAtual.modelo }}</span>
+        <span>FONTE {{ currentModel.modelo }}</span>
       </div>
     </div>
     <div class="div5 simple-div">
@@ -67,7 +67,7 @@
     <div class="div6 simple-div">
       <h1>CICLO</h1>
       <div>
-        <span>{{ TCimpostado | number : "1.0-0" }}
+        <span>{{ targetCycleTime | number : "1.0-0" }}
           <p>s</p>
         </span>
       </div>
@@ -77,22 +77,22 @@
       <div>
         <div>
           <span>PLANEJADO</span>
-          <span class="green">{{ previsto | number : "1.0-0" }}</span>
+          <span class="green">{{ forecastedQuantity | number : "1.0-0" }}</span>
         </div>
         <div>
           <span>REALIZADO</span>
 
           <span [ngClass]="{
-            green: realizado >= previsto,
-            red: realizado < previsto
-          }">{{ realizado | number : "1.0-0" }}</span>
+            green: producedQuantity >= forecastedQuantity,
+            red: producedQuantity < forecastedQuantity
+          }">{{ producedQuantity | number : "1.0-0" }}</span>
         </div>
         <div>
           <span>DIFERENÇA</span>
           <span [ngClass]="{
-              green: 0 <= realizado - previsto,
-              red: 0 > realizado - previsto
-            }">{{ realizado - previsto | number : "1.0-0" }}</span>
+              green: 0 <= producedQuantity - forecastedQuantity,
+              red: 0 > producedQuantity - forecastedQuantity
+            }">{{ producedQuantity - forecastedQuantity | number : "1.0-0" }}</span>
         </div>
       </div>
     </div>
@@ -108,9 +108,9 @@
         <div>
           <span>REALIZADO</span>
           <span [ngClass]="{
-              green: realizado / (effectiveTime / 60) >= imposto / shiftTime,
-              red: realizado / (effectiveTime / 60) < imposto / shiftTime
-            }">{{ realizado / (effectiveTime / 60) | number : "1.0-0" }}</span>
+              green: producedQuantity / (effectiveTimeInminutos / 60) >= imposto / shiftTime,
+              red: producedQuantity / (effectiveTimeInminutos / 60) < imposto / shiftTime
+            }">{{ producedQuantity / (effectiveTimeInminutos / 60) | number : "1.0-0" }}</span>
         </div>
       </div>
     </div>
@@ -119,15 +119,15 @@
       <div>
         <div>
           <span>PLANEJADO</span>
-          <span class="green">{{ TCimpostado | number : "1.0-0" }}</span>
+          <span class="green">{{ targetCycleTime | number : "1.0-0" }}</span>
         </div>
         <div>
           <span>REALIZADO</span>
           <span [ngClass]="{
-              green: 3600 / (realizado / (effectiveTime / 60)) <= TCimpostado,
-              red: 3600 / (realizado / (effectiveTime / 60)) > TCimpostado
+              green: 3600 / (producedQuantity / (effectiveTimeInminutos / 60)) <= targetCycleTime,
+              red: 3600 / (producedQuantity / (effectiveTimeInminutos / 60)) > targetCycleTime
             }">{{
-            3600 / (realizado / (effectiveTime / 60)) | number : "1.0-0"
+            3600 / (producedQuantity / (effectiveTimeInminutos / 60)) | number : "1.0-0"
             }}</span>
         </div>
       </div>
@@ -139,101 +139,101 @@
           <span>8:00</span>
           <span [ngClass]="{
               green:
-                realizadoHora.horas7 >=
-                minutos8 * impostodivididoporshift - 0.5,
+                horas.horas7 >=
+                minutos8 * targetPerMinute - 0.5,
               red:
-                realizadoHora.horas7 < minutos8 * impostodivididoporshift - 0.5
-            }">{{ realizadoHora.horas7 }}</span>
+                horas.horas7 < minutos8 * targetPerMinute - 0.5
+            }">{{ horas.horas7 }}</span>
         </div>
         <div>
           <span>9:00</span>
           <span [ngClass]="{
               green:
-                realizadoHora.horas8 >=
-                minutos9 * impostodivididoporshift - 0.5,
+                horas.horas8 >=
+                minutos9 * targetPerMinute - 0.5,
               red:
-                realizadoHora.horas8 < minutos9 * impostodivididoporshift - 0.5
-            }">{{ realizadoHora.horas8 }}</span>
+                horas.horas8 < minutos9 * targetPerMinute - 0.5
+            }">{{ horas.horas8 }}</span>
         </div>
         <div>
           <span>10:00</span>
           <span [ngClass]="{
               green:
-                realizadoHora.horas9 >=
-                minutos10 * impostodivididoporshift - 0.5,
+                horas.horas9 >=
+                minutos10 * targetPerMinute - 0.5,
               red:
-                realizadoHora.horas9 < minutos10 * impostodivididoporshift - 0.5
-            }">{{ realizadoHora.horas9 }}</span>
+                horas.horas9 < minutos10 * targetPerMinute - 0.5
+            }">{{ horas.horas9 }}</span>
         </div>
         <div>
           <span>11:00</span>
           <span [ngClass]="{
               green:
-                realizadoHora.horas10 >=
-                minutos11 * impostodivididoporshift - 0.5,
+                horas.horas10 >=
+                minutos11 * targetPerMinute - 0.5,
               red:
-                realizadoHora.horas10 <
-                minutos11 * impostodivididoporshift - 0.5
-            }">{{ realizadoHora.horas10 }}</span>
+                horas.horas10 <
+                minutos11 * targetPerMinute - 0.5
+            }">{{ horas.horas10 }}</span>
         </div>
         <div>
           <span>12:00</span>
           <span [ngClass]="{
               green:
-                realizadoHora.horas11 >=
-                minutos12 * impostodivididoporshift - 0.5,
+                horas.horas11 >=
+                minutos12 * targetPerMinute - 0.5,
               red:
-                realizadoHora.horas11 <
-                minutos12 * impostodivididoporshift - 0.5
-            }">{{ realizadoHora.horas11 }}</span>
+                horas.horas11 <
+                minutos12 * targetPerMinute - 0.5
+            }">{{ horas.horas11 }}</span>
         </div>
         <div>
           <span>13:00</span>
-          <span class="green">{{ realizadoHora.horas12 }}</span>
+          <span class="green">{{ horas.horas12 }}</span>
         </div>
         <div>
           <span>14:00</span>
           <span [ngClass]="{
               green:
-                realizadoHora.horas13 >=
-                minutos14 * impostodivididoporshift - 0.5,
+                horas.horas13 >=
+                minutos14 * targetPerMinute - 0.5,
               red:
-                realizadoHora.horas13 <
-                minutos14 * impostodivididoporshift - 0.5
-            }">{{ realizadoHora.horas13 }}</span>
+                horas.horas13 <
+                minutos14 * targetPerMinute - 0.5
+            }">{{ horas.horas13 }}</span>
         </div>
         <div>
           <span>15:00</span>
           <span [ngClass]="{
               green:
-                realizadoHora.horas14 >=
-                minutos15 * impostodivididoporshift - 0.5,
+                horas.horas14 >=
+                minutos15 * targetPerMinute - 0.5,
               red:
-                realizadoHora.horas14 <
-                minutos15 * impostodivididoporshift - 0.5
-            }">{{ realizadoHora.horas14 }}</span>
+                horas.horas14 <
+                minutos15 * targetPerMinute - 0.5
+            }">{{ horas.horas14 }}</span>
         </div>
         <div>
           <span>16:00</span>
           <span [ngClass]="{
               green:
-                realizadoHora.horas15 >=
-                minutos16 * impostodivididoporshift - 0.5,
+                horas.horas15 >=
+                minutos16 * targetPerMinute - 0.5,
               red:
-                realizadoHora.horas15 <
-                minutos16 * impostodivididoporshift - 0.5
-            }">{{ realizadoHora.horas15 }}</span>
+                horas.horas15 <
+                minutos16 * targetPerMinute - 0.5
+            }">{{ horas.horas15 }}</span>
         </div>
         <div>
           <span>17:00</span>
           <span [ngClass]="{
               green:
-                realizadoHora.horas16 >=
-                minutos17 * impostodivididoporshift - 0.5,
+              horas.horas16 >=
+                minutos17 * targetPerMinute - 0.5,
               red:
-                realizadoHora.horas16 <
-                minutos17 * impostodivididoporshift - 0.5
-            }">{{ realizadoHora.horas16 }}</span>
+                horas.horas16 <
+                minutos17 * targetPerMinute - 0.5
+            }">{{ horas.horas16 }}</span>
         </div>
       </div>
     </div>
@@ -248,7 +248,7 @@
         <div><span>REFUGO TOTAL DE PEÇAS</span></div>
         <div><span>TOTAL DE PEÇAS PRODUZIDAS</span></div>
       </div>
-      <div class="col2" *ngFor="let item of nodemcu">
+      <div class="col2" *ngFor="let item of nodeMcus">
         <div>
           <span class="op" [ngClass]="{
               'unica-1':
@@ -274,14 +274,14 @@
                 item.nameId.name === '080' ||
                 item.nameId.name === '090'
                   ? 180 >= item.contador.contadorAtual
-                  : TCimpostado >= item.contador.contadorAtual,
+                  : targetCycleTime >= item.contador.contadorAtual,
               sublime_red:
                 item.nameId.name === '110' ||
                 item.nameId.name === '100' ||
                 item.nameId.name === '080' ||
                 item.nameId.name === '090'
                   ? 180 < item.contador.contadorAtual
-                  : TCimpostado < item.contador.contadorAtual
+                  : targetCycleTime < item.contador.contadorAtual
             }">{{ item.contador.contadorAtual }}s</span>
         </div>
         <div>
@@ -292,14 +292,14 @@
                 item.nameId.name === '080' ||
                 item.nameId.name === '090'
                   ? 180 >= item.currentTC
-                  : TCimpostado >= item.currentTC,
+                  : targetCycleTime >= item.currentTC,
               sublime_red:
                 item.nameId.name === '110' ||
                 item.nameId.name === '100' ||
                 item.nameId.name === '080' ||
                 item.nameId.name === '090'
                   ? 180 < item.currentTC
-                  : TCimpostado < item.currentTC
+                  : targetCycleTime < item.currentTC
             }">{{ item.currentTC }}s</span>
         </div>
         <div>
@@ -310,14 +310,14 @@
                 item.nameId.name === '080' ||
                 item.nameId.name === '090'
                   ? 180 >= item.firtlastTC
-                  : TCimpostado >= item.firtlastTC,
+                  : targetCycleTime >= item.firtlastTC,
               sublime_red:
                 item.nameId.name === '110' ||
                 item.nameId.name === '100' ||
                 item.nameId.name === '080' ||
                 item.nameId.name === '090'
                   ? 180 < item.firtlastTC
-                  : TCimpostado < item.firtlastTC
+                  : targetCycleTime < item.firtlastTC
             }">{{ item.firtlastTC }}s</span>
         </div>
         <div>
@@ -340,15 +340,15 @@
                 item.nameId.name === '100' ||
                 item.nameId.name === '080' ||
                 item.nameId.name === '090'
-                  ? item.count >= (previsto / 2)
-                  : item.count >= previsto,
+                  ? item.count >= (forecastedQuantity / 2)
+                  : item.count >= forecastedQuantity,
                   red:
                 item.nameId.name === '110' ||
                 item.nameId.name === '100' ||
                 item.nameId.name === '080' ||
                 item.nameId.name === '090'
-                ? item.count < (previsto / 2)
-                : item.count < previsto,
+                ? item.count < (forecastedQuantity / 2)
+                : item.count < forecastedQuantity,
             }">{{ item.count }}</span>
         </div>
       </div>

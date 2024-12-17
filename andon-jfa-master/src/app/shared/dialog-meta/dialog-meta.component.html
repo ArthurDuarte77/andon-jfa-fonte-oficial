@@ -22,7 +22,7 @@
         <p>Fonte</p>
         <mat-form-field>
           <mat-label>Selecione uma fonte</mat-label>
-          <mat-select>
+          <mat-select  [(value)]="selectedModel">
             <mat-option *ngFor="let item of modelos" [value]="item.modelo" (click)="changeIsCurrent(item)">
               {{ item.modelo }}
             </mat-option>
