@@ -21,6 +21,7 @@ import { AnaliseComponent } from './pages/analise/analise.component';
 import { DialogNameComponent } from './shared/dialog-name/dialog-name.component';
 import {MatInputModule} from '@angular/material/input';
 import { DialogChartComponent } from './shared/dialog-chart/dialog-chart.component';
+import { DialogCcaComponent } from './shared/dialog-cca/dialog-cca.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { DialogChartComponent } from './shared/dialog-chart/dialog-chart.compone
     AnaliseComponent,
     DialogNameComponent,
     DialogChartComponent,
+    DialogCcaComponent,
   ],
 
   imports: [

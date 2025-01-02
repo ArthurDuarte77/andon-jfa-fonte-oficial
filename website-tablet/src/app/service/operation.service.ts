@@ -8,6 +8,7 @@ import { NameID, Realizado } from '../model/realizado';
 import { environment } from 'src/environments/environment';
 import { Modelo } from '../model/operation/modelo';
 import { Ciclo } from '../model/ciclo';
+import { Cca } from '../model/cca';
 
 const headers = new HttpHeaders({
   'Authorization': 'Bearer meu-token-de-autenticacao',
@@ -23,7 +24,13 @@ export class OperationService {
 
   constructor(private http: HttpClient) { }
 
+  getCca(): Observable<Cca>{
+    return this.http.get<Cca>(environment.url + "cca/1")
+  }
 
+  updateCca(min: number, max: number){
+    return this.http.patch(environment.url + "cca/1", {id: 1, min: min, max: max})
+  }
 
   getGeralCicloByDate(startedDate: string, endDate: string, name: string): Observable<Ciclo[]>{
     return this.http.get<Ciclo[]>(environment.url + `geral/ciclo/filterByDate/${name}?startDate=${startedDate}&endDate=${endDate}`)

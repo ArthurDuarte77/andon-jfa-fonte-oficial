@@ -1,13 +1,9 @@
-import { Main } from './../../module/main';
-import { DialogRef } from '@angular/cdk/dialog';
-import {
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { interval, Subscription } from 'rxjs';
+import { filter, switchMap } from 'rxjs/operators';
+
+import { Main } from '../../module/main';
 import { Modelo } from 'src/app/module/modelo';
 import { Nodemcu } from 'src/app/module/nodemcu';
 import { Minutos, Realizado } from 'src/app/module/realizado';
@@ -17,49 +13,41 @@ import { NodemcuService } from 'src/app/service/nodemcu.service';
 import { DialogMetaComponent } from 'src/app/shared/dialog-meta/dialog-meta.component';
 import { DialogPauseComponent } from 'src/app/shared/dialog-pause/dialog-pause.component';
 
+interface Time {
+  hours: number;
+  minutes: number;
+}
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  constructor(
-  private nodemcuService: NodemcuService,
-  public dialog: MatDialog,
-  private mainService: MainService,
-  private modeloService: ModeloService
-  ) {}
-
-  impostoInterval: any;
-  realizadoInterval: any;
-  isForecasted: boolean = false;
+  // Propriedades
+  isForecasted = false;
   currentDate = new Date();
-  currentModel!: Modelo;
-  dayOfWeek: Date = new Date();
+  currentModel: Modelo = {
+    id: 0,
+    modelo: '',
+    realizado: 0,
+    tempo: 0,
+    is_current: null
+  }
+  dayOfWeek = new Date();
   graphData: any[] = [];
   graphCounts: number[] = [];
-  producedQuantity: number = 0;
-  imposto: number = 0;
-  averageCycleTime: number = 0;
-  hourlyAverage: number = 0;
+  producedQuantity = 0;
+  imposto = 0;
+  averageCycleTime = 0;
+  hourlyAverage = 0;
   nodeMcus: Nodemcu[] = [];
-  date: any;
-  op: string = '';
+  date?: number;
+  op = '';
   counts: number[] = [];
-  targetCycleTime: number = 0;
-  forecastedQuantity: number = 0;
-  shiftTime: number = 8.66;
-  minutos8: number = 0;
-  minutos9: number = 0;
-  minutos10: number = 0;
-  minutos11: number = 0;
-  minutos12: number = 0;
-  minutos13: number = 0;
-  minutos14: number = 0;
-  minutos15: number = 0;
-  minutos16: number = 0;
-  minutos17: number = 0;
-
+  targetCycleTime = 0;
+  forecastedQuantity = 0;
+  shiftTime = 8.66;
   minuteFlags: Minutos = {
     minutos7: false,
     minutos8: false,
@@ -73,12 +61,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     minutos16: false,
     minutos17: false,
   };
-
-  currentTime: any;
-  effectiveTimeInminutos: any;
+  currentTime: string = ""
+  effectiveTimeInMinutos: number = 0;
   targetCalculation = 0;
-  proportionalDiscount: number = 0;
-  isInitialized: boolean = false;
+  proportionalDiscount = 0;
+  isInitialized = false;
   currentCycleTimes: number[] = [];
   lastCycleTimes: number[] = [];
   horas: Realizado = {
@@ -102,495 +89,348 @@ export class HomeComponent implements OnInit, OnDestroy {
       analise: false,
     },
   };
-  currentHour: any;
-  targetPerMinute: any = 0;
-  dialogReference: any;
+  currentHour?: number;
+  targetPerMinute = 0;
+  dialogReference?: MatDialogRef<DialogPauseComponent>;
   producedAt7 = 0;
 
-  ngOnDestroy(): void {
-    clearInterval(this.realizadoInterval);
-  }
+  private impostoIntervalSubscription?: Subscription;
+  private realizadoIntervalSubscription?: Subscription;
+  private readonly oneSecondInterval = interval(1000);
+  private readonly fiveSecondInterval = interval(5000);
 
+  constructor(
+    private nodemcuService: NodemcuService,
+    public dialog: MatDialog,
+    private mainService: MainService,
+    private modeloService: ModeloService
+  ) {}
+
+  // Métodos de Ciclo de Vida
   ngOnInit(): void {
     this.isInitialized = true;
+    this.loadCurrentModel();
+    this.initializeCycleTimes();
+    this.loadInitialData();
+    this.setupIntervals();
+    this.handleEndOfDay();
+
+      window.onload = () => {
+        this.isInitialized = true;
+      };
+  }
+
+  ngOnDestroy(): void {
+    this.impostoIntervalSubscription?.unsubscribe();
+    this.realizadoIntervalSubscription?.unsubscribe();
+  }
+
+  // Métodos de Inicialização e Carregamento de Dados
+  private loadCurrentModel(): void {
     this.modeloService.getAll().subscribe((res) => {
-      res.forEach((item) => {
-        if (item.is_current == true) {
-          this.currentModel = item;
-        }
-      });
-      if (this.currentModel == undefined) {
+      this.currentModel = res.find((item) => item.is_current)!;
+      if (!this.currentModel) {
         this.modeloService.changeIsCurrent('STORM 120A', true);
       }
     });
-    window.onload = () => {
-      this.isInitialized = true;
-    };
+  }
+
+  private initializeCycleTimes(): void {
     for (let index = 0; index < 17; index++) {
       this.currentCycleTimes[index] = 0;
     }
-
-    this.nodemcuService.getAll().subscribe((res) => {
-      this.nodeMcus = res;
-      this.nodeMcus.forEach((item) => {
-        this.counts[item.id!] = 0;
-      });
-      this.mainService.getAllMain().subscribe((res: Main[]) => {
-        this.imposto = res[0].imposto;
-        this.shiftTime = res[0].shiftTime;
-        this.op = res[0].op;
-      });
-    });
-    this.nodemcuService.getAllRealizado().subscribe((res) => {
-      this.horas = res[0];
-    });
-    this.impostoInterval = setInterval(() => {
-      this.targetInterval();
-      this.handleBreaks();
-    }, 1000);
-    this.realizadoInterval = setInterval(() => {
-      this.realizedInterval();
-    }, 5000);
-    setInterval(() => {
-      if (this.currentHour == 17 && new Date().getMinutes() == 0) {
-        clearInterval(this.impostoInterval);
-        clearInterval(this.realizadoInterval);
-      } else if (
-      this.currentHour == 7 &&
-      new Date().getMinutes() == 0 &&
-      new Date().getSeconds() == 0
-      ) {
-        this.impostoInterval = setInterval(() => {
-          this.targetInterval();
-        }, 1000);
-
-        this.realizadoInterval = setInterval(() => {
-          this.realizedInterval();
-        }, 5000);
-      }
-    }, 1000);
   }
 
-  realizedInterval() {
-    this.nodemcuService.getAllRealizado().subscribe((res) => {
-      this.horas = res[0];
+  private loadInitialData(): void {
+    this.nodemcuService.getAll().subscribe((nodeMcus) => {
+      this.nodeMcus = nodeMcus;
+      this.counts = nodeMcus.reduce(
+        (acc: any, item: any) => ({ ...acc, [item.id!]: 0 }),
+        {}
+      );
+      this.loadMainData();
     });
-    this.mainService.getAllMain().subscribe((res) => {
-      this.imposto = res[0].imposto;
-      this.shiftTime = res[0].shiftTime;
-      this.op = res[0].op;
-    });
-    this.modeloService.getAll().subscribe((res) => {
-      res.forEach((item) => {
-        if (item.is_current == true) {
-          this.currentModel = item;
+  }
+
+  private loadMainData(): void {
+      this.mainService.getAllMain().subscribe((mainData) => {
+        if (mainData.length > 0) {
+          this.imposto = mainData[0].imposto;
+          this.shiftTime = mainData[0].shiftTime;
+          this.op = mainData[0].op;
         }
+        this.loadRealizado();
       });
-    });
-    this.nodeMcus.forEach((item) => {
-      if (item.nameId.pausa == true) {
-        if (!this.dialog.openDialogs.length) {
-          this.dialogReference = this.dialog.open(DialogPauseComponent, {
-            width: '900px',
-            height: '400px',
+  }
+
+   private loadRealizado() {
+        this.nodemcuService.getAllRealizado().subscribe((res) => {
+            if (res && res.length > 0) {
+                this.horas = res[0];
+            }
+        });
+   }
+
+    private setupIntervals(): void {
+        this.impostoIntervalSubscription = this.oneSecondInterval
+        .subscribe(() => {
+            this.targetInterval();
+             this.handleBreaks();
+         });
+
+         this.realizadoIntervalSubscription = this.fiveSecondInterval.subscribe(() => {
+             this.realizedInterval();
+         });
+    }
+
+
+    private handleEndOfDay(): void {
+        interval(1000)
+          .subscribe(() => {
+              const now = new Date();
+              const currentHour = now.getHours();
+              const currentMinutes = now.getMinutes();
+                if (currentHour === 17 && currentMinutes === 0) {
+                    this.impostoIntervalSubscription?.unsubscribe();
+                    this.realizadoIntervalSubscription?.unsubscribe();
+                } else if (
+                    currentHour === 7 &&
+                    currentMinutes === 0 &&
+                    now.getSeconds() === 0
+                ) {
+                    this.setupIntervals();
+                 }
           });
-        }
-      } else {
-        if (this.dialog.openDialogs.length) {
-          this.dialogReference.close();
-        }
-      }
-    });
-  }
+    }
 
-  targetInterval() {
-    this.targetPerMinute = this.imposto / this.shiftTime / 60;
-    this.dayOfWeek = new Date();
-    this.currentHour = new Date().getHours();
-    this.mainService.getControleRealizadoByDate().subscribe((res) => {
-      res.forEach((item) => {
-        if (new Date(item.data).getDay() === new Date().getDay()) {
-          if (item.data == 7) {
-            this.minuteFlags.minutos7 = true;
-          } else if (item.data == 8) {
-            this.minuteFlags.minutos8 = true;
-          } else if (item.data == 9) {
-            this.minuteFlags.minutos9 = true;
-          } else if (item.data == 10) {
-            this.minuteFlags.minutos10 = true;
-          } else if (item.data == 11) {
-            this.minuteFlags.minutos11 = true;
-          } else if (item.data == 12) {
-            this.minuteFlags.minutos12 = true;
-          } else if (item.data == 13) {
-            this.minuteFlags.minutos14 = true;
-          } else if (item.data == 14) {
-            this.minuteFlags.minutos13 = true;
-          } else if (item.data == 15) {
-            this.minuteFlags.minutos15 = true;
-          } else if (item.data == 16) {
-            this.minuteFlags.minutos16 = true;
-          } else if (item.data == 17) {
-            this.minuteFlags.minutos17 = true;
-          }
+  // Métodos de Lógica de Negócio
+    private realizedInterval(): void {
+      this.loadRealizado();
+      this.loadMainData();
+      this.loadCurrentModel();
+      this.handleDialogPause();
+    }
+
+  private handleDialogPause(): void {
+      this.nodeMcus.forEach(node => {
+        if (node.nameId.pausa) {
+            if (!this.dialog.openDialogs.length) {
+                this.dialogReference = this.dialog.open(DialogPauseComponent, {
+                    width: '900px',
+                    height: '400px'
+                });
+            }
+        } else if (this.dialog.openDialogs.length) {
+            this.dialogReference?.close();
         }
       });
-      if (this.currentHour == 7) {
-        this.minutos8 = new Date().getMinutes();
-      } else if (this.currentHour == 8) {
-        this.minutos8 = 60;
-        this.minutos9 = new Date().getMinutes();
-      } else if (this.currentHour == 9) {
-        if (
-        this.horas.horas7 <
-        this.minutos8 * (this.imposto / this.shiftTime / 60) - 0.5
-        ) {
-          if (!this.minuteFlags.minutos8) {
-            this.openProductionControlDialog(
-            this.horas.horas7,
-            this.minutos8 * (this.imposto / this.shiftTime / 60) - 0.5,
-            this.currentHour - 1
-            );
-          }
-        }
-        this.minutos8 = 60;
-        this.minutos9 = 60;
-        this.minutos10 = new Date().getMinutes();
-      } else if (this.currentHour == 10) {
-        if (
-        this.horas.horas8 <
-        this.minutos9 * (this.imposto / this.shiftTime / 60) - 0.5
-        ) {
-          if (!this.minuteFlags.minutos9) {
-            this.openProductionControlDialog(
-            this.horas.horas8,
-            this.minutos9 * (this.imposto / this.shiftTime / 60) - 0.5,
-            this.currentHour - 1
-            );
-          }
-        }
-        this.minutos8 = 60;
-        this.minutos9 = 60;
-        this.minutos10 = 60;
-        this.minutos11 = new Date().getMinutes();
-      } else if (this.currentHour == 11) {
-        if (
-        this.horas.horas9 <
-        this.minutos10 * (this.imposto / this.shiftTime / 60) - 0.5
-        ) {
-          if (!this.minuteFlags.minutos10) {
-            this.openProductionControlDialog(
-            this.horas.horas9,
-            this.minutos10 * (this.imposto / this.shiftTime / 60) - 0.5,
-            this.currentHour - 1
-            );
-          }
-        }
-        this.minutos8 = 60;
-        this.minutos9 = 60;
-        this.minutos10 = 60;
-        this.minutos11 = 60;
-        this.minutos12 = new Date().getMinutes();
-      } else if (this.currentHour == 12) {
-        if (
-        this.horas.horas10 <
-        this.minutos11 * (this.imposto / this.shiftTime / 60) - 0.5
-        ) {
-          if (!this.minuteFlags.minutos11) {
-            this.openProductionControlDialog(
-            this.horas.horas10,
-            this.minutos11 * (this.imposto / this.shiftTime / 60) - 0.5,
-            this.currentHour - 1
-            );
-          }
-        }
-        this.minutos8 = 60;
-        this.minutos9 = 60;
-        this.minutos10 = 60;
-        this.minutos11 = 60;
-        this.minutos12 = 60;
-        this.minutos13 = new Date().getMinutes();
-      } else if (this.currentHour == 13) {
-        if (
-        this.horas.horas11 <
-        this.minutos12 * (this.imposto / this.shiftTime / 60) - 0.5
-        ) {
-          if (!this.minuteFlags.minutos12) {
-            this.openProductionControlDialog(
-            this.horas.horas11,
-            this.minutos12 * (this.imposto / this.shiftTime / 60) - 0.5,
-            this.currentHour - 1
-            );
-          }
-        }
-        this.minutos8 = 60;
-        this.minutos9 = 60;
-        this.minutos10 = 60;
-        this.minutos11 = 60;
-        this.minutos12 = 60;
-        this.minutos13 = 60;
-        this.minutos14 = new Date().getMinutes();
-      } else if (this.currentHour == 14) {
-        if (
-        this.horas.horas12 <
-        this.minutos13 * (this.imposto / this.shiftTime / 60) - 0.5
-        ) {
-          if (!this.minuteFlags.minutos13) {
-            this.openProductionControlDialog(
-            this.horas.horas12,
-            this.minutos13 * (this.imposto / this.shiftTime / 60) - 0.5,
-            this.currentHour - 1
-            );
-          }
-        }
-        this.minutos8 = 60;
-        this.minutos9 = 60;
-        this.minutos10 = 60;
-        this.minutos11 = 60;
-        this.minutos12 = 60;
-        this.minutos13 = 60;
-        this.minutos14 = 60;
-        this.minutos15 = new Date().getMinutes();
-      } else if (this.currentHour == 15) {
-        if (
-        this.horas.horas13 <
-        this.minutos14 * (this.imposto / this.shiftTime / 60) - 0.5
-        ) {
-          if (!this.minuteFlags.minutos14) {
-            this.openProductionControlDialog(
-            this.horas.horas13,
-            this.minutos14 * (this.imposto / this.shiftTime / 60) - 0.5,
-            this.currentHour - 1
-            );
-          }
-        }
-        this.minutos8 = 60;
-        this.minutos9 = 60;
-        this.minutos10 = 60;
-        this.minutos11 = 60;
-        this.minutos12 = 60;
-        this.minutos13 = 60;
-        this.minutos14 = 60;
-        this.minutos15 = 60;
-        this.minutos16 = new Date().getMinutes();
-      } else if (this.currentHour == 16) {
-        if (
-        this.horas.horas14 <
-        this.minutos15 * (this.imposto / this.shiftTime / 60) - 0.5
-        ) {
-          if (!this.minuteFlags.minutos15) {
-            this.openProductionControlDialog(
-            this.horas.horas14,
-            this.minutos15 * (this.imposto / this.shiftTime / 60) - 0.5,
-            this.currentHour - 1
-            );
-          }
-        }
-        this.minutos8 = 60;
-        this.minutos9 = 60;
-        this.minutos10 = 60;
-        this.minutos11 = 60;
-        this.minutos12 = 60;
-        this.minutos13 = 60;
-        this.minutos14 = 60;
-        this.minutos15 = 60;
-        this.minutos16 = 60;
-        this.minutos17 = new Date().getMinutes();
-      } else if (this.currentHour == 17) {
-        if (
-        this.horas.horas15 <
-        this.minutos16 * (this.imposto / this.shiftTime / 60) - 0.5
-        ) {
-          if (!this.minuteFlags.minutos16) {
-            this.openProductionControlDialog(
-            this.horas.horas15,
-            this.minutos16 * (this.imposto / this.shiftTime / 60) - 0.5,
-            this.currentHour - 1
-            );
-          }
-        }
-        this.minutos8 = 60;
-        this.minutos9 = 60;
-        this.minutos10 = 60;
-        this.minutos11 = 60;
-        this.minutos12 = 60;
-        this.minutos13 = 60;
-        this.minutos14 = 60;
-        this.minutos15 = 60;
-        this.minutos16 = 60;
-        this.minutos17 = 60;
-      }
-    });
-
-    const currentDate = new Date();
-    const newDatehours = new Date(currentDate.getTime() - 7 * 60 * 60 * 1000);
-    const hours1 = newDatehours.getHours();
-    const minutos1 = newDatehours.getMinutes();
-    this.date = hours1 * 60 + minutos1;
-
-    this.effectiveTimeInminutos = this.date;
-
-    const currentTime = String(currentDate.getHours()).padStart(2, '0');
-    const minutos = String(currentDate.getMinutes()).padStart(2, '0');
-
-    this.currentTime = `${currentTime}:${minutos}`;
-    this.calculateValues();
-
-    this.nodemcuService.getAll().subscribe((res) => {
-      this.nodeMcus = res;
-      this.hourlyAverage = 0;
-      this.averageCycleTime = 0;
-      this.calculateRealized();
-    });
-    this.currentDate = new Date();
   }
+
+    private targetInterval(): void {
+        this.targetPerMinute = this.imposto / this.shiftTime / 60;
+        this.dayOfWeek = new Date();
+        this.currentHour = new Date().getHours();
+        this.resetMinuteFlags();
+        this.checkAndOpenProductionControlDialog();
+        this.calculateTime();
+        this.calculateValues();
+        this.fetchNodemcuDataAndCalculateAverages();
+    }
+
+
+    private resetMinuteFlags(): void {
+        this.mainService.getControleRealizadoByDate().subscribe((res) => {
+           res.forEach((item) => {
+             if (new Date(item.data).getDay() === new Date().getDay()) {
+                this.minuteFlags[`minutos${item.data}` as keyof Minutos] = true;
+              }
+          });
+    });
+   }
+
+    private checkAndOpenProductionControlDialog() {
+        const currentMinutes = new Date().getMinutes();
+
+        this.handleProductionControlDialog(7, 8, currentMinutes);
+        this.handleProductionControlDialog(8, 9, currentMinutes);
+        this.handleProductionControlDialog(9, 10, currentMinutes);
+        this.handleProductionControlDialog(10, 11, currentMinutes);
+        this.handleProductionControlDialog(11, 12, currentMinutes);
+        this.handleProductionControlDialog(12, 13, currentMinutes);
+        this.handleProductionControlDialog(13, 14, currentMinutes);
+        this.handleProductionControlDialog(14, 15, currentMinutes);
+        this.handleProductionControlDialog(15, 16, currentMinutes);
+        this.handleProductionControlDialog(16, 17, currentMinutes);
+        this.handleProductionControlDialog(17, 18, currentMinutes);
+    }
+
+  private handleProductionControlDialog(currentHour: number, nextHour: number, currentMinutes: number): void {
+    if (this.currentHour === currentHour) {
+      const minutes = this.getMinutesForHour(currentHour, nextHour, currentMinutes);
+      const currentHourKey = `horas${currentHour}` as keyof Realizado;
+      if (minutes != 0 && this.horas) {
+          const targetForHour = minutes * (this.imposto / this.shiftTime / 60) - 0.5;
+            const producedForHour = this.horas[currentHourKey];
+            if (typeof producedForHour === 'number' && producedForHour < targetForHour) {
+                if (!this.minuteFlags[`minutos${nextHour}` as keyof Minutos]) {
+                     this.openProductionControlDialog(producedForHour, targetForHour, currentHour);
+               }
+           }
+    }
+  }
+}
+
+  getMinutesForHour(currentHour: number, nextHour: number, currentMinutes: number): number {
+    if (currentHour === 7) return currentMinutes;
+    if (currentHour === 8) return 60;
+    if (currentHour === 9) return currentMinutes;
+    if (currentHour === 10) return currentMinutes;
+    if (currentHour === 11) return currentMinutes;
+    if (currentHour === 12) return currentMinutes;
+    if (currentHour === 13) return currentMinutes;
+    if (currentHour === 14) return currentMinutes;
+    if (currentHour === 15) return currentMinutes;
+    if (currentHour === 16) return currentMinutes;
+    if (currentHour === 17) return currentMinutes
+    return 0;
+  }
+
+
+    private calculateTime(): void {
+      const currentDate = new Date();
+      const newDatehours = new Date(currentDate.getTime() - 7 * 60 * 60 * 1000);
+      const hours = newDatehours.getHours();
+      const minutes = newDatehours.getMinutes();
+      this.date = hours * 60 + minutes;
+      this.effectiveTimeInMinutos = this.date;
+      const formattedHours = String(currentDate.getHours()).padStart(2, '0');
+      const formattedMinutes = String(currentDate.getMinutes()).padStart(2, '0');
+      this.currentTime = `${formattedHours}:${formattedMinutes}`;
+    }
+
+  private fetchNodemcuDataAndCalculateAverages(): void {
+      this.nodemcuService.getAll().subscribe((res) => {
+            this.nodeMcus = res;
+            this.hourlyAverage = 0;
+            this.averageCycleTime = 0;
+            this.calculateRealized();
+      });
+    this.currentDate = new Date();
+   }
 
   openProductionControlDialog(
-  producedQuantity: number,
-  imposto: number,
-  horas: number
+        producedQuantity: number,
+        imposto: number,
+        horas: number
   ) {
-    // if (this.dialog.openDialogs.length > 0) {
-      //   return;
-      // }
-      // const dialogReference = this.dialog.open(DialogControleRealizadoComponent);
-      // dialogReference.afterClosed().subscribe((result) => {
-        //   if (result.length > 5) {
-          //     this.mainService
-          //       .postControleRealizado(imposto, producedQuantity, horas, result)
-          //       .subscribe((res) => {});
-          //   }
-          // });
-        }
+        // Implemente a lógica do diálogo de controle de produção
+  }
 
-        calculateRealized() {
-          this.nodeMcus.forEach((res) => {
+    calculateRealized(): void {
+        this.nodeMcus.forEach(res => {
             this.averageCycleTime += res.tcmedio;
             this.hourlyAverage += res.tcmedio;
             if (res.nameId.name == '160') {
               this.producedQuantity = res.count;
             }
-          });
-          this.averageCycleTime = this.averageCycleTime / this.nodeMcus.length - 1;
-          this.hourlyAverage =
+        });
+        this.averageCycleTime = this.averageCycleTime / this.nodeMcus.length - 1;
+        this.hourlyAverage =
           (this.hourlyAverage / this.nodeMcus.length - 1) / 8.5;
-        }
+    }
 
-        calculateValues() {
-          if (this.currentTime >= '09:20') {
-            this.effectiveTimeInminutos = this.effectiveTimeInminutos - 10;
-            this.proportionalDiscount = 10 / (this.targetCycleTime / 60);
-          }
-          if (this.currentTime >= '12:00') {
-            this.effectiveTimeInminutos = this.effectiveTimeInminutos - 60;
-            this.proportionalDiscount =
-            this.proportionalDiscount + 60 / (this.targetCycleTime / 60);
-          }
-          if (this.currentTime >= '14:10') {
-            this.effectiveTimeInminutos = this.effectiveTimeInminutos - 10;
-            this.proportionalDiscount =
-            this.proportionalDiscount + 10 / (this.targetCycleTime / 60);
-          }
+    calculateValues(): void {
+      if (this.currentTime && this.effectiveTimeInMinutos ) {
+        if (this.currentTime >= '09:20') {
+          this.effectiveTimeInMinutos -= 10;
+          this.proportionalDiscount = 10 / (this.targetCycleTime / 60);
+        }
+        if (this.currentTime >= '12:00') {
+          this.effectiveTimeInMinutos -= 60;
+          this.proportionalDiscount += 60 / (this.targetCycleTime / 60);
+        }
+        if (this.currentTime >= '14:10') {
+          this.effectiveTimeInMinutos -= 10;
+          this.proportionalDiscount += 10 / (this.targetCycleTime / 60);
+        }
           this.targetCycleTime = 3600 / (this.imposto / this.shiftTime);
-
-          if (this.currentHour < 12 || this.currentHour >= 13) {
-            this.forecastedQuantity =
-            this.date / (this.targetCycleTime / 60) - this.proportionalDiscount;
-          }
-          if (this.currentHour >= 17 && this.currentHour < 7) {
-            this.forecastedQuantity = this.imposto;
-          }
-
-          if (this.isForecasted == false) {
-            this.isForecasted = true;
-            setTimeout(() => {
+          if (this.currentHour && (this.currentHour < 12 || this.currentHour >= 13)) {
               this.forecastedQuantity =
-              this.date / (this.targetCycleTime / 60) - this.proportionalDiscount;
-            }, 3000);
+              this.date! / (this.targetCycleTime / 60) - this.proportionalDiscount;
+           }
+          if (this.currentHour && (this.currentHour >= 17 || this.currentHour < 7)) {
+             this.forecastedQuantity = this.imposto;
           }
-        }
-
-        parseIntValue(value: string): number {
-          return parseInt(value, 0);
-        }
-
-        handleBreaks() {
-          const now = new Date();
-          const currentTime = now.getHours();
-          const minutos = now.getMinutes();
-          if (new Date().getDay() != 5) {
-            if (currentTime === 9 && minutos === 30) {
-              this.nodemcuService.pausa(true).subscribe();
-            }
-            if (currentTime === 9 && minutos === 40) {
-              this.nodemcuService.pausa(false).subscribe();
-            }
-            if (currentTime === 12 && minutos === 0) {
-              this.nodemcuService.pausa(true).subscribe();
-            }
-            if (currentTime === 13 && minutos === 0) {
-              this.nodemcuService.pausa(false).subscribe();
-            }
-            if (currentTime === 15 && minutos === 20) {
-              this.nodemcuService.pausa(true).subscribe();
-            }
-            if (currentTime === 15 && minutos === 30) {
-              this.nodemcuService.pausa(false).subscribe();
-            }
-          } else {
-            if (currentTime === 9 && minutos === 30) {
-              this.nodemcuService.pausa(true).subscribe();
-            }
-            if (currentTime === 9 && minutos === 40) {
-              this.nodemcuService.pausa(false).subscribe();
-            }
-            if (currentTime === 12 && minutos === 0) {
-              this.nodemcuService.pausa(true).subscribe();
-            }
-            if (currentTime === 13 && minutos === 0) {
-              this.nodemcuService.pausa(false).subscribe();
-            }
-            if (currentTime === 14 && minutos === 35) {
-              this.nodemcuService.pausa(true).subscribe();
-            }
-            if (currentTime === 14 && minutos === 45) {
-              this.nodemcuService.pausa(false).subscribe();
-            }
+          if (!this.isForecasted) {
+             this.isForecasted = true;
+             setTimeout(() => {
+                this.forecastedQuantity = this.date! / (this.targetCycleTime / 60) - this.proportionalDiscount;
+             }, 3000);
           }
-        }
-
-        openDialog() {
-          const dialogRef = this.dialog.open(DialogMetaComponent, { width: '30%', height: '70%' });
-
-          dialogRef.afterClosed().subscribe((result) => {
-            if (result) {
-              var newImposto = result.split(',')[0];
-              if (newImposto != 0) {
-                this.imposto = result.split(',')[0];
-                this.mainService
-                  .put(this.imposto, this.targetCycleTime, this.shiftTime, this.op)
-                  .subscribe();
-              }
-              this.shiftTime = result.split(',')[1];
-              if (this.shiftTime == 0) {
-                if (this.dayOfWeek.getDay() == 5) {
-                  this.shiftTime = 7.66
-                } else {
-                  this.shiftTime = 8.66;
-                }
-                this.mainService
-                  .put(this.imposto, this.targetCycleTime, this.shiftTime, this.op)
-                  .subscribe();
-                this.calculateValues();
-              }
-              var op = result.split(',')[2]
-              if (op != "") {
-                this.mainService
-                  .put(this.imposto, this.targetCycleTime, this.shiftTime, op)
-                  .subscribe();
-                this.calculateValues();
-              }
-            }
-          });
-        }
       }
+    }
+
+
+  parseIntValue(value: string): number {
+    return parseInt(value, 0);
+  }
+
+
+  handleBreaks(): void {
+    const now = new Date();
+    const currentTime = now.getHours();
+    const minutos = now.getMinutes();
+      if (new Date().getDay() !== 5) {
+         this.handleBreakLogic(currentTime, minutos, 9, 30, true);
+         this.handleBreakLogic(currentTime, minutos, 9, 40, false);
+         this.handleBreakLogic(currentTime, minutos, 12, 0, true);
+         this.handleBreakLogic(currentTime, minutos, 13, 0, false);
+         this.handleBreakLogic(currentTime, minutos, 15, 20, true);
+         this.handleBreakLogic(currentTime, minutos, 15, 30, false);
+    } else {
+         this.handleBreakLogic(currentTime, minutos, 9, 30, true);
+        this.handleBreakLogic(currentTime, minutos, 9, 40, false);
+        this.handleBreakLogic(currentTime, minutos, 12, 0, true);
+        this.handleBreakLogic(currentTime, minutos, 13, 0, false);
+        this.handleBreakLogic(currentTime, minutos, 14, 35, true);
+         this.handleBreakLogic(currentTime, minutos, 14, 45, false);
+    }
+  }
+
+    private handleBreakLogic(currentTime: number, currentMinutes: number, breakHour: number, breakMinute: number, pausa: boolean): void {
+        if (currentTime === breakHour && currentMinutes === breakMinute) {
+           this.nodemcuService.pausa(pausa).subscribe();
+        }
+    }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DialogMetaComponent, {
+      width: '30%',
+      height: '70%',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const [newImposto, newShiftTime, newOp] = result.split(',');
+          if (newImposto !== '0' ) {
+            this.imposto = parseInt(newImposto);
+                this.updateMainData(this.imposto, this.targetCycleTime, this.shiftTime, this.op);
+            }
+         this.shiftTime =  parseFloat(newShiftTime);
+            if (this.shiftTime === 0) {
+                this.shiftTime = this.dayOfWeek.getDay() === 5 ? 7.66 : 8.66;
+                this.updateMainData(this.imposto, this.targetCycleTime, this.shiftTime, this.op);
+        }
+       if (newOp !== '') {
+                this.op = newOp;
+             this.updateMainData(this.imposto, this.targetCycleTime, this.shiftTime, this.op);
+            }
+        this.calculateValues();
+        }
+    });
+  }
+ private updateMainData(imposto:number, targetCycleTime:number, shiftTime:number, op:string): void{
+    this.mainService.put(imposto, targetCycleTime, shiftTime, op)
+    .subscribe();
+ }
+}

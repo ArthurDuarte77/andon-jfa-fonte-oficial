@@ -6,8 +6,12 @@
 <video #videoPlayer *ngIf="loadVideo" [src]="videoSrc" controls></video>
 <!-- <button class="chart" (click)="openDialogChart()">Grafico</button> -->
 <button class="back-video" (click)="loadVideo = false" *ngIf="loadVideo"><mat-icon>exit_to_app</mat-icon> Sair</button>
-<button class="ajuda" (click)="ajuda()" *ngIf="!onAnalise">Ausência</button>
-<section (click)="enterFullscreen()" [ngClass]="{'animationBlue': azulStateCalled}"
+<div class="suspense_buttons">
+  <!-- <button class="cca_value" *ngIf="operation.name == '140'">{{cca.min}} - {{cca.max}}</button>
+  <button class="cca" (click)="changeCCA()" *ngIf="operation.name == '140'">CCA</button> -->
+  <button class="ajuda" (click)="ajuda()" *ngIf="!onAnalise">Ausência</button>
+</div>
+  <section (click)="enterFullscreen()" [ngClass]="{'animationBlue': azulStateCalled}"
 [ngClass]="{'animationRed': vermelhoStateCalled || this.contador > lmitedTime}">
 <div class="online" *ngIf="isOnline; else offlineMessage">
   <p><mat-icon [ngStyle]="{'color':'#00FF00'}">signal_wifi_4_bar</mat-icon></p>

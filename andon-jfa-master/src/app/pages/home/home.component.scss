@@ -168,14 +168,14 @@ $other_title_font: 1.4rem;
       justify-content: center;
       gap: 20px;
       span:nth-child(1) {
-        font-size: $title-font;
+        font-size: 0.8vw;
         font-weight: $normal_weight;
       }
       span:nth-child(2) {
         font-weight: calc($normal_weight + 100);
-        font-size: calc($normal_font + 0.2rem);
+        font-size: calc($normal_font);
         border-radius: 5px;
-        padding: 0.8vw 1.5vw;
+        padding: 0.8vw 1.2vw;
         width: 50%;
         margin: 0;
         text-align: center;
@@ -452,23 +452,23 @@ div .two-items {
   border-radius: 0;
   background-color: transparent;
   .items:nth-child(1){
-    .linha{ 
+    .linha{
       background: $blue;
     }
   }
   .items:nth-child(1){
-    .linha{ 
+    .linha{
       background: $blue;
     }
   }
   .items:nth-child(2){
-    .linha{ 
+    .linha{
       border: 2px solid $blue;
       background: linear-gradient(to right, $blue 50%, white 50%);
     }
   }
   .items:nth-child(3){
-    .linha{ 
+    .linha{
       background: $red;
     }
   }
@@ -494,7 +494,7 @@ div .two-items {
     }
     .linha{
       width: 30%;
-      height: 30%;  
+      height: 30%;
       border-radius: 0px;
       margin: auto;
       margin-left: 3px;

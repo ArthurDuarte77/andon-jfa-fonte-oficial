@@ -21,6 +21,8 @@ import { application } from 'express';
 import { DialogNameComponent } from 'src/app/shared/dialog-name/dialog-name.component';
 import { WebsocketService } from 'src/app/service/websocket.service';
 import { DialogChartComponent } from 'src/app/shared/dialog-chart/dialog-chart.component';
+import { Cca } from 'src/app/model/cca';
+import { DialogCcaComponent } from 'src/app/shared/dialog-cca/dialog-cca.component';
 
 @Component({
   selector: 'app-counter',
@@ -71,6 +73,11 @@ export class CounterComponent implements OnInit, OnDestroy, AfterViewInit {
   intervalRef: any;
   cod: string = '';
   name: string = '';
+  cca: Cca = {
+    id: 0,
+    min: 0,
+    max: 0
+  }
   intervalRefNew: any;
   count: number = 0;
   maintenance: number = 0;
@@ -127,6 +134,9 @@ export class CounterComponent implements OnInit, OnDestroy, AfterViewInit {
     window.addEventListener('online', () => this.updateOnlineStatus());
     window.addEventListener('offline', () => this.updateOnlineStatus());
 
+    this.operationService.getCca().subscribe((res) => {
+      this.cca = res
+    });
     // Atualiza o status inicial
     this.updateOnlineStatus();
     // Pega os parametros das rotas para saber qual operação
@@ -903,5 +913,14 @@ export class CounterComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.cod = code;
     this.toggleContagem('count');
+  }
+
+  changeCCA(){
+    this.dialog.open(DialogCcaComponent, {
+      width: '50vw',
+      height: '50vh',
+      minHeight: '50vh',
+      minWidth: '50vw',
+    });
   }
 }
