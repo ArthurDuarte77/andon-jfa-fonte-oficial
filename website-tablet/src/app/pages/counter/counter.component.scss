@@ -225,6 +225,7 @@ button {
 
 .suspense_buttons{
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   position: absolute;
@@ -232,7 +233,11 @@ button {
   top: 0;
   width: auto;
   button{
-    min-width: 200px;
+    min-width: 10vw;
+    flex: 1;
+  }
+  button:nth-child(1){
+    min-width: 30vw;
     flex: 1;
   }
 }
@@ -242,7 +247,7 @@ button {
   width: auto;
   text-transform: uppercase;
   height: 50px;
-  font-size: 1rem;
+  font-size: 2rem;
   text-wrap: nowrap;
   background-color: white;
   text-align: center;
@@ -261,7 +266,7 @@ button {
   background-color: white;
   text-align: center;
   margin: 0;
-  padding: 5px 30px;
+  padding: 5px 10px;
   border-radius: 7px;
   margin: 10px;
 }
