@@ -23,6 +23,7 @@ import { WebsocketService } from 'src/app/service/websocket.service';
 import { DialogChartComponent } from 'src/app/shared/dialog-chart/dialog-chart.component';
 import { Cca } from 'src/app/model/cca';
 import { DialogCcaComponent } from 'src/app/shared/dialog-cca/dialog-cca.component';
+import { subscribeOn } from 'rxjs';
 
 @Component({
   selector: 'app-counter',
@@ -921,6 +922,10 @@ export class CounterComponent implements OnInit, OnDestroy, AfterViewInit {
       height: '50vh',
       minHeight: '50vh',
       minWidth: '50vw',
+    }).afterClosed().subscribe(() => {
+      this.operationService.getCca().subscribe(res => {
+        this.cca = res
+      })
     });
   }
 }

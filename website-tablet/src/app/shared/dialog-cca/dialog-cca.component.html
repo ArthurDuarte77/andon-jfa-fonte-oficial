@@ -1,11 +1,11 @@
 <form>
   <mat-form-field >
     <mat-label>Min</mat-label>
-    <input type="number" matInput>
+    <input type="number" matInput #min>
   </mat-form-field>
   <mat-form-field>
     <mat-label>Max</mat-label>
-    <input type="number" matInput>
+    <input type="number" matInput #max>
   </mat-form-field>
-  <button mat-flat-button>Aplicar</button>
+  <button mat-flat-button (click)="cca(min.value, max.value)" [disabled]="min.value == '' || max.value == ''">Aplicar</button>
 </form>

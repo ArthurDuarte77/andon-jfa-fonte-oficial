@@ -242,11 +242,12 @@ button {
   width: auto;
   text-transform: uppercase;
   height: 50px;
-  font-size: 1.5rem;
+  font-size: 1rem;
+  text-wrap: nowrap;
   background-color: white;
   text-align: center;
   margin: 0;
-  padding: 0px 30px;
+  padding: 0px 5px;
   border-radius: 7px;
   margin: 10px;
 }
