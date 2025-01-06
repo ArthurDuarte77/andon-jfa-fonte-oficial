@@ -47,7 +47,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   counts: number[] = [];
   targetCycleTime = 0;
   forecastedQuantity = 0;
-  shiftTime = 8.66;
+  shiftTime = 7.66;
   minuteFlags: Minutos = {
     minutos7: false,
     minutos8: false,
@@ -227,7 +227,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
     private targetInterval(): void {
-        this.targetPerMinute = this.imposto / this.shiftTime / 60;
+        this.targetPerMinute = parseInt((this.imposto / this.shiftTime / 60).toFixed(0));
         this.dayOfWeek = new Date();
         this.currentHour = new Date().getHours();
         this.resetMinuteFlags();
@@ -281,6 +281,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 }
 
   getMinutesForHour(currentHour: number, nextHour: number, currentMinutes: number): number {
+    currentHour = new Date().getHours()
     if (currentHour === 7) return currentMinutes;
     if (currentHour === 8) return 60;
     if (currentHour === 9) return currentMinutes;
@@ -418,7 +419,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             }
          this.shiftTime =  parseFloat(newShiftTime);
             if (this.shiftTime === 0) {
-                this.shiftTime = this.dayOfWeek.getDay() === 5 ? 7.66 : 8.66;
+                this.shiftTime = this.dayOfWeek.getDay() === 5 ? 7.66 : 7.66;
                 this.updateMainData(this.imposto, this.targetCycleTime, this.shiftTime, this.op);
         }
        if (newOp !== '') {
