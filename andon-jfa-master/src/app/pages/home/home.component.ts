@@ -281,9 +281,20 @@ export class HomeComponent implements OnInit, OnDestroy {
 }
 
   getMinutesForHour(currentHour: number, nextHour: number, currentMinutes: number): number {
-    currentHour = new Date().getHours()
+    currentMinutes = new Date().getMinutes()
+    if (currentHour === 7 && new Date().getHours() > 7) return 60;
+    if (currentHour === 8 && new Date().getHours() > 8) return 60;
+    if (currentHour === 9 && new Date().getHours() > 9) return 60;
+    if (currentHour === 10 && new Date().getHours() > 10) return 60;
+    if (currentHour === 11 && new Date().getHours() > 11) return 60;
+    if (currentHour === 12 && new Date().getHours() > 12) return 60;
+    if (currentHour === 13 && new Date().getHours() > 13) return 60;
+    if (currentHour === 14 && new Date().getHours() > 14) return 60;
+    if (currentHour === 15 && new Date().getHours() > 15) return 60;
+    if (currentHour === 16 && new Date().getHours() > 16) return 60;
+    if (currentHour === 17 && new Date().getHours() > 17) return 60;
     if (currentHour === 7) return currentMinutes;
-    if (currentHour === 8) return 60;
+    if (currentHour === 8) return currentMinutes;
     if (currentHour === 9) return currentMinutes;
     if (currentHour === 10) return currentMinutes;
     if (currentHour === 11) return currentMinutes;
