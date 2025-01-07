@@ -385,27 +385,6 @@
                 item.nameId.name === '100' ||
                 item.nameId.name === '080' ||
                 item.nameId.name === '090'
-                  ? 180 >= item.currentTC
-                  : targetCycleTime >= item.currentTC,
-              sublime_red:
-                item.nameId.name === '110' ||
-                item.nameId.name === '100' ||
-                item.nameId.name === '080' ||
-                item.nameId.name === '090'
-                  ? 180 < item.currentTC
-                  : targetCycleTime < item.currentTC
-            }"
-            >{{ item.currentTC }}s</span
-          >
-        </div>
-        <div>
-          <span
-            [ngClass]="{
-              sublime_green:
-                item.nameId.name === '110' ||
-                item.nameId.name === '100' ||
-                item.nameId.name === '080' ||
-                item.nameId.name === '090'
                   ? 180 >= item.firtlastTC
                   : targetCycleTime >= item.firtlastTC,
               sublime_red:
@@ -417,6 +396,27 @@
                   : targetCycleTime < item.firtlastTC
             }"
             >{{ item.firtlastTC }}s</span
+          >
+        </div>
+        <div>
+          <span
+            [ngClass]="{
+              sublime_green:
+                item.nameId.name === '110' ||
+                item.nameId.name === '100' ||
+                item.nameId.name === '080' ||
+                item.nameId.name === '090'
+                  ? 180 >= item.secondtlastTC
+                  : targetCycleTime >= item.secondtlastTC,
+              sublime_red:
+                item.nameId.name === '110' ||
+                item.nameId.name === '100' ||
+                item.nameId.name === '080' ||
+                item.nameId.name === '090'
+                  ? 180 < item.secondtlastTC
+                  : targetCycleTime < item.secondtlastTC
+            }"
+            >{{ item.secondtlastTC }}s</span
           >
         </div>
         <div>
