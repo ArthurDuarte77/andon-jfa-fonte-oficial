@@ -24,12 +24,12 @@ export class OperationService {
 
   constructor(private http: HttpClient) { }
 
-  getCca(): Observable<Cca>{
-    return this.http.get<Cca>(environment.url + "cca/1")
+  getCca(id: number): Observable<Cca>{
+    return this.http.get<Cca>(environment.url + "cca/" + id)
   }
 
-  updateCca(min: number, max: number){
-    return this.http.patch(environment.url + "cca/1", {id: 1, min: min, max: max})
+  updateCca(id: number,min: number, max: number){
+    return this.http.patch(environment.url + "cca/" + id , {id: id, min: min, max: max})
   }
 
   getGeralCicloByDate(startedDate: string, endDate: string, name: string): Observable<Ciclo[]>{

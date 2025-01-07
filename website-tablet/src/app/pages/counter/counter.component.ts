@@ -79,6 +79,11 @@ export class CounterComponent implements OnInit, OnDestroy, AfterViewInit {
     min: 0,
     max: 0
   }
+  cca2: Cca = {
+    id: 0,
+    min: 0,
+    max: 0
+  }
   intervalRefNew: any;
   count: number = 0;
   maintenance: number = 0;
@@ -135,8 +140,11 @@ export class CounterComponent implements OnInit, OnDestroy, AfterViewInit {
     window.addEventListener('online', () => this.updateOnlineStatus());
     window.addEventListener('offline', () => this.updateOnlineStatus());
 
-    this.operationService.getCca().subscribe((res) => {
+    this.operationService.getCca(1).subscribe((res) => {
       this.cca = res
+    });
+    this.operationService.getCca(2).subscribe((res) => {
+      this.cca2 = res
     });
     // Atualiza o status inicial
     this.updateOnlineStatus();
@@ -923,8 +931,11 @@ export class CounterComponent implements OnInit, OnDestroy, AfterViewInit {
       minHeight: '50vh',
       minWidth: '50vw',
     }).afterClosed().subscribe(() => {
-      this.operationService.getCca().subscribe(res => {
+      this.operationService.getCca(1).subscribe(res => {
         this.cca = res
+      })
+      this.operationService.getCca(2).subscribe(res => {
+        this.cca2 = res
       })
     });
   }

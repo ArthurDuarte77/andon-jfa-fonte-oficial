@@ -361,8 +361,12 @@ public class NodemcuService {
         repository.updateLocalTCByNameId(tempo, operation.getId());
     }
 
+    public void resetZerarDados(){
+        zerouDados = false;
+    }
+
     public void zerarDados() {
-        if (!zerouDados) {
+        if (true) {
             try {
 
                 FontesModel fonteAtual = fontesRepository.findAll().stream()

@@ -1,11 +1,36 @@
 <form>
-  <mat-form-field >
-    <mat-label>Min</mat-label>
-    <input type="number" matInput #min>
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Max</mat-label>
-    <input type="number" matInput #max>
-  </mat-form-field>
-  <button mat-flat-button (click)="cca(min.value, max.value)" [disabled]="min.value == '' || max.value == ''">Aplicar</button>
+  <div class="form">
+    <div class="select-bat">
+      <span>bateria 1</span>
+      <div class="min-max">
+        <mat-form-field>
+          <mat-label>Min</mat-label>
+          <input type="number" matInput #min />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Max</mat-label>
+          <input type="number" matInput #max />
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="select-bat">
+      <span>bateria 2</span>
+      <div class="min-max">
+        <mat-form-field>
+          <mat-label>Min</mat-label>
+          <input type="number" matInput #min2 />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Max</mat-label>
+          <input type="number" matInput #max2 />
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <button
+    mat-flat-button
+    (click)="cca(1, min.value, max.value, min2.value, max2.value)"
+  >
+    Aplicar
+  </button>
 </form>

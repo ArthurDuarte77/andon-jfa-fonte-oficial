@@ -17,12 +17,20 @@ export class DialogCcaComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  cca(min: string, max: string){
-    this.OperationService.updateCca(parseFloat(min), parseFloat(max)).subscribe(res => {
-      console.log(res)
-      this.openSnackBar('CCA Atualizado com Sucesso', 'Ok');
-      this.dialogRef.close()
-    })
+  cca(id: number, min: string, max: string, min2: string, max2: string){
+    if(id && min && max){
+      this.OperationService.updateCca(id, parseFloat(min), parseFloat(max)).subscribe(res => {
+        this.openSnackBar('CCA Atualizado com Sucesso', 'Ok');
+        this.dialogRef.close()
+      })
+    }
+    if(min2 && max2){
+      this.OperationService.updateCca(2,  parseFloat(min2), parseFloat(max2)).subscribe(res => {
+        console.log(res)
+        this.openSnackBar('CCA Atualizado com Sucesso', 'Ok');
+        this.dialogRef.close()
+      })
+    }
   }
 
   openSnackBar(message: string, action: string) {

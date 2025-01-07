@@ -1,7 +1,11 @@
 package com.api.nodemcu.controllers;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,11 +22,28 @@ import com.api.nodemcu.model.NodemcuModel;
 @RestController
 @RequestMapping("/api/v1/nodemcu")
 public class NodemcuController {
+    private ScheduledExecutorService scheduler;
+
     private final NodemcuService nodemcuService;
 
     @Autowired
     public NodemcuController(NodemcuService nodemcuService) {
+        this.scheduler = Executors.newScheduledThreadPool(1);
+        agendarTarefa();
         this.nodemcuService = nodemcuService;
+    }
+
+        private void agendarTarefa() {
+        Runnable task = () -> {
+            Calendar calendar = Calendar.getInstance();
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+            if (hour >= 20 & hour <= 21 && dayOfWeek >= Calendar.MONDAY && dayOfWeek <= Calendar.FRIDAY) {
+                nodemcuService.zerarDados();
+            }
+        };
+        // Agende a tarefa para ser executada a cada hora
+        scheduler.scheduleAtFixedRate(task, 0, 1, TimeUnit.HOURS);
     }
 
     @GetMapping
