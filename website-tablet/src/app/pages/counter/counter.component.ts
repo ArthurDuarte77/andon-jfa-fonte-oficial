@@ -926,10 +926,10 @@ export class CounterComponent implements OnInit, OnDestroy, AfterViewInit {
 
   changeCCA(){
     this.dialog.open(DialogCcaComponent, {
-      width: '50vw',
-      height: '50vh',
-      minHeight: '50vh',
-      minWidth: '50vw',
+      width: '80vw',
+      height: '80vh',
+      minHeight: '80vh',
+      minWidth: '80vw',
     }).afterClosed().subscribe(() => {
       this.operationService.getCca(1).subscribe(res => {
         this.cca = res

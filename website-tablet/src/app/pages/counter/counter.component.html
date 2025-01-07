@@ -7,7 +7,7 @@
 <!-- <button class="chart" (click)="openDialogChart()">Grafico</button> -->
 <button class="back-video" (click)="loadVideo = false" *ngIf="loadVideo"><mat-icon>exit_to_app</mat-icon> Sair</button>
 <div class="suspense_buttons">
-  <button class="cca_value" *ngIf="operation.name == '140'">min: {{cca2.min}}A - max: {{cca2.max}}A | min: {{cca2.min}}A - max: {{cca2.max}}A</button>
+  <button class="cca_value" *ngIf="operation.name == '140'">min: {{cca.min}}A - max: {{cca.max}}A | min: {{cca2.min}}A - max: {{cca2.max}}A</button>
   <button class="cca" (click)="changeCCA()" *ngIf="operation.name == '140'">CCA</button>
   <button class="ajuda" (click)="ajuda()" *ngIf="!onAnalise">Ausência</button>
 </div>
