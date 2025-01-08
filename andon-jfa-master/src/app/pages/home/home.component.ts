@@ -227,7 +227,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
     private targetInterval(): void {
-        this.targetPerMinute = parseInt((this.imposto / this.shiftTime / 60).toFixed(0));
+        this.targetPerMinute = parseFloat((this.imposto / this.shiftTime / 60).toFixed(2));
         this.dayOfWeek = new Date();
         this.currentHour = new Date().getHours();
         this.resetMinuteFlags();
